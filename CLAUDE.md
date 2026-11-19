@@ -244,7 +244,7 @@ Run order: `download_data.py` → `prepare_tasks.py` → `rewrite.py` (+ human r
 ## Open items
 
 1. ~~Manual check of recognition grades~~ — done 2026-11-19 (HumanEval 24/24, BCB 48/48 agreed).
-2. **GitHub:** folder is not yet a git repo; needs the repo URL, then commit + push.
+2. ~~GitHub~~ — done 2026-11-19: https://github.com/HamzaHashmi775/orchid_implementation (branch `main`, pushed as HamzaHashmi775).
 3. **BCB run**: done for B1–B12 (n = 5), review CSV complete.
 4. **Leak audit** (`data/leak_audit.csv`, 2026-11-18): of the 24 injected ambiguities, the
    unchanged parts of the prompt (function name/signature for HumanEval; output section for
