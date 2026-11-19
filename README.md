@@ -1,4 +1,4 @@
-# Combined Requirement Ambiguity in LLM Code Generation
+# 2 types Requirement Ambiguity in LLM Code Generation
 
 This project re-implements the Orchid benchmark method (Yang et al., 2026,
 [arXiv:2604.21505](https://arxiv.org/abs/2604.21505)) for testing how ambiguous requirements
