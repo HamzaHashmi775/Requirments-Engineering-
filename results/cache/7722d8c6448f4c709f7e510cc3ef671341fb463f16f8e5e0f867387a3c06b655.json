@@ -1,0 +1,47 @@
+{
+ "tag": "B7|original|claude-sonnet-5-5|1",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nFind the latest log file in a specified directory that matches a given regex pattern. This function searches through all files in the specified directory, filters them based on the provided regex pattern, and returns the path to the most recent log file based on modification time. If no files match the pattern or the directory is empty, the function returns None.\nThe function should output with:\n    str or None: The path to the most recent log file that matches the pattern, or None if no matching files are found.\nYou should write self-contained code starting with:\n```\nimport os\nimport re\ndef task_func(pattern, log_dir='/var/log/'):\n```",
+ "text": "```python\nimport os\nimport re\n\n\ndef task_func(pattern, log_dir='/var/log/'):\n    \"\"\"\n    Find the most recently modified file in log_dir whose name matches\n    the given regex pattern.\n\n    Returns:\n        str or None: Path to the latest matching file, or None if none found.\n    \"\"\"\n    try:\n        entries = os.listdir(log_dir)\n    except (FileNotFoundError, NotADirectoryError, PermissionError):\n        return None\n\n    try:\n        regex = re.compile(pattern)\n    except re.error:\n        return None\n\n    latest_file = None\n    latest_mtime = None\n\n    for name in entries:\n        if not regex.match(name):\n            continue\n        path = os.path.join(log_dir, name)\n        if not os.path.isfile(path):\n            continue\n        try:\n            mtime = os.path.getmtime(path)\n        except OSError:\n            continue\n        if latest_mtime is None or mtime > latest_mtime:\n            latest_mtime = mtime\n            latest_file = path\n\n    return latest_file\n```\n\nThe function lists the directory, keeps regular files whose names match the pattern (using `re.match`, anchored at the start of the name), and returns the path with the newest modification time. It returns `None` if the directory is missing or unreadable, the pattern is invalid, or nothing matches. If you want to match anywhere in the filename, change `regex.match` to `regex.search`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 792,
+  "output_tokens": 456,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 456,
+    "cache_read_input_tokens": 792,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 8.9,
+ "time": "2026-11-19 14:12:01"
+}

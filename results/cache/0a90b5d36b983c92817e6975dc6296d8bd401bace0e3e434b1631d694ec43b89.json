@@ -1,0 +1,47 @@
+{
+ "tag": "B5|combined|claude-sonnet-5-5|2",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nSerializes the entries of a dictionary to a JSON string, then compresses the string using zlib and encodes it with base64.\nThe function should output with:\n    str: The final base64 encoded result as a string.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+ "text": "```python\nimport base64\nimport json\nimport zlib\n\n\ndef task_func(data_dict):\n    json_str = json.dumps(data_dict)\n    compressed = zlib.compress(json_str.encode(\"utf-8\"))\n    return base64.b64encode(compressed).decode(\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    print(task_func({\"key1\": \"value1\", \"key2\": \"value2\"}))\n```\n\nThe function serializes the dictionary to JSON, encodes it as UTF-8 bytes, compresses with zlib, then base64-encodes the result and returns it as a string.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 718,
+  "output_tokens": 189,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 189,
+    "cache_read_input_tokens": 718,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 3.8,
+ "time": "2026-11-18 01:16:58"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B6|original|claude-sonnet-5-5|2",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nGenerates a CSV file listing all IP addresses in the specified IP range. Each IP address is written as a row in the CSV file.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+ "text": "```python\nimport csv\nfrom ipaddress import IPv4Network\n\n\ndef task_func(ip_range, csv_path):\n    network = IPv4Network(ip_range, strict=False)\n    with open(csv_path, \"w\", newline=\"\") as f:\n        writer = csv.writer(f)\n        for ip in network:\n            writer.writerow([str(ip)])\n    return csv_path\n```\n\nThis writes every address in the given range (e.g. `\"192.168.1.0/30\"`) as its own row in the CSV file and returns the path to the file. `strict=False` lets you pass a network with host bits set (like `192.168.1.5/24`) without raising an error. Note that iterating a network includes the network and broadcast addresses.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 729,
+  "output_tokens": 231,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 231,
+    "cache_read_input_tokens": 729,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 4.4,
+ "time": "2026-11-18 00:39:21"
+}

@@ -1,0 +1,218 @@
+{
+ "id": "B2",
+ "task_id": "BigCodeBench/7",
+ "pair": [
+  "S",
+  "V"
+ ],
+ "original_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It computes the total sales per product and determines the product with the highest cumulative sales. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+ "ambiguous_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It tallies the quantities per product and returns the product with the highest quantity across the rows. If more than one product qualifies, ties are resolved in a suitable order. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the best-selling product.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+ "judge_passed": true,
+ "iterations_used": 1,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Syntactic",
+    "span": "It tallies the quantities per product and returns the product with the highest quantity across the rows.",
+    "explanation": "It is unclear what 'highest quantity across the rows' attaches to. It could mean the tallied (summed) quantity per product, or the largest single quantity value found in any one row. The two readings can pick different products when one product has many small sales and another has one large sale.",
+    "intended_reading": "'Highest quantity across the rows' refers to the tallied total. Sum each product's quantities over all rows and return the product with the highest cumulative total.",
+    "alternative_reading": "'Highest quantity across the rows' means the largest single quantity in any row. Scan all rows and return the product from the row with the maximum individual quantity. The tally is ignored for selection.",
+    "alternative_implementation": "import csv\nimport collections\nimport operator\n\ndef task_func(csv_file_path):\n    with open(csv_file_path, 'r', newline='') as f:\n        reader = csv.reader(f)\n        next(reader)  # skip header\n        best_product = None\n        best_quantity = None\n        for row in reader:\n            product = row[0]\n            quantity = int(row[1])\n            # strict '>' keeps the first-encountered product on ties (intended tie-breaking)\n            if best_quantity is None or quantity > best_quantity:\n                best_quantity = quantity\n                best_product = product\n    return best_product\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 2,
+     "n_tests": 9,
+     "failing_tests": [
+      "TestCases.test_case_4",
+      "WitnessTests.test_witness_total_not_single_row"
+     ]
+    }
+   },
+   {
+    "type": "Vagueness",
+    "span": "If more than one product qualifies, ties are resolved in a suitable order.",
+    "explanation": "'A suitable order' does not say which product to return when several share the highest total. The choice could be first appearance in the file, alphabetical order, or something else, and each gives a different result on ties.",
+    "intended_reading": "Ties are broken by the order in which products first appear in the CSV. Python's max over the insertion-ordered tally dict keeps the first-encountered product with the maximum total.",
+    "alternative_reading": "Ties are broken alphabetically by product name. Among products sharing the highest total, return the lexicographically smallest name.",
+    "alternative_implementation": "import csv\nimport collections\nimport operator\n\ndef task_func(csv_file_path):\n    with open(csv_file_path, 'r', newline='') as f:\n        reader = csv.reader(f)\n        next(reader)  # skip header\n        sales_data = collections.defaultdict(int)\n        for row in reader:\n            product = row[0]\n            quantity = int(row[1])\n            sales_data[product] += quantity\n    # highest total first; ties broken alphabetically by product name\n    top_product = min(sales_data.items(), key=lambda item: (-item[1], item[0]))[0]\n    return top_product\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 1,
+     "n_tests": 9,
+     "failing_tests": [
+      "WitnessTests.test_witness_tie_first_encountered"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It tallies the quantities per product and returns the product with the highest quantity across the rows. If more than one product qualifies, ties are resolved in a suitable order. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the best-selling product.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "It tallies the quantities per product and returns the product with the highest quantity across the rows",
+      "readings": [
+       "'across the rows' attaches to 'tallies': quantities are summed over all rows per product, and the product with the highest cumulative total is returned.",
+       "'across the rows' attaches to 'the highest quantity': the product whose single row has the largest quantity value among all rows is returned, regardless of the tallied totals."
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "ties are resolved in a suitable order",
+      "readings": [
+       "Among tied products, the one encountered first in the file is returned (the default behavior of taking the max over the tallied counts).",
+       "Among tied products, some other order is used, e.g. the alphabetically first or last product name is returned."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Syntactic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "csv_file_path='sales.csv' where sales.csv contains:\nproduct,quantity\nA,5\nB,3\nB,3\n(totals reading -> 'B' with 6; single-row max reading -> 'A' with 5)",
+      "plausibility": 3
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "csv_file_path='sales.csv' where sales.csv contains:\nproduct,quantity\nB,5\nA,5\n(first-encountered tie-break -> 'B'; alphabetical tie-break -> 'A')",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "The syntactic ambiguity is weakened by the preceding clause 'It tallies the quantities per product', which pushes 'highest quantity across the rows' toward the cumulative-total reading. The term 'best-selling' does the same. To make the single-row-maximum reading more plausible, reword so the tally clause doesn't directly precede the attachment. For example: 'It returns the product with the highest quantity across the rows, tallying per product.' Alternatively, drop the explicit 'tallies' wording."
+   },
+   "passed": true,
+   "score": 23
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-18 after leak fix (old output lines said 'total quantity sold'). Output lines now neutral; relies on witness tests."
+ },
+ "rejected_attempts": [
+  {
+   "id": "B2",
+   "task_id": "BigCodeBench/7",
+   "pair": [
+    "S",
+    "V"
+   ],
+   "original_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It computes the total sales per product and determines the product with the highest cumulative sales. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+   "ambiguous_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It computes the total sales per product and determines the product with the highest cumulative sales; if several products tie, the appropriate one is returned. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer, and it should be stripped of surrounding whitespace before aggregation. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+   "judge_passed": true,
+   "iterations_used": 1,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer, and it should be stripped of surrounding whitespace before aggregation",
+      "explanation": "The pronoun 'it' has several possible antecedents: the product name, the quantity, or the CSV file / row. Which value gets stripped decides whether names such as 'Apple' and ' Apple ' are merged into one product or counted as different products.",
+      "intended_reading": "'it' refers to the 'product' name. Each product name is stripped of surrounding whitespace before totals are accumulated, so names that differ only by padding are aggregated together.",
+      "alternative_reading": "'it' refers to the nearest noun phrase, the 'quantity' value. The quantity string is stripped before conversion to int, and product names are used exactly as read, without stripping.",
+      "alternative_implementation": "import csv\nimport collections\nimport operator\n\ndef task_func(csv_file_path):\n    sales = collections.defaultdict(int)\n    with open(csv_file_path, 'r', newline='') as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            product = row['product']\n            quantity = int(row['quantity'].strip())\n            sales[product] += quantity\n    if not sales:\n        return None\n    # Ties: max() keeps the first product encountered with the highest total\n    top_product = max(sales.items(), key=operator.itemgetter(1))[0]\n    return top_product\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 7,
+       "failing_tests": [
+        "TestCases.test_case_4"
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "if several products tie, the appropriate one is returned",
+      "explanation": "'Appropriate' does not define a tie-breaking rule. When several products share the highest total, different implementations could return different names, so the output is not deterministic across implementations.",
+      "intended_reading": "Return the product with the highest total that was encountered first in the file. This is the natural result of max() over the insertion-ordered aggregation dict.",
+      "alternative_reading": "Return the alphabetically (lexicographically) smallest product name among those tied for the highest total.",
+      "alternative_implementation": "import csv\nimport collections\nimport operator\n\ndef task_func(csv_file_path):\n    sales = collections.defaultdict(int)\n    with open(csv_file_path, 'r', newline='') as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            product = row['product'].strip()\n            quantity = int(row['quantity'])\n            sales[product] += quantity\n    if not sales:\n        return None\n    max_total = max(sales.values())\n    tied = [p for p, q in sales.items() if q == max_total]\n    # Ties: pick the alphabetically first product name\n    return sorted(tied)[0]\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 7,
+       "failing_tests": [
+        "TestCases.test_case_4"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Replace the syntactic ambiguity: 'it should be stripped of whitespace' adds a rule the original never had (the reference does not strip names). Do not add new behaviour; create the syntactic ambiguity from wording already in the original (attachment, scope or pronoun reference). Keep the tie-breaking vagueness."
+  },
+  {
+   "id": "B2",
+   "task_id": "BigCodeBench/7",
+   "pair": [
+    "S",
+    "V"
+   ],
+   "original_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It computes the total sales per product and determines the product with the highest cumulative sales. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+   "ambiguous_prompt": "Find the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. For each product it accumulates the quantity from every row and determines the product with the highest one; if several products end up tied, the preferred one is returned. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+   "judge_passed": true,
+   "iterations_used": 1,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "accumulates the quantity from every row and determines the product with the highest one",
+      "explanation": "The pronoun 'one' has two possible antecedents. It can refer to the accumulated per-product total or to the quantity of a single row. The choice decides whether products are ranked by cumulative sales or by their largest single sale.",
+      "intended_reading": "'one' refers to the accumulated total. Sum the quantities per product across all rows, then return the product whose total is highest.",
+      "alternative_reading": "'one' refers to the per-row quantity. Return the product that has the highest quantity in any single row, ranking each product by its maximum single-row quantity rather than its sum.",
+      "alternative_implementation": "import csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n    max_row_qty = collections.OrderedDict()\n    with open(csv_file_path, 'r', newline='') as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            product = row['product']\n            quantity = int(row['quantity'])\n            if product not in max_row_qty or quantity > max_row_qty[product]:\n                max_row_qty[product] = quantity\n    # Ties resolved as intended: the first product encountered in the file wins\n    return max(max_row_qty.items(), key=operator.itemgetter(1))[0]\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 9,
+       "failing_tests": [
+        "WitnessTests.test_witness_total_not_single_row"
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "if several products end up tied, the preferred one is returned",
+      "explanation": "'Preferred' gives no criterion for breaking ties. When products share the top total, different tie-breaking rules can return different product names.",
+      "intended_reading": "Among tied products, return the one encountered first in the file. This matches max() over the insertion-ordered totals dict with operator.itemgetter(1).",
+      "alternative_reading": "Among tied products, return the alphabetically first product name, which is the lexicographically smallest string.",
+      "alternative_implementation": "import csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n    totals = collections.defaultdict(int)\n    with open(csv_file_path, 'r', newline='') as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            totals[row['product']] += int(row['quantity'])\n    # Highest cumulative total; ties broken by alphabetically smallest product name\n    best = min(totals.items(), key=lambda kv: (-kv[1], kv[0]))\n    return operator.itemgetter(0)(best)\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 9,
+       "failing_tests": [
+        "WitnessTests.test_witness_tie_first_encountered"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "approved",
+   "human_review": {
+    "approved": true,
+    "notes": "Approved by user 2026-11-18 (second agent attempt). Original BCB tests could not detect either ambiguity; 2 witness tests added (data/bcb/witness_tests/B2.py)."
+   },
+   "source": "agent",
+   "rejection_feedback": "Leak: the output lines say 'top-selling product based on the total quantity sold', which resolves the syntactic ambiguity ('the highest one'). Keep both ambiguities but reword the output lines so they do not reveal whether the total or the single-row quantity is meant, nor how ties are broken."
+  }
+ ],
+ "source": "agent"
+}

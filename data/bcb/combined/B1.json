@@ -1,0 +1,273 @@
+{
+ "id": "B1",
+ "task_id": "BigCodeBench/96",
+ "pair": [
+  "L",
+  "M"
+ ],
+ "original_prompt": "Reads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and counts the frequency of each word. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its count,\n    sorted by count in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+ "ambiguous_prompt": "Reads a CSV file and finds the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and determines the frequency of each word across the file's rows. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its frequency,\n    sorted by frequency in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+ "judge_passed": true,
+ "iterations_used": 2,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "each tuple contains a word and its frequency,\n    sorted by frequency in descending order",
+    "explanation": "The original output spec said 'count', but the ambiguous version says 'frequency'. 'Frequency' can mean an absolute number of occurrences or a relative frequency (a proportion of all words). This changes the values in the returned tuples from integers to floats.",
+    "intended_reading": "Frequency is the absolute count: the integer number of times each word occurs in the file.",
+    "alternative_reading": "Frequency is the relative frequency: each word's count divided by the total number of words (cells) in the file, giving a float between 0 and 1.",
+    "alternative_implementation": "import csv\nfrom collections import Counter\nimport operator\n\ndef task_func(csv_file, csv_delimiter):\n    words = []\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            words.extend(row)\n    counter = Counter(words)\n    total = sum(counter.values())\n    if total == 0:\n        return []\n    result = [(word, count / total) for word, count in counter.items()]\n    return sorted(result, key=operator.itemgetter(1), reverse=True)\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 3,
+     "n_tests": 6,
+     "failing_tests": [
+      "TestCases.test_custom_delimiter",
+      "TestCases.test_no_repeated_words",
+      "TestCases.test_word_count"
+     ]
+    }
+   },
+   {
+    "type": "Semantic",
+    "span": "determines the frequency of each word across the file's rows",
+    "explanation": "'Across the file's rows' does not say what unit is counted. It could mean every occurrence in every cell of all rows. It could also mean the number of rows in which a word appears, where repeats within one row count once. These readings give different counts whenever a word repeats within a row.",
+    "intended_reading": "Count every occurrence of each word in every cell of all rows, so a word appearing twice in one row contributes 2.",
+    "alternative_reading": "Count the number of rows each word appears in (row/document frequency), so a word contributes at most 1 per row however many times it repeats there.",
+    "alternative_implementation": "import csv\nfrom collections import Counter\nimport operator\n\ndef task_func(csv_file, csv_delimiter):\n    counter = Counter()\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            counter.update(set(row))\n    return sorted(counter.items(), key=operator.itemgetter(1), reverse=True)\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 1,
+     "n_tests": 6,
+     "failing_tests": [
+      "TestCases.test_custom_delimiter"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "Reads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and determines the frequency of each word across the file's data rows. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its frequency,\n    sorted by frequency in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "frequency",
+      "readings": [
+       "The absolute number of times the word occurs (an integer count).",
+       "The relative frequency of the word, i.e. its count divided by the total number of words (a proportion between 0 and 1)."
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "across the file's data rows",
+      "readings": [
+       "Every row in the file is treated as data, so words in the first row are counted too.",
+       "The first row is treated as a header that is not data, so it is skipped (e.g. via next(reader) or csv.DictReader) and only the remaining rows are counted."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('w.csv', ',')  # w.csv contains: 'apple,apple,banana\\n'  -> raw counts [('apple', 2), ('banana', 1)] vs relative frequency [('apple', 0.667), ('banana', 0.333)]",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('w.csv', ',')  # w.csv contains: 'apple,apple\\napple,banana\\n'  -> total occurrences [('apple', 3), ('banana', 1)] vs number of rows containing the word [('apple', 2), ('banana', 1)]",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": false,
+    "signature_unchanged": true,
+    "no_leak": false,
+    "naturalness": 4,
+    "feedback": "1) Extra ambiguity: 'the file's data rows' suggests the first row is a header and should be skipped. The original counted every cell in every row, so this adds a header-exclusion reading that is separate from the intended semantic ambiguity (total occurrences vs. number of rows containing the word). It changes the output for any file with a first row. Fix: drop the word 'data', e.g. 'determines the frequency of each word across the file's rows'. 2) Leak for the Lexical ambiguity: the first sentence still says 'counts the most common words', and 'Counter' is imported. Together these push the reader toward raw counts, which weakens the count vs. relative-frequency reading of 'frequency'. Fix: reword the first sentence to 'Reads a CSV file and finds the most common words in the file'. The import must stay, but avoid adding more count-specific wording. 3) Minor: say 'word occurrence' or similar only if needed. Otherwise the wording is natural."
+   },
+   "passed": false,
+   "score": 18
+  },
+  {
+   "iteration": 2,
+   "candidate": {
+    "ambiguous_prompt": "Reads a CSV file and finds the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and determines the frequency of each word across the file's rows. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its frequency,\n    sorted by frequency in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "frequency",
+      "readings": [
+       "The absolute number of times the word occurs (an integer count), as in the original.",
+       "The relative frequency of the word, meaning its occurrences divided by the total number of words (a float proportion)."
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "determines the frequency of each word across the file's rows",
+      "readings": [
+       "Counts every occurrence of the word in every cell of every row, so repeats within a row each count, as in the original.",
+       "Counts the number of rows in which the word appears, so a word repeated within one row counts once for that row."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('test.csv', ',')  # test.csv contains: 'a,a\\nb,a\\n'. Reading 'frequency' as a raw count gives [('a', 3), ('b', 1)]. Reading it as relative frequency gives [('a', 0.75), ('b', 0.25)].",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('test.csv', ',')  # test.csv contains: 'a,a\\nb,a\\n'. Reading 'frequency across the file's rows' as total occurrences gives [('a', 3), ('b', 1)]. Reading it as the number of rows containing the word gives [('a', 2), ('b', 1)].",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "Both ambiguities are present and divergent. The Lexical one is the word 'frequency' (raw count vs. normalized proportion). Changing 'its count' to 'its frequency' in the output lines removed the leak correctly. The Semantic one is 'frequency of each word across the file's rows' (total occurrences vs. number of rows containing the word). One minor point: the 'Counter' import slightly favors raw counting, but the imports cannot be changed, so this is acceptable. Optional: 'finds the most common words' could weakly suggest returning only the top words, although the original wording had the same issue."
+   },
+   "passed": true,
+   "score": 22
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "date": "2026-11-19",
+  "notes": "Strengthened version (post-hoc, after the leak-fix run). Approved by the user. Lexical: frequency = count vs relative frequency; Semantic: frequency across rows = all occurrences vs row frequency. Both verified by the original tests."
+ },
+ "rejected_attempts": [
+  {
+   "id": "B1",
+   "task_id": "BigCodeBench/96",
+   "pair": [
+    "L",
+    "M"
+   ],
+   "original_prompt": "Reads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and counts the frequency of each word. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its count,\n    sorted by count in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+   "ambiguous_prompt": "Reads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its body, and counts the frequency of each word. It returns the most common words as a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its count,\n    sorted by count in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+   "judge_passed": true,
+   "iterations_used": 1,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "reads its body",
+      "explanation": "The word 'body' can mean the whole file content. In CSV and tabular contexts, though, it often means the data rows excluding the header row. Under that reading the first row's words are not counted.",
+      "intended_reading": "Read the entire contents of the CSV file, including the first row, and count every cell.",
+      "alternative_reading": "Treat the first row as a header and skip it. Count only the words in the remaining data rows (the 'body').",
+      "alternative_implementation": "import csv\nfrom collections import Counter\nimport operator\n\ndef task_func(csv_file, csv_delimiter):\n    words = []\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        next(reader, None)  # skip header row; the 'body' excludes it\n        for row in reader:\n            words.extend(row)\n    word_counter = Counter(words)\n    return sorted(word_counter.items(), key=operator.itemgetter(1), reverse=True)\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 6,
+       "failing_tests": [
+        "TestCases.test_custom_delimiter",
+        "TestCases.test_word_count"
+       ]
+      }
+     },
+     {
+      "type": "Semantic",
+      "span": "It returns the most common words as a list of tuples",
+      "explanation": "'The most common words' can describe the full frequency ranking of all words. It can also be read restrictively: return only the words with the highest frequency. That reading discards every word whose count is below the maximum.",
+      "intended_reading": "Return every distinct word with its count, sorted by count in descending order (the full frequency list).",
+      "alternative_reading": "Return only the word(s) whose count equals the maximum frequency, including any ties, as (word, count) tuples.",
+      "alternative_implementation": "import csv\nfrom collections import Counter\nimport operator\n\ndef task_func(csv_file, csv_delimiter):\n    words = []\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            words.extend(row)\n    word_counter = Counter(words)\n    if not word_counter:\n        return []\n    sorted_items = sorted(word_counter.items(), key=operator.itemgetter(1), reverse=True)\n    max_count = sorted_items[0][1]\n    return [item for item in sorted_items if item[1] == max_count]\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 6,
+       "failing_tests": [
+        "TestCases.test_custom_delimiter",
+        "TestCases.test_word_count"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Replace the lexical ambiguity: 'reads its body' naturally means skipping the header, so the intended reading (count every cell, including the first row) became the less natural one. Pick a word whose intended sense stays at least as natural as the alternative. Keep the semantic ambiguity about 'the most common words'."
+  },
+  {
+   "id": "B1",
+   "task_id": "BigCodeBench/96",
+   "pair": [
+    "L",
+    "M"
+   ],
+   "original_prompt": "Reads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and counts the frequency of each word. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its count,\n    sorted by count in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+   "ambiguous_prompt": "Reads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and counts the frequency of each entry. It returns a list of tuples for the most common words, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each entry in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its count,\n    sorted by count in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+   "judge_passed": true,
+   "iterations_used": 2,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "counts the frequency of each entry",
+      "explanation": "In CSV terminology, 'entry' can mean a single cell (field value) or a whole record (row/line). The same word appears again in the note: 'each entry in the CSV contains a single word'. The choice decides whether each cell is counted as a word or each row is counted as one unit. These give different counts whenever a row has more than one cell.",
+      "intended_reading": "An entry is a single cell. Every cell of every row is treated as one word and counted on its own.",
+      "alternative_reading": "An entry is a whole row (record). Each row is treated as one unit and counted as a single 'word', so identical rows are counted together. Individual cells are not counted separately.",
+      "alternative_implementation": "import csv\nfrom collections import Counter\nimport operator\n\ndef task_func(csv_file, csv_delimiter):\n    # Alternative lexical reading: an 'entry' is a whole row/record.\n    # Each row is counted as a single unit.\n    # Semantic ambiguity resolved as intended: return all entries sorted by count.\n    counter = Counter()\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            if not row:\n                continue\n            entry = csv_delimiter.join(row)\n            counter[entry] += 1\n    return sorted(counter.items(), key=operator.itemgetter(1), reverse=True)\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 6,
+       "failing_tests": [
+        "TestCases.test_custom_delimiter",
+        "TestCases.test_no_repeated_words"
+       ]
+      }
+     },
+     {
+      "type": "Semantic",
+      "span": "It returns a list of tuples for the most common words",
+      "explanation": "'The most common words' can describe the whole frequency list sorted from most to least common. It can also be read as a filter that returns only the words with the highest frequency. The second reading drops every word that is not tied for the top count.",
+      "intended_reading": "Return every word with its count, sorted by count in descending order, so the most common words come first.",
+      "alternative_reading": "Return only the most common word(s): the words whose count equals the maximum frequency. If several words tie for the top count, all of them are returned, still as (word, count) tuples.",
+      "alternative_implementation": "import csv\nfrom collections import Counter\nimport operator\n\ndef task_func(csv_file, csv_delimiter):\n    # Lexical ambiguity resolved as intended: each cell is one word.\n    # Alternative semantic reading: return only the words tied for the highest frequency.\n    counter = Counter()\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            counter.update(row)\n    if not counter:\n        return []\n    sorted_items = sorted(counter.items(), key=operator.itemgetter(1), reverse=True)\n    max_count = sorted_items[0][1]\n    return [item for item in sorted_items if item[1] == max_count]\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 6,
+       "failing_tests": [
+        "TestCases.test_custom_delimiter",
+        "TestCases.test_word_count"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "approved",
+   "human_review": {
+    "approved": true,
+    "notes": "Approved by user 2026-11-18 (second agent attempt). L = 'entry' (cell vs row), M = 'list of tuples for the most common words' (full list vs top only)."
+   },
+   "source": "agent",
+   "rejection_feedback": "The previous version was approved but did not affect code generation: all 6 model samples (2 models x 3) implemented the intended reading for BOTH ambiguities, because each alternative reading was clearly less natural than the intended one. Rewrite so that, for EACH of the two ambiguities, a competent developer would find the alternative reading about as natural as the intended one (a genuine toss-up), while the intended reading stays fully plausible. Keep every other part neutral: nothing (including the output-format lines) may reveal which reading is intended. Previous spans that failed: Lexical 'each entry' (whole row vs word) and Semantic 'a list of tuples for the most common words' (only the top word) - nobody chose the alternative."
+  }
+ ]
+}

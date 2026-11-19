@@ -1,0 +1,128 @@
+{
+ "id": "R3",
+ "task_id": "HumanEval/26",
+ "pair": [
+  "M",
+  "V"
+ ],
+ "original_prompt": "from typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the same as in the input.\n    \"\"\"\n",
+ "ambiguous_prompt": "from typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"",
+ "judge_passed": true,
+ "iterations_used": 1,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Semantic",
+    "span": "remove the duplicated elements",
+    "explanation": "\"Duplicated elements\" can mean every element whose value appears more than once (all its copies are removed) or only the redundant extra copies (one copy is kept). For [1, 2, 3, 2, 4] the first gives [1, 3, 4] and the second gives [1, 2, 3, 4].",
+    "intended_reading": "Remove every occurrence of any value that appears more than once, so only values that occur exactly once remain.",
+    "alternative_reading": "Remove only the repeated copies so each distinct value appears once, keeping its first occurrence (standard deduplication).",
+    "alternative_implementation": "from typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"\n    seen = set()\n    result = []\n    for n in numbers:\n        if n not in seen:\n            seen.add(n)\n            result.append(n)\n    return result\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 840,
+     "n_tests": 865,
+     "first_witness": [
+      [
+       1,
+       2,
+       3,
+       2,
+       4,
+       3,
+       5
+      ]
+     ]
+    }
+   },
+   {
+    "type": "Vagueness",
+    "span": "Keep the remaining elements in order",
+    "explanation": "\"In order\" does not say which order. It could mean the original input order or a sorted (ascending) order, and these give different outputs for unsorted inputs. For [3, 1, 2] the first gives [3, 1, 2] and the second gives [1, 2, 3].",
+    "intended_reading": "The remaining elements keep the same relative order they had in the input list.",
+    "alternative_reading": "The remaining elements are returned in sorted (ascending numerical) order.",
+    "alternative_implementation": "from typing import List\nfrom collections import Counter\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"\n    counts = Counter(numbers)\n    return sorted(n for n in numbers if counts[n] == 1)\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 331,
+     "n_tests": 865,
+     "first_witness": [
+      [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       -1,
+       7,
+       8,
+       9,
+       8,
+       9,
+       9
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "remove the duplicated elements",
+      "readings": [
+       "Remove every occurrence of any integer that appears more than once, so only integers that occur exactly once remain (e.g., [1, 2, 3, 2, 4] -> [1, 3, 4]).",
+       "Remove only the extra copies of repeated integers and keep one occurrence of each (e.g., [1, 2, 3, 2, 4] -> [1, 2, 3, 4])."
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "Keep the remaining elements in order",
+      "readings": [
+       "Keep the remaining elements in the same relative order as in the input list (e.g., [3, 1, 2] -> [3, 1, 2]).",
+       "Return the remaining elements in sorted (ascending) order (e.g., [3, 1, 2] -> [1, 2, 3])."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "[1, 2, 2, 3]",
+      "plausibility": 5
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "[3, 1, 2]",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 5,
+    "feedback": ""
+   },
+   "passed": true,
+   "score": 23
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-17. Semantic part matches the paper's Fig. 4 example for this task."
+ },
+ "rejected_attempts": [],
+ "source": "agent"
+}

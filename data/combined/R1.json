@@ -1,0 +1,317 @@
+{
+ "id": "R1",
+ "task_id": "HumanEval/7",
+ "pair": [
+  "L",
+  "M"
+ ],
+ "original_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones that contain given substring\n    \"\"\"\n",
+ "ambiguous_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen the input list for strings that include the characters of the given substring\n    \"\"\"",
+ "judge_passed": false,
+ "iterations_used": 5,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "Screen",
+    "explanation": "The verb 'screen' can mean either selecting items that pass a check (screen for/in) or removing items that match a check (screen out). This flips which strings end up in the returned list.",
+    "intended_reading": "Keep only the strings that contain the given substring; return them in their original order.",
+    "alternative_reading": "Screen out (remove) the strings that contain the given substring; return only the strings that do not contain it.",
+    "alternative_implementation": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Remove from the input list all strings that contain the given substring\n    \"\"\"\n    return [s for s in strings if substring not in s]\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 173,
+     "n_tests": 182,
+     "first_witness": [
+      [
+       "xxx",
+       "asd",
+       "xxy",
+       "john doe",
+       "xxxAAA",
+       "xxx"
+      ],
+      "xxx"
+     ]
+    }
+   },
+   {
+    "type": "Semantic",
+    "span": "include the characters of the given substring",
+    "explanation": "The phrase 'include the characters of' can be read as containing the substring as one contiguous sequence. It can also be read as containing each of the substring's characters individually, in any order and possibly scattered. This changes which strings match.",
+    "intended_reading": "A string matches if the substring occurs in it as a contiguous sequence (substring in s).",
+    "alternative_reading": "A string matches if every character of the substring appears somewhere in it, regardless of order or adjacency.",
+    "alternative_implementation": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Keep strings that contain every character of the given substring, in any order\n    \"\"\"\n    return [s for s in strings if all(c in s for c in substring)]\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 55,
+     "n_tests": 182,
+     "first_witness": [
+      [
+       "xxx",
+       "asd",
+       "xxy",
+       "john doe",
+       "xxxAAA",
+       "xxx"
+      ],
+      "xxx"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen an input list of strings for ones that have given substring as part of them\n    \"\"\"\n",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "Screen",
+      "readings": [
+       "Select and keep: return only the strings that contain the given substring.",
+       "Screen out (block): remove the strings that contain the given substring and return the rest."
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "have given substring as part of them",
+      "readings": [
+       "The string contains the substring anywhere, including when the string is exactly equal to the substring (substring in s).",
+       "The substring must be a proper part of the string, so strings exactly equal to the substring are excluded (substring in s and s != substring)."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "(['abc', 'xyz'], 'a')",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "(['ab', 'abc'], 'ab')",
+      "plausibility": 2
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 4,
+    "feedback": "Lexical works. 'Screen' can mean select strings that match, which gives ['abc']. It can also mean screen out matches, which gives ['xyz']. Semantic is weak. 'have given substring as part of them' mainly reads as plain containment. The alternative reading is that the substring must be a proper part, so a string equal to the substring is excluded. That reading is a stretch (plausibility 2). To strengthen it, use a phrase whose alternative is more natural. For example, 'ones that include the given substring's characters' could mean a contiguous substring or just a set of characters, which gives a witness like (['acb'], 'ab'). Another option is 'ones that match the given substring', which could mean contains or equals exactly."
+   },
+   "passed": false,
+   "score": 19
+  },
+  {
+   "iteration": 2,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen an input list of strings for ones that include the given substring's characters\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "Screen",
+      "readings": [
+       "Select (keep) the strings that meet the condition, e.g. (['abc', 'xyz'], 'a') -> ['abc']",
+       "Screen out (remove) the strings that meet the condition and keep the rest, e.g. (['abc', 'xyz'], 'a') -> ['xyz']"
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "include the given substring's characters",
+      "readings": [
+       "The string contains the substring as a contiguous sequence, e.g. (['acb'], 'ab') -> []",
+       "The string contains every character of the substring somewhere, in any order or position, e.g. (['acb'], 'ab') -> ['acb']"
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "(['abc', 'xyz'], 'a')",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "(['bca'], 'abc')",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 3,
+    "feedback": "Both ambiguities work. 'Screen ... for' can mean keep matches or remove them (['abc'] vs ['xyz']). 'include the given substring's characters' can mean a contiguous match or all characters present in any order. Two minor issues: 'substring's characters' reads a bit artificial, and the semantic span also allows an 'any character' reading. That reading belongs to the same span, so it does not add a separate type, but it widens the spread of interpretations. To improve naturalness, consider 'that include the characters of the given substring'."
+   },
+   "passed": false,
+   "score": 20
+  },
+  {
+   "iteration": 3,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen an input list of strings for ones that include all the characters of the given substring\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "Screen ... for",
+      "readings": [
+       "Select: return only the strings that match the condition, e.g. (['abc', 'xyz'], 'a') -> ['abc']",
+       "Screen out: remove the strings that match the condition and return the rest, e.g. (['abc', 'xyz'], 'a') -> ['xyz']"
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "include all the characters of the given substring",
+      "readings": [
+       "Contain the substring as one contiguous sequence (substring in s), e.g. (['bac'], 'ab') -> []",
+       "Contain every character of the substring somewhere, in any order and not necessarily adjacent, e.g. (['bac'], 'ab') -> ['bac']"
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "filter_by_substring(['abc', 'xyz'], 'a')",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "filter_by_substring(['bca', 'abc'], 'abc')",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 3,
+    "feedback": "Lexical: 'Screen ... for ones that' can mean keeping matches or removing them, so the two readings give ['abc'] vs ['xyz'] for the witness. This works, but because 'for ones that' leans toward the keep reading, the remove reading is only moderately plausible. Semantic: 'include all the characters of the given substring' leans strongly toward a character-set check (any order, not contiguous), so 'bca' matches 'abc'. That makes the original contiguous-substring reading the weaker one and puts intent preservation at risk. Rebalance it with wording such as 'include the characters of the given substring', so the contiguous reading stays at least as natural. The semantic span also leaves open a third reading: whether repeated characters must appear as many times as in the substring (set vs multiset). This sits in the same span, but you may want to tighten it so exactly two readings diverge. Naturalness: 'Screen an input list of strings for ones that include all the characters' is wordy. Consider 'Screen the input list for strings that include the characters of the given substring'."
+   },
+   "passed": false,
+   "score": 20
+  },
+  {
+   "iteration": 4,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen the input list for strings that include the characters of the given substring\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "Screen",
+      "readings": [
+       "'Screen' means select or pass through: return only the strings that match, e.g. filter_by_substring(['abc', 'xyz'], 'a') -> ['abc']",
+       "'Screen' means screen out or block: remove the strings that match and return the rest, e.g. filter_by_substring(['abc', 'xyz'], 'a') -> ['xyz']"
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "include the characters of the given substring",
+      "readings": [
+       "The string contains the substring as one contiguous sequence (substring in s), e.g. filter_by_substring(['bca', 'abc'], 'ab') -> ['abc']",
+       "The string contains each character of the substring somewhere, in any order and not necessarily adjacent (set(substring) <= set(s)), e.g. filter_by_substring(['bca', 'abc'], 'ab') -> ['bca', 'abc']"
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "(['abc', 'xyz'], 'a')",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "(['bac', 'xyz'], 'ab')",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 4,
+    "feedback": ""
+   },
+   "passed": false,
+   "score": 21
+  },
+  {
+   "iteration": 5,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings on the ones that contain the given substring's characters in order\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "Filter",
+      "readings": [
+       "Filter means keep: return only the strings that satisfy the condition (e.g. ['abc', 'xyz'] with 'ab' -> ['abc']).",
+       "Filter means filter out, as in a filter that removes impurities: drop the strings that satisfy the condition and return the rest (e.g. ['abc', 'xyz'] with 'ab' -> ['xyz'])."
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "contain the given substring's characters in order",
+      "readings": [
+       "The string contains the substring as one contiguous block, i.e. `substring in s` (e.g. 'axbc' does not qualify for 'abc').",
+       "The substring's characters appear in the string in the same order but not necessarily next to each other, i.e. a subsequence match (e.g. 'axbc' qualifies for 'abc')."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "strings=['abc', 'xyz'], substring='a'",
+      "plausibility": 2
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "strings=['axbc', 'abc', 'cba'], substring='abc'",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 3,
+    "feedback": "Lexical: the keep-versus-remove ambiguity of 'filter' is weakened by 'on the ones that contain', which strongly implies keeping. Use a span where both senses are live, e.g. 'Filter an input list of strings by the given substring's characters in order', so 'filter by' could mean keep or drop the matches. Semantic: 'contain the given substring's characters in order' favors the subsequence reading. The contiguous-substring reading (original intent) stays plausible only because of the word 'substring'. Consider 'contain the characters of the given substring in sequence' so both readings are equally live. Naturalness: 'Filter ... on the ones' is slightly awkward; 'Keep only the strings from the input list that...' or 'Filter an input list of strings by...' reads more naturally."
+   },
+   "passed": false,
+   "score": 19
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-17. Best of 5 judge rounds (judge threshold was plausibility>=4 at the time; passes the new >=3 threshold). Both ambiguities verified by execution."
+ },
+ "source": "agent"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B11|original|claude-sonnet-5-5|0",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nGenerates all possible combinations of a given set of letters of length 'n'. Counts the occurrences of each letter in these combinations and saves the results in a JSON file. The name of the file is prefix_<random-number-here>.json. The value of <random-number-here> is between 0 and 100.\nThe function should output with:\n    str: The name of the generated JSON file containing letter counts.\nYou should write self-contained code starting with:\n```\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n```",
+ "text": "```python\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\n\n\ndef task_func(LETTERS, n):\n    # Generate all combinations (ordered, with repetition) of length n\n    combos = itertools.product(LETTERS, repeat=n)\n\n    # Count occurrences of each letter across all combinations\n    counts = defaultdict(int)\n    for combo in combos:\n        for letter in combo:\n            counts[letter] += 1\n\n    # Build the file name with a random number between 0 and 100\n    file_name = f\"prefix_{random.randint(0, 100)}.json\"\n\n    # Save the results to the JSON file\n    with open(file_name, \"w\") as f:\n        json.dump(dict(counts), f)\n\n    return file_name\n```\n\nThe function uses `itertools.product` to generate every length-`n` combination of the letters, with repetition allowed. It tallies each letter's occurrences across all combinations and writes the totals to `prefix_<random>.json`, where the number comes from `random.randint(0, 100)`. It returns the file name.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 786,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 340,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 786,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 340,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 786,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 786
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.5,
+ "time": "2026-11-19 14:01:45"
+}

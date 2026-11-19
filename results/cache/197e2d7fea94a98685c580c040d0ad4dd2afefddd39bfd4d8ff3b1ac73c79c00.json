@@ -1,0 +1,47 @@
+{
+ "tag": "R6|combined|claude-sonnet-5-5|4",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 4,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"\n```",
+ "text": "```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    >>> filter_integers(['a', 3.14, 5])\n    [5]\n    >>> filter_integers([1, 2, 3, 'abc', {}, []])\n    [1, 2, 3]\n    \"\"\"\n    # bool is a subclass of int in Python, so exclude it explicitly\n    return [x for x in values if isinstance(x, int) and not isinstance(x, bool)]\n\n\nif __name__ == \"__main__\":\n    import doctest\n    doctest.testmod()\n\n    assert filter_integers([]) == []\n    assert filter_integers([4, {}, [], 23.2, 9, 'adasd']) == [4, 9]\n    assert filter_integers([3, 'c', 3, 3, 'a', 'b']) == [3, 3, 3]\n    print(\"All tests passed.\")\n```\n\nThe function keeps only items that are instances of `int`. It skips `bool` values, since `True` and `False` are technically `int` subclasses but aren't normally treated as whole numbers. Floats, strings and containers are dropped.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 681,
+  "output_tokens": 599,
+  "output_tokens_details": {
+   "thinking_tokens": 201
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 599,
+    "cache_read_input_tokens": 681,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 9.8,
+ "time": "2026-11-18 11:53:02"
+}

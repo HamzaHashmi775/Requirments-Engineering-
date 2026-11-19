@@ -1,0 +1,47 @@
+{
+ "tag": "B10|recognize|original|claude-sonnet-5-5",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert software engineer who reviews requirements before implementing them.",
+ "prompt": "Below is the requirement for a Python function you are asked to implement.\n\nScans a specified directory for JSON files and copies them to a backup directory. If the backup directory does not exist, it is created. The function returns a list of paths to the copied files in the backup directory.\nNote that: The function assumes that the source directory exists and contains JSON files.\nThe function should output with:\n    list: Paths to the copied JSON files in the backup directory.\nYou should write self-contained code starting with:\n```\nimport os\nimport shutil\ndef task_func(directory, backup_directory):\n```\n\nBefore implementing it, decide whether the requirement is ambiguous: does any wording allow more than one plausible interpretation that would lead to functionally different implementations (different outputs for some input)? Do not flag ordinary details that a competent developer would resolve the same way.\n\nIf it is ambiguous, list every ambiguous segment: quote the exact words, explain why they are ambiguous, and give concrete clarification options (the possible interpretations a stakeholder could choose between).\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"<exact quoted words>\", \"reason\": \"\", \"options\": [\"\", \"\"]}]}\nUse {\"ambiguous\": false, \"issues\": []} if it is not ambiguous.",
+ "text": "```json\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"Scans a specified directory for JSON files\", \"reason\": \"It is unclear whether the scan is recursive (including subdirectories) or only covers the top level of the directory. This would produce different sets of copied files and different return lists.\", \"options\": [\"Only scan files directly in the specified directory (non-recursive)\", \"Recursively scan all subdirectories, and copy files either flattened into the backup directory or preserving the relative subdirectory structure\"]}, {\"segment\": \"JSON files\", \"reason\": \"The criterion for identifying a JSON file is not stated. It could be based on the file extension alone, with unclear case sensitivity, or on the file content being valid JSON.\", \"options\": [\"Files whose name ends with lowercase '.json'\", \"Files whose extension matches '.json' case-insensitively (e.g. '.JSON')\", \"Files whose content parses as valid JSON regardless of extension\"]}, {\"segment\": \"The function returns a list of paths to the copied files in the backup directory.\", \"reason\": \"The order of the returned list is unspecified (e.g. os.listdir order vs sorted). The path form is also unspecified (e.g. os.path.join of backup_directory with the filename, or an absolute path). Both can lead to different outputs.\", \"options\": [\"Return paths built as os.path.join(backup_directory, filename), in os.listdir order\", \"Return paths built as os.path.join(backup_directory, filename), sorted\", \"Return absolute paths\"]}, {\"segment\": \"copies them to a backup directory\", \"reason\": \"It is unspecified how name collisions are handled when a file with the same name already exists in the backup directory, and whether the copy preserves file metadata. Different behaviors lead to different file contents or metadata.\", \"options\": [\"Overwrite existing files silently (shutil.copy)\", \"Overwrite and preserve metadata (shutil.copy2)\", \"Skip existing files and exclude them from the returned list\", \"Rename the copy to avoid collision\"]}]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1021,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 669,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1021,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 669,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1021,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1021
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 12.5,
+ "time": "2026-11-19 14:27:34"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "R5|recognize-judge|claude-sonnet-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    subtracting the smallest number from each number divided by the spread of the list\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Syntactic: span \"subtracting the smallest number from each number divided by the spread of the list\" — intended: Divide the difference by the spread: (x - min) / spread for each x. — alternative: Divide each number by the spread, then subtract the smallest number: x / spread - min for each x.\n2. Semantic: span \"the spread of the list\" — intended: Spread is the range of the list: max(numbers) - min(numbers). — alternative: Spread is the (population) standard deviation of the list.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"subtracting the smallest number from each number divided by the spread of the list\",\n   \"reason\": \"The phrase can be parsed in two ways. The division by the spread may apply to the difference (x - min), or only to the smallest number being subtracted, or the 'divided by' may be read as applying to each number. These give different outputs for the same input.\",\n   \"options\": [\n    \"(x - min) / spread for each x, the standard min-max rescale to [0, 1]\",\n    \"x - (min / spread) for each x, so only the minimum is divided by the spread\",\n    \"(x / spread) - min for each x, so each number is divided first and then the minimum is subtracted\"\n   ]\n  },\n  {\n   \"segment\": \"the spread of the list\",\n   \"reason\": \"'Spread' is not precisely defined. It could be several different statistics, which lead to different results.\",\n   \"options\": [\n    \"The range, max - min, so the result lies in [0, 1]\",\n    \"The standard deviation of the list (population or sample)\",\n    \"The interquartile range\"\n   ]\n  },\n  {\n   \"segment\": \"(of at least two elements)\",\n   \"reason\": \"Having at least two elements does not guarantee a non-zero spread. If all elements are equal, the spread is 0 and the behavior is undefined. Different implementations would raise an error, return zeros, or return NaN/inf.\",\n   \"options\": [\n    \"Raise an exception (e.g. ZeroDivisionError or ValueError) when all numbers are equal\",\n    \"Return a list of 0.0 values of the same length\",\n    \"Return the input unchanged, or NaN values\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Syntactic\", \"level\": \"tackling\", \"matched_segment\": \"subtracting the smallest number from each number divided by the spread of the list\", \"reason\": \"The segment matches the ambiguous span. The options include (x - min) / spread, the intended reading, and (x / spread) - min, the alternative reading.\"}, {\"type\": \"Semantic\", \"level\": \"tackling\", \"matched_segment\": \"the spread of the list\", \"reason\": \"The segment matches the ambiguous span. The options include the range max - min, the intended reading, and the standard deviation (population or sample), which covers the alternative reading.\"}], \"spurious_issues\": 1}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1763,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 311,
+  "output_tokens_details": {
+   "thinking_tokens": 87
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1763,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 311,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1763,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1763
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 8.9,
+ "time": "2026-11-17 18:10:06"
+}

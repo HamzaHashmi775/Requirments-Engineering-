@@ -1,0 +1,47 @@
+{
+ "tag": "B12|combined|claude-sonnet-5-5|4",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 4,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan `directory` for files matching the glob `file_pattern` whose names\n    match `suffix` (a regular expression, e.g. r\"\\.txt$\"), and return a dict\n    mapping each matched file name to its MIME type (None if unknown).\n    \"\"\"\n    search_path = os.path.join(directory, file_pattern)\n    files = glob.glob(search_path)\n\n    file_types = {}\n    for path in files:\n        name = os.path.basename(path)\n        if re.search(suffix, name):\n            file_types[name] = mimetypes.guess_type(name)[0]\n    return file_types\n\n\nif __name__ == \"__main__\":\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as d:\n        for fname in (\"a.txt\", \"b.txt\", \"c.csv\", \"image.png\"):\n            open(os.path.join(d, fname), \"w\").close()\n        print(task_func(d, \"*\", r\"\\.txt$\"))\n        # {'a.txt': 'text/plain', 'b.txt': 'text/plain'}\n```\n\nThe `file_pattern` is a glob pattern applied inside `directory`, and `suffix` is a regular expression tested against each file name. For a plain suffix like `.txt`, pass `r\"\\.txt$\"` so the dot is literal and it only matches at the end of the name. Keys are the file names, without the directory path. A file whose type can't be determined gets `None`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 762,
+  "output_tokens": 1076,
+  "output_tokens_details": {
+   "thinking_tokens": 575
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1076,
+    "cache_read_input_tokens": 762,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 12.5,
+ "time": "2026-11-19 14:09:59"
+}

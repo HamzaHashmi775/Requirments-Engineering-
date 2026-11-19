@@ -1,0 +1,41 @@
+{
+ "id": "B5",
+ "task": "Serialize, compress and encode",
+ "task_id": "BigCodeBench/25",
+ "pair": [
+  "S",
+  "M"
+ ],
+ "kind": "unittest",
+ "entry_point": "task_func",
+ "original_prompt": "Serializes a dictionary to a JSON string, compresses it using zlib, and then encodes the compressed data with base64.\nThe function should output with:\n    str: A base64 encoded string that represents the zlib-compressed JSON string of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+ "reference_solution": "import base64\nimport json\nimport zlib\n\ndef task_func(data_dict):\n    \"\"\"\n    Serializes a dictionary to a JSON string, compresses it using zlib, and then encodes the compressed\n    data with base64.\n\n    Parameters:\n    data_dict (dict): The dictionary to be compressed and encoded. The dictionary should only contain\n                      data that can be serialized to JSON.\n\n    Returns:\n    str: A base64 encoded string that represents the zlib-compressed JSON string of the dictionary.\n\n    Requirements:\n    - base64\n    - zlib\n    - json\n    \n    Example:\n    >>> data = {'key1': 'value1', 'key2': 'value2'}\n    >>> encoded_data = task_func(data)\n    >>> print(encoded_data)\n    eJyrVspOrTRUslJQKkvMKU01VNJRAIkYwUWMlGoBw5sKmw==\n    \"\"\"\n    json_str = json.dumps(data_dict)\n    compressed = zlib.compress(json_str.encode())\n    return base64.b64encode(compressed).decode()",
+ "single_type_exemplars": {
+  "Lexical": {
+   "prompt": "Serializes a dictionary to a JSON string, compresses it using zlib, and then encodes the compressed data with base64.\nThe function should output with:\n    str: A base64 encoded string that represents the zlib-compressed JSON expression of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+   "explanation": "\"JSON representation\" is ambiguous - it could be interpreted as \"a string in strict JSON format\" (following RFC 8259 standards) or as \"any string-like representation that captures the dictionary structure\" (which might include non-standard extensions like Python-specific data types or formatting). This ambiguity leads to different implementations: Implementation A uses strict JSON serialization with default parameters, while Implementation B might use more flexible serialization that handles non-JSON-native types through custom encoders or formatting options, potentially leading to different serialization outcomes and compatibility issues."
+  },
+  "Syntactic": {
+   "prompt": "Serializes a dictionary to a JSON string, compresses it using zlib, and then encodes the compressed data or the JSON string with base64.\nThe function should output with:\n    str: A base64 encoded string that represents the zlib-compressed JSON string of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+   "explanation": "\"encodes the compressed data or the JSON string with base64\" is ambiguous - it could mean either encoding only the compressed data with base64, or encoding only the JSON string with base64, leading to different implementations of the base64 encoding step in the function."
+  },
+  "Semantic": {
+   "prompt": "Serializes a dictionary to a JSON string, compresses it using zlib with a specified level, and then encodes the compressed data with base64.\nThe function should output with:\n    str: A base64 encoded string that represents the zlib-compressed JSON string of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+   "explanation": "The phrase \"compresses it using zlib with a specified level\" is semantically ambiguous because it can be interpreted as the compression level being a fixed, predefined value or a user-configurable parameter, leading to different implementations."
+  },
+  "Vagueness": {
+   "prompt": "Serializes a dictionary to a JSON string, compresses it, and then encodes the data with base64.\nThe function should output with:\n    str: A base64 encoded string that represents the zlib-compressed JSON string of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+   "explanation": "Removing \"using zlib\" makes \"compresses it\" ambiguous, leaving readers unclear about which compression method to use, thus introducing vagueness ambiguity."
+  }
+ },
+ "atol": 0.0,
+ "test_code": "import unittest\nimport json\nimport zlib\nimport base64\nclass TestCases(unittest.TestCase):\n    def test_case_1(self):\n        # Test with a simple dictionary containing string values.\n        data = {'key1': 'value1', 'key2': 'value2'}\n        result = task_func(data)\n        self.assertIsInstance(result, str)\n        decompressed_data = json.loads(zlib.decompress(base64.b64decode(result)).decode())\n        self.assertEqual(decompressed_data, data)\n    def test_case_2(self):\n        # Test with an empty dictionary.\n        data = {}\n        result = task_func(data)\n        self.assertIsInstance(result, str)\n        decompressed_data = json.loads(zlib.decompress(base64.b64decode(result)).decode())\n        self.assertEqual(decompressed_data, data)\n    def test_case_3(self):\n        # Test with a dictionary containing mixed types (string and integers).\n        data = {'name': 'John', 'age': 30, 'city': 'New York'}\n        result = task_func(data)\n        self.assertIsInstance(result, str)\n        decompressed_data = json.loads(zlib.decompress(base64.b64decode(result)).decode())\n        self.assertEqual(decompressed_data, data)\n    def test_case_4(self):\n        # Test with a nested dictionary containing lists of dictionaries.\n        data = {'users': [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]}\n        result = task_func(data)\n        self.assertIsInstance(result, str)\n        decompressed_data = json.loads(zlib.decompress(base64.b64decode(result)).decode())\n        self.assertEqual(decompressed_data, data)\n    def test_case_5(self):\n        # Test with a dictionary containing multiple integer values.\n        data = {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}\n        result = task_func(data)\n        self.assertIsInstance(result, str)\n        decompressed_data = json.loads(zlib.decompress(base64.b64decode(result)).decode())\n        self.assertEqual(decompressed_data, data)",
+ "test_names": [
+  "TestCases.test_case_1",
+  "TestCases.test_case_2",
+  "TestCases.test_case_3",
+  "TestCases.test_case_4",
+  "TestCases.test_case_5"
+ ],
+ "witness_tests": []
+}

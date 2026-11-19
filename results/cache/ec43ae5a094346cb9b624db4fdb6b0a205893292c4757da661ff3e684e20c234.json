@@ -1,0 +1,47 @@
+{
+ "tag": "R3|recognize-judge|claude-opus-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\nfrom typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Semantic: span \"remove the duplicated elements\" — intended: Remove every occurrence of any value that appears more than once, so only values that occur exactly once remain. — alternative: Remove only the repeated copies so each distinct value appears once, keeping its first occurrence (standard deduplication).\n2. Vagueness: span \"Keep the remaining elements in order\" — intended: The remaining elements keep the same relative order they had in the input list. — alternative: The remaining elements are returned in sorted (ascending numerical) order.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"remove the duplicated elements\",\n   \"reason\": \"This can mean two things that give different outputs. It could mean keeping one copy of each value, so [1, 2, 3, 2, 4] becomes [1, 2, 3, 4]. Or it could mean dropping every value that appears more than once, so [1, 2, 3, 2, 4] becomes [1, 3, 4]. Without examples, neither reading is clearly intended.\",\n   \"options\": [\n    \"Deduplicate: keep the first occurrence of each value and drop later repeats (e.g., [1, 2, 3, 2, 4] -> [1, 2, 3, 4])\",\n    \"Remove every occurrence of any value that appears more than once, keeping only values that occur exactly once (e.g., [1, 2, 3, 2, 4] -> [1, 3, 4])\",\n    \"Deduplicate but keep the last occurrence of each value instead of the first (e.g., [1, 2, 3, 2, 4] -> [1, 3, 2, 4])\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Semantic\", \"level\": \"tackling\", \"matched_segment\": \"remove the duplicated elements\", \"reason\": \"The model flagged this span. Its options include keeping only values that occur exactly once (the intended reading) and keeping the first occurrence of each value (the alternative reading).\"}, {\"type\": \"Vagueness\", \"level\": \"detection\", \"matched_segment\": \"\", \"reason\": \"No reported segment refers to 'Keep the remaining elements in order', and the model never raises the question of input order versus sorted order.\"}], \"spurious_issues\": 0}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1579,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 199,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1579,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 199,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1579,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1579
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 9.4,
+ "time": "2026-11-17 18:07:27"
+}

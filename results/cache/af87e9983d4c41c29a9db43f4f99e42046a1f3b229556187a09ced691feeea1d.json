@@ -1,0 +1,47 @@
+{
+ "tag": "R6|recognize-judge|claude-opus-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Lexical: span \"whole numbers\" — intended: Keep every element whose type is int (isinstance(x, int)), including negative integers and zero. — alternative: Keep only non-negative integers (0, 1, 2, ...). Negative ints are excluded even though they are Python integers.\n2. Vagueness: span \"which may include containers\" — intended: Containers are just non-integer elements. Only top-level elements that are ints are kept, and containers are discarded without looking inside them. — alternative: Search containers recursively: integers found inside nested lists, tuples, sets and dict values are collected into the flat output list, in traversal order.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"which may include containers\",\n   \"reason\": \"It is unclear whether integers nested inside containers (lists, tuples, sets, dicts) should be extracted, or whether containers are just non-integer values to skip.\",\n   \"options\": [\n    \"Skip containers entirely; only keep top-level integers\",\n    \"Recursively flatten containers and collect any integers found inside them\",\n    \"Recurse only one level into containers\",\n    \"For dicts, collect from values only, keys only, or both\"\n   ]\n  },\n  {\n   \"segment\": \"only for whole numbers\",\n   \"reason\": \"'Whole numbers' could mean only objects of type int, or any value with an integral mathematical value, such as the floats 3.0, Fraction(4, 1) or Decimal('5'). The return type List[int] does not settle whether such values are converted or excluded.\",\n   \"options\": [\n    \"Keep only values whose type is int\",\n    \"Also include integral floats or other numeric types, converted to int\",\n    \"Also include integral floats, kept as-is\"\n   ]\n  },\n  {\n   \"segment\": \"whole numbers\",\n   \"reason\": \"In some conventions 'whole numbers' means non-negative integers (0, 1, 2, ...), which would exclude negative integers.\",\n   \"options\": [\n    \"Include all integers, including negatives\",\n    \"Include only non-negative integers (>= 0)\"\n   ]\n  },\n  {\n   \"segment\": \"any python values\",\n   \"reason\": \"bool is a subclass of int in Python, so True/False pass isinstance(x, int). It is unclear whether booleans count as whole numbers.\",\n   \"options\": [\n    \"Exclude booleans\",\n    \"Include booleans (as True/False or as 1/0)\"\n   ]\n  },\n  {\n   \"segment\": \"only for whole numbers\",\n   \"reason\": \"It is unclear whether numeric strings like '5' represent whole numbers that should be parsed and included.\",\n   \"options\": [\n    \"Exclude strings entirely\",\n    \"Parse strings that represent integers and include them as int\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Lexical\", \"level\": \"tackling\", \"matched_segment\": \"whole numbers\", \"reason\": \"The model pinpoints the non-negative reading of 'whole numbers'. Its options cover both readings: all integers including negatives (intended) and only non-negative integers (alternative).\"}, {\"type\": \"Vagueness\", \"level\": \"tackling\", \"matched_segment\": \"which may include containers\", \"reason\": \"The model pinpoints the container-handling issue. Its options include skipping containers and keeping only top-level ints (intended) and recursively flattening to collect nested integers (alternative).\"}], \"spurious_issues\": 3}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1924,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 306,
+  "output_tokens_details": {
+   "thinking_tokens": 82
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1924,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 306,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1924,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1924
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 10.2,
+ "time": "2026-11-17 18:10:54"
+}

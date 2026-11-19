@@ -1,0 +1,47 @@
+{
+ "tag": "B12|combined|claude-sonnet-5-5|0",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "This is the original task (BigCodeBench-style). The function matches files in `directory` whose names match `file_pattern` and end with `suffix`, then maps each to its MIME type.\n\n```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan a directory for files whose names match `file_pattern` (regex)\n    and end with `suffix`, then determine their MIME types.\n\n    Returns:\n        dict: A dictionary mapping matched entries to their MIME types.\n    \"\"\"\n    result = {}\n    # Glob for files ending with the suffix, then filter by regex pattern.\n    search = os.path.join(glob.escape(directory), \"*\" + glob.escape(suffix))\n    regex = re.compile(file_pattern)\n\n    for path in glob.glob(search):\n        if not os.path.isfile(path):\n            continue\n        name = os.path.basename(path)\n        if regex.match(name):\n            mime, _ = mimetypes.guess_type(name)\n            result[name] = mime\n    return result\n\n\nif __name__ == \"__main__\":\n    print(task_func(\".\", r\"^.*\", \".py\"))\n```\n\nNotes:\n- `file_pattern` is treated as a regex applied with `re.match` to the file name (anchored at the start); use `.*` prefixes or `re.search` semantics if you need matching anywhere in the name.\n- Keys are file names (not full paths); values are MIME types, or `None` if the type can't be determined.\n- `glob.escape` ensures special characters in the directory or suffix are taken literally.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 762,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 518,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 762,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 518,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 762,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 762
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 9.9,
+ "time": "2026-11-19 14:09:13"
+}

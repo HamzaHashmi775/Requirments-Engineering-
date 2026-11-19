@@ -1,0 +1,42 @@
+{
+ "id": "B4",
+ "task": "Sum of logs of combination products",
+ "task_id": "BigCodeBench/97",
+ "pair": [
+  "L",
+  "S"
+ ],
+ "kind": "unittest",
+ "entry_point": "task_func",
+ "original_prompt": "Generates all possible combinations of the provided numbers in a given list for each possible length. For each combination, it computes the product of the numbers in the combination. It then computes the logarithm of each product and sums these logarithms to produce the final result.\nThe function should output with:\n    float: The sum of the logarithms of the products of all combinations of numbers.\nYou should write self-contained code starting with:\n```\nimport math\nimport itertools\nfrom functools import reduce\ndef task_func(numbers):\n```",
+ "reference_solution": "import math\nimport itertools\nfrom functools import reduce\n\ndef task_func(numbers):\n    \"\"\"\n    Generates all possible combinations of the provided numbers in a given list for\n    each possible length. For each combination, it computes the product of the numbers\n    in the combination. It then computes the logarithm of each product and sums these\n    logarithms to produce the final result.\n\n    Parameters:\n        numbers (list of int): A list of integers for which combinations are formed.\n\n    Requirements:\n    - math\n    - itertools\n    - functools\n\n    Returns:\n        float: The sum of the logarithms of the products of all combinations of numbers.\n\n    Examples:\n    >>> numbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]\n    >>> type(task_func(numbers)) == float\n    True\n    >>> isinstance(task_func(numbers), float)\n    True\n    \"\"\"\n    sum_log_products = 0\n\n    for r in range(1, len(numbers) + 1):\n        combinations = itertools.combinations(numbers, r)\n        for combination in combinations:\n            product = reduce(lambda x, y: x * y, combination)\n            sum_log_products += math.log(product)\n\n    return sum_log_products",
+ "single_type_exemplars": {
+  "Lexical": {
+   "prompt": "Generates all possible combinations of the provided numbers in a given list for each possible length. For each combination, it computes the product of the numbers in the combination. It then computes the logarithm of each base and sums these logarithms to produce the final result.\nThe function should output with:\n    float: The sum of the logarithms of the products of all combinations of numbers.\nYou should write self-contained code starting with:\n```\nimport math\nimport itertools\nfrom functools import reduce\ndef task_func(numbers):\n```",
+   "explanation": "\"base\" is ambiguous - it could be interpreted as \"logarithm base\" (like the natural logarithm base e) or as \"the product of the numbers in the combination\". This ambiguity leads to different implementations: Implementation A computes the logarithm of the product (using a fixed base like e), while Implementation B uses the product as the logarithm base (e.g., log_product(value)), leading to completely different mathematical results and function outputs."
+  },
+  "Syntactic": {
+   "prompt": "Generates all possible combinations of the provided numbers in a given list for each possible length. For each combination, it computes the product of the numbers in the combination and computes the logarithm of each product and sums these logarithms to produce the final result.\nThe function should output with:\n    float: The sum of the logarithms of the products of all combinations of numbers.\nYou should write self-contained code starting with:\n```\nimport math\nimport itertools\nfrom functools import reduce\ndef task_func(numbers):\n```",
+   "explanation": "\"computes the product of the numbers in the combination and computes the logarithm of each product and sums these logarithms\" is ambiguous - it could mean either (1) computing the product and logarithm for each combination separately, then summing all logarithms, or (2) computing the product and logarithm for all combinations collectively, then summing the logarithms, leading to different calculation orders and code behavior."
+  },
+  "Semantic": {
+   "prompt": "Generates all possible combinations of the provided numbers in a given list for each possible length, optionally including empty combinations. For each combination, it computes the product of the numbers in the combination. It then computes the logarithm of each product and sums these logarithms to produce the final result.\nThe function should output with:\n    float: The sum of the logarithms of the products of all combinations of numbers.\nYou should write self-contained code starting with:\n```\nimport math\nimport itertools\nfrom functools import reduce\ndef task_func(numbers):\n```",
+   "explanation": "The phrase \"optionally including empty combinations\" is semantically ambiguous because it can be interpreted as either including the empty combination (which would contribute a product of 1 and a log of 0) or excluding it, leading to different implementations and final results."
+  },
+  "Vagueness": {
+   "prompt": "Generates all possible combinations of the provided numbers in a given list for each possible length. For each combination, it computes the product of the numbers in the combination. It then computes the logarithm of each product and sums these results to produce the final result.\nThe function should output with:\n    float: The sum of the logarithms of the products of all combinations of numbers.\nYou should write self-contained code starting with:\n```\nimport math\nimport itertools\nfrom functools import reduce\ndef task_func(numbers):\n```",
+   "explanation": "The phrase \"sums these results\" is ambiguous, leaving readers unclear whether to sum the logarithms of the products or the products themselves before taking the logarithm, thus creating vagueness ambiguity."
+  }
+ },
+ "atol": 0.0,
+ "test_code": "import unittest\nimport math\nclass TestCases(unittest.TestCase):\n    def test_return_type(self):\n        \"\"\"Test that the function returns a float with a non-empty list.\"\"\"\n        result = task_func([2, 3, 5])\n        self.assertIsInstance(result, float)\n    def test_specific_case(self):\n        \"\"\"Test the function with a specific simplified case.\"\"\"\n        numbers = [2, 3]\n        expected_result = math.log(2) + math.log(3) + math.log(2 * 3)\n        result = task_func(numbers)\n        self.assertAlmostEqual(result, expected_result)\n    def test_empty_list(self):\n        \"\"\"Test the function's behavior with an empty list of numbers.\"\"\"\n        numbers = []\n        expected_result = 0  # Logarithm of 1 (product of empty set) is 0\n        result = task_func(numbers)\n        self.assertEqual(result, expected_result)\n    def test_large_list(self):\n        \"\"\"Test the function with a larger list of numbers.\"\"\"\n        numbers = [1, 2, 3, 4, 5]  # Example larger list\n        result = task_func(numbers)\n        self.assertIsInstance(result, float)\n        self.assertGreaterEqual(result, 0)  # Logarithm of positive numbers should be >= 0\n    def test_single_number_list(self):\n        \"\"\"Test the function with a list containing a single number.\"\"\"\n        numbers = [5]\n        expected_result = math.log(5)  # Logarithm of the single number\n        result = task_func(numbers)\n        self.assertAlmostEqual(result, expected_result)\n    def test_negative_numbers(self):\n        \"\"\"Test the function's behavior with a list containing negative numbers.\"\"\"\n        numbers = [-1, -2, -3]\n        with self.assertRaises(ValueError):\n            task_func(numbers)  # math.log should raise a ValueError for negative input",
+ "test_names": [
+  "TestCases.test_empty_list",
+  "TestCases.test_large_list",
+  "TestCases.test_negative_numbers",
+  "TestCases.test_return_type",
+  "TestCases.test_single_number_list",
+  "TestCases.test_specific_case"
+ ],
+ "witness_tests": []
+}

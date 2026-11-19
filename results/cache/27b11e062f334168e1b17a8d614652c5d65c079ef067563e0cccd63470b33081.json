@@ -1,0 +1,47 @@
+{
+ "tag": "R6|combined|claude-sonnet-5-5|1",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"\n```",
+ "text": "```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n\n    >>> filter_integers(['a', 3.14, 5])\n    [5]\n    >>> filter_integers([1, 2, 3, 'abc', {}, []])\n    [1, 2, 3]\n    \"\"\"\n    # bool is a subclass of int in Python, so exclude it explicitly\n    return [v for v in values if isinstance(v, int) and not isinstance(v, bool)]\n\n\nif __name__ == \"__main__\":\n    import doctest\n    doctest.testmod()\n\n    assert filter_integers([4, {}, [], 23.2, 9, 'adasd']) == [4, 9]\n    assert filter_integers([3, 'c', 3, 3, 'a', 'b']) == [3, 3, 3]\n    assert filter_integers([]) == []\n    print(\"All tests passed.\")\n```\n\nThe function keeps only items that are `int` instances, dropping strings, floats, and containers such as lists and dicts. It also drops `True` and `False`, since they are technically `int` subclasses but aren't really whole numbers in this sense. If you want booleans kept, remove the `and not isinstance(v, bool)` check.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 681,
+  "output_tokens": 651,
+  "output_tokens_details": {
+   "thinking_tokens": 222
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 651,
+    "cache_read_input_tokens": 681,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 20.1,
+ "time": "2026-11-17 18:01:51"
+}

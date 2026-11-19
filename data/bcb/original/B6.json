@@ -1,0 +1,46 @@
+{
+ "id": "B6",
+ "task": "Write IP range to CSV",
+ "task_id": "BigCodeBench/145",
+ "pair": [
+  "L",
+  "V"
+ ],
+ "kind": "unittest",
+ "entry_point": "task_func",
+ "original_prompt": "Generates a CSV file listing all IP addresses in the specified IP range. Each IP address is written as a row in the CSV file.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+ "reference_solution": "import csv\nfrom ipaddress import IPv4Network\n\ndef task_func(ip_range, csv_path):\n    \"\"\"\n    Generates a CSV file listing all IP addresses in the specified IP range.\n    Each IP address is written as a row in the CSV file.\n\n    Requirements:\n    - csv\n    - ipaddress.IPv4Network\n\n    Parameters:\n        ip_range (str): The IP range in CIDR notation (e.g., \"192.168.0.0/16\").\n        csv_path (str): The path where the CSV file will be saved.\n\n    Returns:\n        str: The path to the generated CSV file.\n\n    Examples:\n    >>> csv_path = task_func('192.168.0.0/16', 'file.csv')\n    >>> isinstance(csv_path, str)\n    True\n    >>> csv_path.endswith('.csv')\n    True\n    \"\"\"\n    with open(csv_path, 'w', newline='') as csvfile:\n        fieldnames = ['IP Address']\n        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)\n\n        writer.writeheader()\n\n        for ip in IPv4Network(ip_range):\n            writer.writerow({'IP Address': str(ip)})\n\n    return csv_path",
+ "single_type_exemplars": {
+  "Lexical": {
+   "prompt": "Generates a CSV file listing all IP addresses in the specified IP range. Each IP address is written as a record in the CSV file.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+   "explanation": "\"record\" is ambiguous - it could be interpreted as \"row\" (like the original) or as \"entry\" (a single field in a row) or as \"line\" (a text line in the file). This ambiguity leads to different implementations: Implementation A writes each IP address as a separate row in the CSV file, while Implementation B might write each IP address as a single field within a row, potentially leading to different file structures and parsing behaviors."
+  },
+  "Syntactic": {
+   "prompt": "Generates a CSV file listing all IP addresses in the specified IP range each IP address is written as a row in the CSV file.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+   "explanation": "\"each IP address is written as a row in the CSV file\" is ambiguous - it could modify either \"Generates a CSV file listing all IP addresses in the specified IP range\" or \"The function should output with\", leading to different interpretations of whether the IP addresses are written during generation or after generation."
+  },
+  "Semantic": {
+   "prompt": "Generates a CSV file listing all unique IP addresses in the specified IP range, handling each address once in the output. Each IP address is written as a row in the CSV file.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+   "explanation": "The phrase \"all unique IP addresses in the specified IP range\" local uniqueness refers to removing duplicates only within the currently input ip_range parameter to ensure no repeated addresses in the output file, while global uniqueness requires deduplication across the entire system or application scope, necessitating access to external storage to verify whether IP addresses have been processed before."
+  },
+  "Vagueness": {
+   "prompt": "Generates a CSV file listing all addresses in the specified IP range. Each IP address is written as a row in the CSV file.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+   "explanation": "Replacing \"IP addresses\" with \"addresses\" makes the target output ambiguous, leaving readers unclear about whether to include network and broadcast addresses in the IP range, thus creating vagueness ambiguity."
+  }
+ },
+ "atol": 0.0,
+ "test_code": "import unittest\nfrom unittest.mock import patch, mock_open\nimport os\nimport ipaddress\nclass TestCases(unittest.TestCase):\n    IP_RANGE = '192.168.0.0/30'\n    CSV_PATH = 'test.csv'\n    def tearDown(self):\n        \"\"\"Clean up after each test.\"\"\"\n        if os.path.exists(self.CSV_PATH):\n            os.remove(self.CSV_PATH)\n    def test_return_type(self):\n        \"\"\"Test that the function returns a string.\"\"\"\n        result = task_func(self.IP_RANGE, self.CSV_PATH)\n        self.assertIsInstance(result, str)\n    def test_file_creation(self):\n        \"\"\"Test that the CSV file is created.\"\"\"\n        result = task_func(self.IP_RANGE, self.CSV_PATH)\n        self.assertTrue(os.path.exists(result))\n    @patch(\"builtins.open\", new_callable=mock_open)\n    def test_csv_content(self, mock_file):\n        \"\"\"Test the content of the CSV file.\"\"\"\n        task_func(self.IP_RANGE, self.CSV_PATH)\n        mock_file.assert_called_with(self.CSV_PATH, 'w', newline='')\n    @patch(\"csv.DictWriter\")\n    def test_csv_writer_usage(self, mock_writer):\n        \"\"\"Test that csv.DictWriter is used correctly.\"\"\"\n        task_func(self.IP_RANGE, self.CSV_PATH)\n        mock_writer.assert_called()\n    @patch('ipaddress.IPv4Network.__iter__', return_value=iter([\n        ipaddress.IPv4Address('192.168.0.1'),\n        ipaddress.IPv4Address('192.168.0.2')\n    ]))\n    @patch('csv.DictWriter')\n    @patch(\"builtins.open\", new_callable=mock_open)\n    def test_csv_writing(self, mock_file, mock_csv_writer, mock_ipv4network_iter):\n        \"\"\"Test that the CSV writer writes the expected number of rows.\"\"\"\n        task_func(self.IP_RANGE, self.CSV_PATH)\n        # The mock csv writer instance is obtained from the mock_csv_writer class.\n        mock_writer_instance = mock_csv_writer.return_value\n        # Assert that writeheader was called once.\n        mock_writer_instance.writeheader.assert_called_once()\n        # Assert that writerow was called twice (once for each mocked IP address).\n        self.assertEqual(mock_writer_instance.writerow.call_count, 2)\n\n# Supplementary witness tests for BigCodeBench/145 (B6). The original 5 tests never read the\n# CSV content, so no ambiguity about the rows written can be detected. These tests check only\n# the ORIGINAL requirement's behaviour (as implemented by the reference solution) and run for\n# both prompt variants.\nimport csv\nimport ipaddress\nimport os\nimport unittest\n\n\nclass WitnessTests(unittest.TestCase):\n    def _rows(self, ip_range):\n        path = \"witness_ips.csv\"\n        self.addCleanup(lambda: os.path.exists(path) and os.remove(path))\n        task_func(ip_range, path)\n        # the requirement does not mention a header, so ignore any row that is not an address\n        rows = []\n        with open(path, newline=\"\") as f:\n            for r in csv.reader(f):\n                try:\n                    rows.append(str(ipaddress.IPv4Address(r[0].strip())))\n                except (IndexError, ValueError):\n                    pass\n        return rows\n\n    def test_witness_every_address_in_range(self):\n        # Lexical: every address of the network, network and broadcast addresses included\n        self.assertEqual(self._rows(\"192.168.0.0/30\"),\n                         [\"192.168.0.0\", \"192.168.0.1\", \"192.168.0.2\", \"192.168.0.3\"])\n\n    def test_witness_numeric_order(self):\n        # Vagueness: rows in the network's natural (numeric) order, not text order\n        self.assertEqual(self._rows(\"10.0.0.0/28\"),\n                         [str(ip) for ip in ipaddress.IPv4Network(\"10.0.0.0/28\")])\n",
+ "test_names": [
+  "TestCases.test_csv_content",
+  "TestCases.test_csv_writer_usage",
+  "TestCases.test_csv_writing",
+  "TestCases.test_file_creation",
+  "TestCases.test_return_type",
+  "WitnessTests.test_witness_every_address_in_range",
+  "WitnessTests.test_witness_numeric_order"
+ ],
+ "witness_tests": [
+  "WitnessTests.test_witness_every_address_in_range",
+  "WitnessTests.test_witness_numeric_order"
+ ]
+}

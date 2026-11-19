@@ -1,0 +1,47 @@
+{
+ "tag": "B5|original|claude-sonnet-5-5|3",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 3,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nSerializes a dictionary to a JSON string, compresses it using zlib, and then encodes the compressed data with base64.\nThe function should output with:\n    str: A base64 encoded string that represents the zlib-compressed JSON string of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+ "text": "```python\nimport base64\nimport json\nimport zlib\n\n\ndef task_func(data_dict):\n    json_str = json.dumps(data_dict)\n    compressed = zlib.compress(json_str.encode(\"utf-8\"))\n    return base64.b64encode(compressed).decode(\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    sample = {\"key1\": \"value1\", \"key2\": \"value2\"}\n    encoded = task_func(sample)\n    print(encoded)\n\n    # Round-trip check\n    decoded = json.loads(zlib.decompress(base64.b64decode(encoded)).decode(\"utf-8\"))\n    assert decoded == sample\n```\n\nThe function serializes the dictionary with `json.dumps`, compresses the UTF-8 bytes with `zlib.compress`, and base64-encodes the result. It returns that as a `str`, since the bytes are decoded after encoding.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 735,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 288,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 735,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 288,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 735,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 735
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 4.7,
+ "time": "2026-11-19 12:25:08"
+}

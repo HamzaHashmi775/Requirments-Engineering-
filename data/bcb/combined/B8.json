@@ -1,0 +1,108 @@
+{
+ "id": "B8",
+ "task_id": "BigCodeBench/16",
+ "pair": [
+  "L",
+  "V"
+ ],
+ "original_prompt": "Backup all '.log' files in a specified directory to a tar.gz file and delete the original files after backup. The backup file is named 'logs_backup.tar.gz' and placed in the specified backup directory.\nThe function should raise the exception for: FileNotFoundError: If the specified directory does not exist.\nThe function should output with:\n    str: The path to the backup file if logs are found, otherwise returns a message 'No logs found to backup'.\nYou should write self-contained code starting with:\n```\nimport os\nimport glob\nimport subprocess\ndef task_func(directory, backup_dir='/path/to/backup'):\n```",
+ "ambiguous_prompt": "Backup all log files in a specified directory to a tar.gz file and clear the original files after backup. The backup file is named 'logs_backup.tar.gz' and placed in the specified backup directory.\nThe function should raise the exception for: FileNotFoundError: If the specified directory does not exist.\nThe function should output with:\n    str: The path to the backup file if logs are found, otherwise returns a message 'No logs found to backup'.\nYou should write self-contained code starting with:\n```\nimport os\nimport glob\nimport subprocess\ndef task_func(directory, backup_dir='/path/to/backup'):\n```",
+ "judge_passed": true,
+ "iterations_used": 1,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "clear the original files after backup",
+    "explanation": "The word 'clear' has more than one meaning for a file. It can mean removing the file from the filesystem. It can also mean emptying the file's contents while keeping the file. The two readings leave the directory in different states after the backup.",
+    "intended_reading": "Delete (remove) each original .log file from the directory after it has been added to the archive.",
+    "alternative_reading": "Truncate each original log file to zero bytes after archiving. The files stay in the directory, but their contents are emptied, as is common with log rotation.",
+    "alternative_implementation": "import os\nimport glob\nimport subprocess\n\ndef task_func(directory, backup_dir='/path/to/backup'):\n    if not os.path.exists(directory):\n        raise FileNotFoundError(f\"Directory '{directory}' not found.\")\n\n    log_files = [f for f in glob.glob(os.path.join(directory, '*.log')) if os.path.isfile(f)]\n    if not log_files:\n        return 'No logs found to backup'\n\n    if not os.path.exists(backup_dir):\n        os.makedirs(backup_dir)\n\n    backup_file = os.path.join(backup_dir, 'logs_backup.tar.gz')\n    subprocess.call(['tar', '-czvf', backup_file] + log_files)\n\n    # 'clear' interpreted as emptying file contents, keeping the files\n    for file in log_files:\n        with open(file, 'w'):\n            pass\n\n    return backup_file\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 2,
+     "n_tests": 4,
+     "failing_tests": [
+      "TestCases.test_backup_creation_and_log_file_deletion",
+      "TestCases.test_no_log_files_to_backup"
+     ]
+    }
+   },
+   {
+    "type": "Vagueness",
+    "span": "all log files",
+    "explanation": "'Log files' has no exact definition here. It does not say whether only files with the '.log' extension count. It could also cover rotated or compressed logs such as 'app.log.1' or 'app.log.gz', which changes which files are archived and cleared.",
+    "intended_reading": "Only files whose names end with the '.log' extension (glob pattern '*.log') in the specified directory.",
+    "alternative_reading": "Any file that is recognizably a log, including rotated or compressed variants. This means every file whose name contains '.log', such as 'app.log', 'app.log.1' and 'app.log.gz' (glob pattern '*.log*').",
+    "alternative_implementation": "import os\nimport glob\nimport subprocess\n\ndef task_func(directory, backup_dir='/path/to/backup'):\n    if not os.path.exists(directory):\n        raise FileNotFoundError(f\"Directory '{directory}' not found.\")\n\n    backup_file = os.path.join(backup_dir, 'logs_backup.tar.gz')\n    # 'log files' interpreted broadly: active plus rotated/compressed logs\n    log_files = [\n        f for f in glob.glob(os.path.join(directory, '*.log*'))\n        if os.path.isfile(f) and os.path.abspath(f) != os.path.abspath(backup_file)\n    ]\n    if not log_files:\n        return 'No logs found to backup'\n\n    if not os.path.exists(backup_dir):\n        os.makedirs(backup_dir)\n\n    subprocess.call(['tar', '-czvf', backup_file] + log_files)\n\n    for file in log_files:\n        os.remove(file)\n\n    return backup_file\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 1,
+     "n_tests": 4,
+     "failing_tests": [
+      "TestCases.test_no_log_files_to_backup"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "Backup all log files in a specified directory to a tar.gz file and clear the original files after backup. The backup file is named 'logs_backup.tar.gz' and placed in the specified backup directory.\nThe function should raise the exception for: FileNotFoundError: If the specified directory does not exist.\nThe function should output with:\n    str: The path to the backup file if logs are found, otherwise returns a message 'No logs found to backup'.\nYou should write self-contained code starting with:\n```\nimport os\nimport glob\nimport subprocess\ndef task_func(directory, backup_dir='/path/to/backup'):\n```",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "clear the original files",
+      "readings": [
+       "Delete the original log files from the directory after they are archived",
+       "Truncate the original log files to zero length, leaving the empty files in place after they are archived"
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "all log files",
+      "readings": [
+       "Only files with the '.log' extension (matching '*.log')",
+       "Any file treated as a log, such as rotated logs like 'app.log.1' or 'app.log.gz', or files whose names contain 'log'"
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('/tmp/logs_dir', '/tmp/backup') where /tmp/logs_dir contains 'a.log' with content 'x'. Reading 'clear' as delete removes a.log. Reading it as truncate leaves a.log present but empty. The archive path is returned either way, but the filesystem state afterward differs.",
+      "plausibility": 4
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('/tmp/logs_dir', '/tmp/backup') where /tmp/logs_dir contains only 'app.log.1' and 'server_log.txt'. The strict '*.log' reading returns 'No logs found to backup'. A broader 'log files' reading returns '/tmp/backup/logs_backup.tar.gz'.",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "Both ambiguities are valid. The Lexical divergence ('clear') shows up only in filesystem side effects, not in the returned string, so tests must check whether the original files exist afterward. 'Backup' used as a verb is slightly unidiomatic ('Back up'), but this wording also appears in the original."
+   },
+   "passed": true,
+   "score": 24
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "date": "2026-11-19",
+  "notes": "Approved by the user 2026-11-19 (new task, pre-registered rules). Lexical 'clear' (delete vs truncate); Vagueness 'log files' (*.log vs *.log*). Both verified by the original tests."
+ },
+ "rejected_attempts": []
+}

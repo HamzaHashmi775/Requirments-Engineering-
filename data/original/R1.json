@@ -1,0 +1,2603 @@
+{
+ "id": "R1",
+ "task": "Filter a list",
+ "task_id": "HumanEval/7",
+ "pair": [
+  "L",
+  "M"
+ ],
+ "entry_point": "filter_by_substring",
+ "original_prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones that contain given substring\n    \"\"\"\n",
+ "reference_solution": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones that contain given substring\n    >>> filter_by_substring([], 'a')\n    []\n    >>> filter_by_substring(['abc', 'bacd', 'cde', 'array'], 'a')\n    ['abc', 'bacd', 'array']\n    \"\"\"\n\n    return list(filter(lambda s: substring in s, strings))\n\n",
+ "single_type_exemplars": {
+  "Lexical": {
+   "prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones that contain given pattern\n    \"\"\"",
+   "explanation": "\"pattern\": Could mean a literal sequence of characters (a substring) or a regular expression. Ambiguous here, as it suggests the function might support complex regex matching instead of just simple substring containment."
+  },
+  "Syntactic": {
+   "prompt": "from typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones with given substring contained\n    \"\"\"",
+   "explanation": "Ambiguous phrase \"with given substring contained\": it is unclear whether \"contained\" modifies \"given substring\" (meaning the substring must be contained in the strings) or \"ones\" (meaning the strings themselves must be contained within some larger context)."
+  },
+  "Semantic": {
+   "prompt": "from typing import List\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones containing the specified substring\n    \"\"\"",
+   "explanation": "The phrase \"containing the specified substring\" is semantically ambiguous—it can mean (A) strings that include the substring as a contiguous sequence of characters (e.g., 'abc' contains 'ab'), or (B) strings that include all characters of the substring in any order or position within the string (e.g., 'bacd' contains 'ad'), each interpretation leading to different code and results."
+  },
+  "Vagueness": {
+   "prompt": "from typing import List\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings for ones that might contain given substring\n    \"\"\"",
+   "explanation": "Ambiguous Explanation:\nThe phrase \"might contain given substring\" introduces uncertainty. It is unclear whether the function should return strings that definitely contain the substring or if it should also include strings that could potentially contain the substring under certain conditions or interpretations. This could lead to different implementations based on personal interpretations."
+  }
+ },
+ "atol": 0,
+ "n_base": 4,
+ "tests": [
+  {
+   "input": [
+    [],
+    "john"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "xxx",
+     "asd",
+     "xxy",
+     "john doe",
+     "xxxAAA",
+     "xxx"
+    ],
+    "xxx"
+   ],
+   "expected": [
+    "xxx",
+    "xxxAAA",
+    "xxx"
+   ]
+  },
+  {
+   "input": [
+    [
+     "xxx",
+     "asd",
+     "aaaxxy",
+     "john doe",
+     "xxxAAA",
+     "xxx"
+    ],
+    "xx"
+   ],
+   "expected": [
+    "xxx",
+    "aaaxxy",
+    "xxxAAA",
+    "xxx"
+   ]
+  },
+  {
+   "input": [
+    [
+     "grunt",
+     "trumpet",
+     "prune",
+     "gruesome"
+    ],
+    "run"
+   ],
+   "expected": [
+    "grunt",
+    "prune"
+   ]
+  },
+  {
+   "input": [
+    [
+     "banana",
+     "apple",
+     "kiwi",
+     "peach"
+    ],
+    "a"
+   ],
+   "expected": [
+    "banana",
+    "apple",
+    "peach"
+   ]
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy",
+     "pandas"
+    ],
+    "py"
+   ],
+   "expected": [
+    "python",
+    "numpy"
+   ]
+  },
+  {
+   "input": [
+    [],
+    ""
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abc",
+     "bcd",
+     "cbd",
+     "dbc",
+     "cda"
+    ],
+    "bc"
+   ],
+   "expected": [
+    "abc",
+    "bcd",
+    "dbc"
+   ]
+  },
+  {
+   "input": [
+    [
+     "a",
+     "ab",
+     "abc",
+     "abcd",
+     "abcde",
+     "bcde",
+     "cde"
+    ],
+    "cd"
+   ],
+   "expected": [
+    "abcd",
+    "abcde",
+    "bcde",
+    "cde"
+   ]
+  },
+  {
+   "input": [
+    [
+     "123",
+     "456",
+     "789",
+     "101112"
+    ],
+    "12"
+   ],
+   "expected": [
+    "123",
+    "101112"
+   ]
+  },
+  {
+   "input": [
+    [
+     "cat",
+     "dog",
+     "elephant",
+     "rhinoceros",
+     "seagull"
+    ],
+    "e"
+   ],
+   "expected": [
+    "elephant",
+    "rhinoceros",
+    "seagull"
+   ]
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisestablishmentarianism",
+     "floccinaucinihilipilification"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilification"
+   ]
+  },
+  {
+   "input": [
+    [
+     "moon",
+     "stars",
+     "sun",
+     "planets"
+    ],
+    "s"
+   ],
+   "expected": [
+    "stars",
+    "sun",
+    "planets"
+   ]
+  },
+  {
+   "input": [
+    [
+     "earth",
+     "mars",
+     "jupiter",
+     "saturn",
+     "uranus"
+    ],
+    "s"
+   ],
+   "expected": [
+    "mars",
+    "saturn",
+    "uranus"
+   ]
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy",
+     "pandas",
+     "numpy"
+    ],
+    "py"
+   ],
+   "expected": [
+    "python",
+    "numpy",
+    "numpy"
+   ]
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisestablishmentarianism",
+     "floccinaucinihilipilification",
+     "floccinaucinihilipilificatnion"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilification",
+    "floccinaucinihilipilificatnion"
+   ]
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy",
+     "pandas"
+    ],
+    "antidisestablishmentarianismpy"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisestablishmentarianism",
+     "floccinaucinihilipilification",
+     "floccinaucinihilipilificatnion"
+    ],
+    "ili12"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisesshmentarianism",
+     "floccinaucinihilipilification",
+     "floccinaucinihilipilificatnion",
+     "floccinaucinihilipilificatilinion"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilification",
+    "floccinaucinihilipilificatnion",
+    "floccinaucinihilipilificatilinion"
+   ]
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "sun",
+     "floccinaucinihilipilificatioearthn"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilificatioearthn"
+   ]
+  },
+  {
+   "input": [
+    [
+     "123",
+     "456",
+     "789",
+     "101112"
+    ],
+    "122"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisestablishementarianism",
+     "floccinaucinihilipilification"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilification"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abc",
+     "bcd",
+     "cbd",
+     "dbc",
+     "cda",
+     "cfloccinaucinihilipilificatilinionda"
+    ],
+    "bc"
+   ],
+   "expected": [
+    "abc",
+    "bcd",
+    "dbc"
+   ]
+  },
+  {
+   "input": [
+    [
+     "earth",
+     "mars",
+     "jupiter",
+     "saturn",
+     "uranus"
+    ],
+    "numpuranusys"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisestablishementarianism",
+     "floccinaucinihilipilification",
+     "supercalifragilisticexpialidocious"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilification",
+    "supercalifragilisticexpialidocious"
+   ]
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy",
+     "pandas"
+    ],
+    "antidisestablishmentariasaturnnismpy"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisesshmentarianism",
+     "floccinaucinihilipilification",
+     "floccinaucinihilipilificatnion",
+     "floccinaucinihilipilificatilinion",
+     "floccinaucinihilipilifi101112cation"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "supercalifragilisticexpialidocious",
+    "floccinaucinihilipilification",
+    "floccinaucinihilipilificatnion",
+    "floccinaucinihilipilificatilinion",
+    "floccinaucinihilipilifi101112cation"
+   ]
+  },
+  {
+   "input": [
+    [
+     "supercalifragilisticexpialidocious",
+     "antidisestablishmentarianism",
+     "floccinaucinihilipilification",
+     "floccinaucinihilipilificatnion"
+    ],
+    "floccinaucinihilipilificatioearthn"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy",
+     "s"
+    ],
+    "antidisestablishmentariasaturnnismpy"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy"
+    ],
+    "antidisestablishmentarianismpy"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "antidisesshmentarianism",
+     "floccinaucinihilipilification",
+     "floccinaucinihilipilificatnion",
+     "floccinaucinihilipilificatilinion"
+    ],
+    "ili"
+   ],
+   "expected": [
+    "floccinaucinihilipilification",
+    "floccinaucinihilipilificatnion",
+    "floccinaucinihilipilificatilinion"
+   ]
+  },
+  {
+   "input": [
+    [
+     "hello",
+     "world",
+     "python",
+     "numpy",
+     "pandas",
+     "numpy"
+    ],
+    "antidisestablishmentarianismpy"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abc",
+     "bcd",
+     "cbd",
+     "dbc",
+     "cda",
+     "cfloccinaucinihilipilificatilinionda",
+     "dcbd"
+    ],
+    "bbc"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abc",
+     "bcd",
+     "cbd",
+     "dbc",
+     "cda",
+     "cfloccinaucinihilipilificatilinionda",
+     "dcbd",
+     "cfloaccinaucinihilipilificatilinionda"
+    ],
+    "bbc"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "123",
+     "456",
+     "789",
+     "101112",
+     "456"
+    ],
+    "12"
+   ],
+   "expected": [
+    "123",
+    "101112"
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "an"
+   ],
+   "expected": [
+    "San Francisco"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "ox"
+   ],
+   "expected": [
+    "The quick brown fox jumps over the lazy dog",
+    "Pack my box with five dozen liquor jugs"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The cat in the hat",
+     "Green eggs and ham",
+     "One fish two fish",
+     "Red fish blue fish"
+    ],
+    "fish"
+   ],
+   "expected": [
+    "One fish two fish",
+    "Red fish blue fish"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "Star Wars",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "he"
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "equal."
+   ],
+   "expected": [
+    "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+    "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg"
+    ],
+    ""
+   ],
+   "expected": [
+    "abcdefg"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abc(d)e",
+     "ba%cd",
+     "cde",
+     "array",
+     "12345"
+    ],
+    "(d)"
+   ],
+   "expected": [
+    "abc(d)e"
+   ]
+  },
+  {
+   "input": [
+    [
+     "wsrefgtrh",
+     "zxyvtru",
+     "asxwaqzx",
+     "kjbncxz"
+    ],
+    "tr"
+   ],
+   "expected": [
+    "wsrefgtrh",
+    "zxyvtru"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     " The Godfather ",
+     "The Dark Knight",
+     "  The Lord of the Rings   ",
+     "   Star Wars",
+     " Inception     ",
+     "Forrest Gump"
+    ],
+    " "
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    " The Godfather ",
+    "The Dark Knight",
+    "  The Lord of the Rings   ",
+    "   Star Wars",
+    " Inception     ",
+    "Forrest Gump"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     " The Godfather ",
+     "The Dark Knight",
+     "  The Lord of the Rings   ",
+     "   Star Wars",
+     " Inception     ",
+     "Forrest Gump",
+     " Inception     "
+    ],
+    " "
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    " The Godfather ",
+    "The Dark Knight",
+    "  The Lord of the Rings   ",
+    "   Star Wars",
+    " Inception     ",
+    "Forrest Gump",
+    " Inception     "
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "an"
+   ],
+   "expected": [
+    "San Francisco"
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "York"
+   ],
+   "expected": [
+    "New York City"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "oConstitutionx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "created"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "creeated"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdefg"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "creataed"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\""
+    ],
+    "equal."
+   ],
+   "expected": [
+    "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+    "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.",
+    "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\""
+   ]
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "ordain"
+   ],
+   "expected": [
+    "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America."
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "The cat in the hat",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nation,"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nabc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdeits"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "equ"
+   ],
+   "expected": [
+    "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+    "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg"
+    ],
+    "upromoteniversally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The cat in the hat",
+     "Green eggs and ham",
+     "One fish two fish",
+     "Red fish blue fish"
+    ],
+    "ffis"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nabc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg",
+     "abcdefg"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "oConstituti"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York Ciity",
+     "The cat in the hat",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "Miami",
+     "Washington"
+    ],
+    "nation,"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Pack my box with five dozen liqugor jugs",
+     "The quick brown fox jumps ove  zy dog",
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "created"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "want"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Pack my box with five dozen lisevenquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "ox"
+   ],
+   "expected": [
+    "The quick brown fox jumps over the lazy dog",
+    "Pack my box with five dozen liquor jugs",
+    "Pack my box with five dozen lisevenquor jugs"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The q uick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "oConstitutionx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "San Francisco",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "oConstitutionx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Pack my box with five dozen lisevenquor jugs",
+     "forth",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "ox"
+   ],
+   "expected": [
+    "The quick brown fox jumps over the lazy dog",
+    "Pack my box with five dozen liquor jugs",
+    "Pack my box with five dozen lisevenquor jugs"
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Los Angeles",
+     "San Francisco",
+     "zebras",
+     "Washington"
+    ],
+    "nabc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\""
+    ],
+    "eaqual."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington",
+     "Miami"
+    ],
+    "want"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "New York Citywant"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "Star"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "Star Wars",
+     "Inception",
+     "universally"
+    ],
+    "he"
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "cRedemptionread",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nation,"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcgdefg",
+     "aasxwaqzxbcdefg",
+     "want",
+     "abcdefg",
+     "abcdefg",
+     "abcdefg"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "New York Citywan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "nWashington",
+     "Los Angeles",
+     "San Francisco",
+     "zebras",
+     "Washington"
+    ],
+    "nabc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdeits"
+    ],
+    "fortune,"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "B\"Weoston",
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "York"
+   ],
+   "expected": [
+    "New York City"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcgdefg",
+     "aasxwaqzxbcdefg",
+     "want",
+     "abcdefg",
+     "abcdefg",
+     "abcdefg"
+    ],
+    "box"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "peoplbige",
+     "abcdefg",
+     "abcdefg"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "for"
+   ],
+   "expected": [
+    "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+    "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+    "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+   ]
+  },
+  {
+   "input": [
+    [
+     "Pack my box with five dozen liqugor jugs",
+     "The quick brown fkjbncxzox jumps ove  zy dog",
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "createdd"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "Citywan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     " The Godfather ",
+     "The Dark Knight",
+     "  The Lord of the Rings   ",
+     "   Star Wars",
+     " Inception     ",
+     "Forrest Gump"
+    ],
+    "nation"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "ton",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "York"
+   ],
+   "expected": [
+    "New York City"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "tthese"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "San Francisco",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "oConstitStar Warsutionx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nab(((The Dark Knightdthese)cc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "San Francisco",
+     "Miami",
+     "New York Cicreateddty",
+     "Washington",
+     "New York Cicreateddty"
+    ],
+    "nabc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "MMiami",
+     "New York City",
+     "San Francisco",
+     "Miami",
+     "New York Cicreateddty",
+     "Washington",
+     "New York Cicreateddty"
+    ],
+    "nabc(d)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "an",
+     "abcdeits"
+    ],
+    "universally"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     " The Godfather ",
+     "The Dark Knight",
+     "  The Lord of the Rings   ",
+     "   Star Wars",
+     " Inception     ",
+     "Forrest Gump"
+    ],
+    " l."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States oef America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "City"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "th"
+    ],
+    "(((The Dark Knightdtmeaninghese)"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg",
+     "abcdefg"
+    ],
+    "univerhavely"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\""
+    ],
+    "Star Wars"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "daft",
+     "UEZ",
+     "(((The Dark Knightdthese)",
+     "of",
+     "New York Ciitypcerfefct"
+    ],
+    "RRed fish blue fish"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Pack my box with five dozen liqugor jugs",
+     "The quick brown fkjbncxzox jumps ove  zy dog",
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "The quick b over the lazy dog"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps ove  zy dog",
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz",
+     "The quick brown fox jumps ove  zy dog"
+    ],
+    "oxx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.",
+     "To be or not to be, that is the question."
+    ],
+    "ordain"
+   ],
+   "expected": [
+    "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America."
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington",
+     "Miami"
+    ],
+    "daft"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Pack my box with five dozen liqugor jugs",
+     "The quick brown fox jumps ove  zy dog",
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Redemption"
+    ],
+    "created"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "Washington"
+    ],
+    "nann"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz",
+     "Pack my box with five dozen liquor jugs"
+    ],
+    "createt"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "MMiami",
+     "New York City",
+     "San Francisco",
+     "Miami",
+     "New York Cicreateddty",
+     "Washington",
+     "New York Cicreateddty"
+    ],
+    "nabc)e"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "The Lord of the Rings",
+     "Star Wars",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "he"
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    "The Godfather",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Pack my box with five dozen lisevenquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "quiickox"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "propmtr"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over tPacFour score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are crzyeated equal.he lazy dog",
+     "San Francisco",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "oConstittutionx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Thee quick brown fox jumps ove  zy dog",
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "Jackdaws love my big sphinx of quartz",
+     "The quick brown fox jumps ove  zy dog"
+    ],
+    "oxxNew York Citywan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "abc"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "substring"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "",
+     "",
+     ""
+    ],
+    "substring"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "substring",
+     "substring",
+     "substring"
+    ],
+    "substring"
+   ],
+   "expected": [
+    "substring",
+    "substring",
+    "substring"
+   ]
+  },
+  {
+   "input": [
+    [
+     "string",
+     "bingo",
+     "frost",
+     "parka"
+    ],
+    "substring"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "",
+     "",
+     ""
+    ],
+    ""
+   ],
+   "expected": [
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "input": [
+    [
+     "",
+     "a",
+     "",
+     "b"
+    ],
+    ""
+   ],
+   "expected": [
+    "",
+    "a",
+    "",
+    "b"
+   ]
+  },
+  {
+   "input": [
+    [
+     ""
+    ],
+    ""
+   ],
+   "expected": [
+    ""
+   ]
+  },
+  {
+   "input": [
+    [
+     "abc",
+     "bcd",
+     "cde",
+     "def"
+    ],
+    "a"
+   ],
+   "expected": [
+    "abc"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Godfather",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "Star Wars",
+     "posterity,",
+     "Forrest Gump"
+    ],
+    "he"
+   ],
+   "expected": [
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg"
+    ],
+    "form"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "Green"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The quick brown fox jumps over the lazy dog",
+     "Pack my box with five dozen liquor jugs",
+     "How vexingly quick daft zebras jump",
+     "Jackdaws love my big sphinx of quartz"
+    ],
+    "tranquility,ox"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "liberty"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Godfather",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "union,",
+     "posterity,",
+     "Forrest Gump",
+     "union,"
+    ],
+    "h"
+   ],
+   "expected": [
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg"
+    ],
+    "m"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "fom",
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": [
+    "fom"
+   ]
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "eqal."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdbefg"
+    ],
+    "form"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abbcdefg",
+     "fom",
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": [
+    "fom"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "The Dark Knight",
+     "Star Wars",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "he"
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    "The Godfather",
+    "The Dark Knight"
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "libertequal.y"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     " The Godfather ",
+     "The Dark Knight",
+     "  The Lord of the Rings   ",
+     "   Star Wars",
+     " Inception     ",
+     "Forrest Gump"
+    ],
+    "Angeles"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "New York City"
+    ],
+    "an"
+   ],
+   "expected": [
+    "San Francisco"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Godfather",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "Star Wars",
+     "posterity,",
+     "Forrest Gump"
+    ],
+    "h"
+   ],
+   "expected": [
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "San Francisco",
+     "Miami"
+    ],
+    "libertequal.y"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdefg"
+    ],
+    "fofm"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "New York City"
+    ],
+    "aan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "The Dark Knight",
+     "Star Wars",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "hhe"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abbcdefg",
+     "fom",
+     "abcdefg",
+     "abbcdefg"
+    ],
+    "fom"
+   ],
+   "expected": [
+    "fom"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg"
+    ],
+    "To be or not to be, that is the question."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Godfatosacknowlledged,phinxxher",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "union,",
+     "tranquility,oxunion,",
+     "posterity,",
+     "Forrest Gump",
+     "union,"
+    ],
+    "h"
+   ],
+   "expected": [
+    "The Godfatosacknowlledged,phinxxher",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "osafortune,cknowlledged,p",
+     "abcdefg",
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "justice,The Dark Knight",
+     "The Lord of the Rings",
+     "and",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "he"
+   ],
+   "expected": [
+    "The Shawshank Redemption",
+    "The Godfather",
+    "justice,The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abc(d)e",
+     "ba%cd",
+     "cde",
+     "array",
+     "12345"
+    ],
+    "dozen"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Godfather",
+     "The Dark Knight",
+     "DCt",
+     "The Lord of the Rings",
+     "union,",
+     "posterity,",
+     "Forrest Gump",
+     "union,"
+    ],
+    "h"
+   ],
+   "expected": [
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "osafortune,cknowlledged,p",
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "wsrefgtrh",
+     "zxyvtru",
+     "asxwaqzx",
+     "zxyvtConstitutionru",
+     "kjbncxz"
+    ],
+    "tr"
+   ],
+   "expected": [
+    "wsrefgtrh",
+    "zxyvtru"
+   ]
+  },
+  {
+   "input": [
+    [
+     "kQEHdzw",
+     "for",
+     "asxwaqzx",
+     "  The Lord of the Rings   ",
+     "Mi",
+     "its",
+     "kZWuN"
+    ],
+    "Green"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abc(d)e",
+     "ba%cd",
+     "cde",
+     "array",
+     "12345",
+     "12345"
+    ],
+    "Saabc(d)en"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abc(d)e",
+     "ba%cd",
+     "cde",
+     "array",
+     "dog"
+    ],
+    "doquartuzzen"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "justice,The Dark Knight",
+     "The Lord of the Rings",
+     "and",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "hhate"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washinestablishon",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "New York City"
+    ],
+    "an"
+   ],
+   "expected": [
+    "San Francisco"
+   ]
+  },
+  {
+   "input": [
+    [
+     "abcdefg"
+    ],
+    "rtr"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "union,",
+     "posterity,",
+     "Forrest Gump",
+     "union,"
+    ],
+    "h"
+   ],
+   "expected": [
+    "The Dark Knight",
+    "The Lord of the Rings"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Godfatosacknowlledged,phinxxher",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "union,",
+     "tranquility,oxunion,",
+     "posterity,",
+     "Forrest Gump",
+     "union,"
+    ],
+    "ourselvesh"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washinestablishon",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "New York City"
+    ],
+    "aan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "eqal.osacknsowlledged,phinxx"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washinestablishon",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "DCC",
+     "New York City"
+    ],
+    "an"
+   ],
+   "expected": [
+    "San Francisco"
+   ]
+  },
+  {
+   "input": [
+    [
+     "fI have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"om",
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "We the people of the United States of America, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.",
+     "To be or not to be, that is the question.",
+     "I have a dream that one day this nation will rise up and live out the true meaning of its creed: \"We hold these truths to be self-evident, that all men are created equal.\"",
+     "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+    ],
+    "eqal."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "nan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washinestablishon",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami",
+     "DCC",
+     "New York City"
+    ],
+    "Guoxxplibertequal.yan"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [],
+    "form"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "tranquility,oxunion,doquartuzzen"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York CitYy",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "liberty"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "abcdefg",
+     "abcdefg"
+    ],
+    "To be or not to be,  that is the question."
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Godfather",
+     "The Dark Knight",
+     "The Lord of the Rings",
+     "union,",
+     "pyeathesersrity,",
+     "Forrest Gump",
+     "union,"
+    ],
+    "h"
+   ],
+   "expected": [
+    "The Godfather",
+    "The Dark Knight",
+    "The Lord of the Rings",
+    "pyeathesersrity,"
+   ]
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "The Godfather",
+     "justice,The Dark Knight",
+     "The Lord of the Rings",
+     "and",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "hhatethThe"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "The Shawshank Redemption",
+     "To be or not to be, that is the quesetion. Godfather",
+     "The Godfather",
+     "justice,The Dark Knight",
+     "The Lord of the Rings",
+     "and",
+     "Inception",
+     "Forrest Gump"
+    ],
+    "hhatetmyhThe"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "osafortune,cknowlledged,p",
+     "abcdefg",
+     "orm",
+     "abcdefg"
+    ],
+    "fom"
+   ],
+   "expected": []
+  },
+  {
+   "input": [
+    [
+     "Washington",
+     "DC",
+     "New York City",
+     "Boston",
+     "Los Angeles",
+     "San Francisco",
+     "Miami"
+    ],
+    "tranquility,oxunion,doquartuzLoszen"
+   ],
+   "expected": []
+  }
+ ]
+}

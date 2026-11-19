@@ -1,0 +1,47 @@
+{
+ "tag": "B6|combined|claude-sonnet-5-5|3",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 3,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nGenerates a CSV file listing all IP addresses within the specified IP range. Each IP address is written as a row in the CSV file, with the rows sorted.\nThe function should output with:\n    str: The path to the generated CSV file.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom ipaddress import IPv4Network\ndef task_func(ip_range, csv_path):\n```",
+ "text": "```python\nimport csv\nfrom ipaddress import IPv4Network\n\n\ndef task_func(ip_range, csv_path):\n    network = IPv4Network(ip_range, strict=False)\n    with open(csv_path, \"w\", newline=\"\") as f:\n        writer = csv.writer(f)\n        for ip in sorted(network):\n            writer.writerow([str(ip)])\n    return csv_path\n```\n\nThe function builds an `IPv4Network` from the range (with `strict=False`, so host bits in the input are tolerated). It writes each address as its own CSV row in sorted numeric order, and returns the path to the file.\n\nNote that `/32` networks yield one address, and for ranges like `/24` all addresses are included, including the network and broadcast addresses.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 737,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 241,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 737,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 241,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 737,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 737
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 5.0,
+ "time": "2026-11-19 12:27:22"
+}

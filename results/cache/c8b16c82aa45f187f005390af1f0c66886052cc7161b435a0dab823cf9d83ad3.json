@@ -1,0 +1,47 @@
+{
+ "tag": "R5|recognize|original|claude-opus-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert software engineer who reviews requirements before implementing them.",
+ "prompt": "Below is the requirement for a Python function you are asked to implement.\n\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    \"\"\"\n```\n\nBefore implementing it, decide whether the requirement is ambiguous: does any wording allow more than one plausible interpretation that would lead to functionally different implementations (different outputs for some input)? Do not flag ordinary details that a competent developer would resolve the same way.\n\nIf it is ambiguous, list every ambiguous segment: quote the exact words, explain why they are ambiguous, and give concrete clarification options (the possible interpretations a stakeholder could choose between).\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"<exact quoted words>\", \"reason\": \"\", \"options\": [\"\", \"\"]}]}\nUse {\"ambiguous\": false, \"issues\": []} if it is not ambiguous.",
+ "text": "```json\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"such that the smallest number will become 0 and the largest will become 1\", \"reason\": \"If every element is equal (smallest == largest), no linear transform can send the same value to both 0 and 1, and the usual formula (x - min) / (max - min) divides by zero. The spec does not say what to do in this case, and different handling gives different results.\", \"options\": [\"Raise an error (e.g., ValueError or ZeroDivisionError) when all elements are equal\", \"Return a list of all 0.0 when all elements are equal\", \"Return a list of all 1.0 (or 0.5) when all elements are equal\", \"Assume inputs always contain at least two distinct values (precondition, behavior undefined)\"]}]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 955,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 364,
+  "output_tokens_details": {
+   "thinking_tokens": 112
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 955,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 364,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 955,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 955
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 9.5,
+ "time": "2026-11-17 18:09:06"
+}

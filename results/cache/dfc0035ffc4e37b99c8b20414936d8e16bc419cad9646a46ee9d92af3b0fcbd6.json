@@ -1,0 +1,47 @@
+{
+ "tag": "R4|inject|it5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert in requirements engineering who writes realistic ambiguous software requirements for a research benchmark.",
+ "prompt": "Rewrite the function-level requirement below so that it contains EXACTLY two ambiguities: one Lexical ambiguity and one Syntactic ambiguity.\n\nAmbiguity types:\n- Lexical: a word in the requirement has multiple distinct meanings, causing different interpretations.\n- Syntactic: the requirement's grammatical structure has multiple distinct meanings (e.g. unclear attachment, scope or pronoun reference), causing different interpretations.\n- Semantic: a phrase or sentence in the requirement has multiple distinct meanings, causing different interpretations.\n- Vagueness: the requirement omits necessary details, so it has multiple distinct meanings, causing different interpretations.\n\nRules:\n1. Inject the Lexical ambiguity and the Syntactic ambiguity at two different places in the text.\n2. Inject no other ambiguity; everything else stays as clear as in the original.\n3. The original meaning must remain one plausible reading of the rewritten text.\n4. Each injected ambiguity must allow another plausible reading that leads to a functionally different implementation (some input gives a different output).\n5. Keep imports, the function signature, docstring delimiters and indentation exactly as in the original. Change only the natural-language text. Do not add examples.\n6. It must read naturally, like a real developer wrote it, with a similar length.\n\nSingle-type examples from other tasks:\n\n### Lexical ambiguity example\nOriginal:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    \"\"\"\n```\nRewritten:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given set of numbers, are any two numbers closer to each other than\n    given threshold.\n    \"\"\"\n```\nExplanation: \"set\": Could mean a general mathematical collection of numbers or the specific Python `set` data structure (implying unique, unordered elements). Ambiguous here because the function actually accepts a `List` (ordered, allows duplicates), creating a mismatch between the description and the actual input type and its properties.\n\n### Syntactic ambiguity example\nOriginal:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    \"\"\"\n```\nRewritten:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer than\n    given threshold to each other.\n    \"\"\"\n```\nExplanation: Ambiguous phrase ordering: it is ambiguous whether \"closer than given threshold to each other\" means the distance between any two numbers is less than the threshold, or if each number is individually within the threshold of another number.\n\n### Lexical ambiguity example\nOriginal:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return the product of the odd digits.\n    Return 0 if all digits are even.\n    \"\"\"\n```\nRewritten:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return the product of the key digits.\n    Return 0 if all digits are even.\n    \"\"\"\n```\nExplanation: \"key\": Could mean important, significant, or a placeholder for a specific characteristic. Ambiguous here, as it obscures the specific criterion (oddness, based on examples) for selecting digits for the product calculation.\n\n### Syntactic ambiguity example\nOriginal:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return the product of the odd digits.\n    Return 0 if all digits are even.\n    \"\"\"\n```\nRewritten:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n return the product of the odd digits,\n    Return 0 if all digits are even.\n    \"\"\"\n```\nExplanation: Ambiguous phrase placement of \"return the product of the odd digits,\": it is unclear whether the comma separates the action from the condition (\"Return 0 if all digits are even\") as a distinct clause or if it incorrectly joins them as a single statement.\n\nOriginal requirement:\n```python\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    \"\"\"\n```\n\nA reviewer rejected your previous attempt:\nBoth ambiguities are present, and each has its own span.\n\nLexical: 'pattern' can mean a literal substring or a regex. Under the regex reading, '.' matches 3 characters in 'a.c'. Under the literal reading, it matches 1.\n\nSyntactic: in 'Do not count just the non-overlapping matches', the scope of 'not' and 'just' is unclear. Reading A is 'count overlapping matches as well, not only the non-overlapping ones', giving 2 for 'abab'/'ab'. Reading B is 'exclude the matches that are merely non-overlapping and count only the overlapping ones', giving 0 for the same input.\n\nThe double-negative phrasing reads awkwardly. To improve naturalness, rephrase to something like 'Count all matches, not just the non-overlapping ones, where they overlap.' This keeps the scope ambiguity but reads more like a real docstring.\nFix these problems.\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous_prompt\": \"<full rewritten code: imports + signature + docstring>\",\n \"ambiguities\": [{\"type\": \"<Lexical or Syntactic>\", \"span\": \"<exact ambiguous words>\", \"readings\": [\"<intended reading>\", \"<alternative reading>\"]}]}",
+ "text": "```json\n{\"ambiguous_prompt\": \"def how_many_times(string: str, substring: str) -> int:\\n    \\\"\\\"\\\" Find how many times a given pattern can be found in the original string. Count all matches, not just the non-overlapping ones, where they overlap.\\n    \\\"\\\"\\\"\",\n \"ambiguities\": [\n  {\"type\": \"Lexical\",\n   \"span\": \"pattern\",\n   \"readings\": [\n    \"A literal substring matched character by character. For 'a.c' with substring '.', the count is 1.\",\n    \"A regular expression, where characters such as '.' are metacharacters. For 'a.c' with substring '.', the count is 3, because '.' matches any character.\"]},\n  {\"type\": \"Syntactic\",\n   \"span\": \"Count all matches, not just the non-overlapping ones, where they overlap.\",\n   \"readings\": [\n    \"'where they overlap' is attached to 'Count all matches', so overlapping matches are counted along with non-overlapping ones. For 'abab' with 'ab', the result is 2. For 'aaa' with 'aa', the result is 2.\",\n    \"'where they overlap' restricts which matches are counted, so only matches that overlap another match are counted. For 'abab' with 'ab', the result is 0 because those matches do not overlap.\"]}\n ]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 2511,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 655,
+  "output_tokens_details": {
+   "thinking_tokens": 226
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2511,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 655,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2511,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2511
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 8.3,
+ "time": "2026-11-17 17:11:54"
+}

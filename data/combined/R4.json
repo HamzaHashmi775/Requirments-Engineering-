@@ -1,0 +1,171 @@
+{
+ "id": "R4",
+ "task_id": "HumanEval/18",
+ "pair": [
+  "L",
+  "S"
+ ],
+ "original_prompt": "\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    \"\"\"\n",
+ "ambiguous_prompt": "\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string Count overlaping cases.\n    \"\"\"\n",
+ "judge_passed": null,
+ "iterations_used": 0,
+ "source": "manual_reinjection",
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "a given pattern",
+    "explanation": "'pattern' can mean the literal substring or a regular expression.",
+    "intended_reading": "The literal substring; count every position where it occurs, overlaps included.",
+    "alternative_reading": "A regular expression; count every position where the regex matches.",
+    "alternative_implementation": "import re\ndef how_many_times(string: str, substring: str) -> int:\n    return len(re.findall('(?=' + substring + ')', string))\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 2,
+     "n_tests": 1004,
+     "first_witness": [
+      ".cafoipsuconsecteturmxcdogfox.",
+      ".dogfox."
+     ]
+    }
+   },
+   {
+    "type": "Syntactic",
+    "span": "in the original string Count overlaping cases.",
+    "explanation": "Without the sentence boundary, 'Count overlaping cases' can describe how to count, or be a separate instruction that counts only overlapping cases (Orchid's curated syntactic variant of this task).",
+    "intended_reading": "Count all occurrences, overlapping ones included.",
+    "alternative_reading": "Count only the occurrences that overlap another occurrence.",
+    "alternative_implementation": "def how_many_times(string: str, substring: str) -> int:\n    n = len(substring)\n    starts = [i for i in range(len(string) - n + 1) if string[i:i + n] == substring]\n    return sum(1 for i in starts if any(j != i and abs(j - i) < n for j in starts))\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 250,
+     "n_tests": 1004,
+     "first_witness": [
+      "xyxyxyx",
+      "x"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-17. Manually reinjected after two agent attempts failed the syntactic type. Syntactic part = Orchid's human-curated syntactic variant of HumanEval/18; lexical = 'pattern' (literal vs regex). Both verified by execution."
+ },
+ "rejected_attempts": [
+  {
+   "id": "R4",
+   "task_id": "HumanEval/18",
+   "pair": [
+    "L",
+    "S"
+   ],
+   "original_prompt": "\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    \"\"\"\n",
+   "ambiguous_prompt": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string. Count matches that overlap with other matches as well.\n    \"\"\"",
+   "judge_passed": false,
+   "iterations_used": 5,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "a given pattern",
+      "explanation": "The word 'pattern' can mean a literal substring or a regular-expression pattern. Under the regex sense, the substring argument is compiled and interpreted, so metacharacters like '.', '*' or '[...]' change which spans count as occurrences.",
+      "intended_reading": "'pattern' means the literal substring argument. An occurrence is any position where string[i:i+len(substring)] == substring, and overlapping occurrences are counted.",
+      "alternative_reading": "'pattern' means a regular expression. Count every position in the string where the regex matches, overlapping matches included.",
+      "alternative_implementation": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string. Count matches that overlap with other matches as well.\n    \"\"\"\n    import re\n    compiled = re.compile(substring)\n    count = 0\n    for i in range(len(string) + 1):\n        if compiled.match(string, i):\n            count += 1\n    return count\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 1004,
+       "first_witness": [
+        ".cafoipsuconsecteturmxcdogfox.",
+        ".dogfox."
+       ]
+      }
+     },
+     {
+      "type": "Syntactic",
+      "span": "Count matches that overlap with other matches as well.",
+      "explanation": "'as well' can attach to the verb 'Count' or to the relative clause 'that overlap with other matches'. The first gives 'also count overlapping matches' (count all matches, overlaps included). The second gives 'count matches that also overlap with other matches' (count only the matches that overlap some other match).",
+      "intended_reading": "Count all occurrences, including those that overlap other occurrences (e.g., 'aa' in 'aaaa' -> 3).",
+      "alternative_reading": "Count only the occurrences that overlap with at least one other occurrence. Isolated, non-overlapping occurrences are excluded (e.g., 'aa' in 'aaxaa' -> 0).",
+      "alternative_implementation": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string. Count matches that overlap with other matches as well.\n    \"\"\"\n    n = len(substring)\n    starts = [i for i in range(len(string) - n + 1) if string[i:i + n] == substring]\n    count = 0\n    for i in starts:\n        if any(j != i and abs(i - j) < n for j in starts):\n            count += 1\n    return count\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 250,
+       "n_tests": 1004,
+       "first_witness": [
+        "xyxyxyx",
+        "x"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Keep the lexical ambiguity on 'pattern' (literal substring vs regex). Replace the syntactic ambiguity: the 'as well' attachment is weak because most developers read it as 'in addition'. Use an attachment or scope ambiguity where the intended reading (count all occurrences, overlapping included) stays the most natural one, and keep the leading blank lines before def exactly as in the original."
+  },
+  {
+   "id": "R4",
+   "task_id": "HumanEval/18",
+   "pair": [
+    "L",
+    "S"
+   ],
+   "original_prompt": "\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    \"\"\"\n",
+   "ambiguous_prompt": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string. Count cases overlapping with the previous match.\n    \"\"\"",
+   "judge_passed": false,
+   "iterations_used": 5,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "a given pattern",
+      "explanation": "In programming, 'pattern' often means a regular expression, not a literal string. Under that reading, `substring` would be compiled as a regex and metacharacters such as '.', '*' or '[' would change what counts as an occurrence.",
+      "intended_reading": "'pattern' means the literal `substring`. Count every position where `substring` occurs verbatim in `string`, including overlapping occurrences.",
+      "alternative_reading": "'pattern' means a regular expression. Treat `substring` as a regex and count every start position in `string` where it matches, including overlapping matches.",
+      "alternative_implementation": "import re\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string. Count cases overlapping with the previous match.\n    \"\"\"\n    pattern = re.compile(substring)\n    count = 0\n    for i in range(len(string)):\n        if pattern.match(string, i):\n            count += 1\n    return count\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 1004,
+       "first_witness": [
+        ".cafoipsuconsecteturmxcdogfox.",
+        ".dogfox."
+       ]
+      }
+     },
+     {
+      "type": "Syntactic",
+      "span": "Count cases overlapping with the previous match.",
+      "explanation": "The sentence can be parsed as an inclusive instruction ('also count cases that overlap'), so overlapping occurrences are not excluded. It can also be parsed as a restrictive one ('count only the cases that overlap the previous match'), which narrows the result to overlapping occurrences.",
+      "intended_reading": "Count all occurrences, and do not skip those that overlap a previous occurrence. In other words, return the total number of overlapping occurrences.",
+      "alternative_reading": "Count only those occurrences that overlap the immediately preceding occurrence. The first occurrence, and any occurrence that starts after the previous one has ended, are not counted.",
+      "alternative_implementation": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given pattern can be found in the original string. Count cases overlapping with the previous match.\n    \"\"\"\n    n = len(substring)\n    positions = [i for i in range(len(string) - n + 1) if string[i:i + n] == substring]\n    count = 0\n    for prev, cur in zip(positions, positions[1:]):\n        if cur < prev + n:\n            count += 1\n    return count\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 270,
+       "n_tests": 1004,
+       "first_witness": [
+        "xyxyxyx",
+        "x"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Judge: syntactic part is semantic/pragmatic, not grammatical. Second agent failure; replaced by manual reinjection."
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B10|recognize-judge|claude-sonnet-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\nScans a specified directory for relevant files. If the backup directory does not exist, it is created and the files are copied into it. The function returns a list of paths to the copied files in the backup directory.\nNote that: The function assumes that the source directory exists and contains the files to be backed up.\nThe function should output with:\n    list: Paths to the copied files in the backup directory.\nYou should write self-contained code starting with:\n```\nimport os\nimport shutil\ndef task_func(directory, backup_directory):\n```\n\nGround-truth ambiguities:\n1. Syntactic: span \"If the backup directory does not exist, it is created and the files are copied into it.\" — intended: Creating the backup directory is conditional on it not existing, but copying the JSON files into the backup directory always happens. — alternative: Both creation and copying fall under the condition: files are copied only when the backup directory did not previously exist; if it already exists, nothing is copied and an empty list is returned.\n2. Vagueness: span \"relevant files\" — intended: Relevant files are the JSON files (files ending in '.json') in the source directory. — alternative: All regular files in the source directory are relevant, so every file is backed up regardless of extension.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"Scans a specified directory for relevant files.\",\n   \"reason\": \"'Relevant files' is undefined. The criteria for selecting files (all files, specific extensions, non-hidden files, etc.) are not stated, and different criteria produce different copied files and return values. It is also unclear whether subdirectories are scanned recursively.\",\n   \"options\": [\n    \"Copy all regular files directly in the directory (non-recursive), with no filtering\",\n    \"Copy all files recursively, including those in subdirectories\",\n    \"Copy only files with certain extensions (e.g., specific types such as .txt/.docx/.xlsx/.csv), with the extension list to be specified\",\n    \"Copy all files except hidden/system files\"\n   ]\n  },\n  {\n   \"segment\": \"the files are copied into it\",\n   \"reason\": \"It is unclear whether copying happens only when the backup directory had to be created, or always (including when it already exists). It is also unspecified what happens if a file of the same name already exists in the backup directory (overwrite, skip, rename), and whether subdirectory structure is preserved.\",\n   \"options\": [\n    \"Always copy files, creating the backup directory if needed; overwrite existing files with the same name\",\n    \"Copy files only when the backup directory is newly created; otherwise return an empty list\",\n    \"Always copy, but skip or rename files that already exist in the backup directory\",\n    \"Flatten all files into the backup directory vs. preserve the relative subdirectory structure\"\n   ]\n  },\n  {\n   \"segment\": \"The function returns a list of paths to the copied files in the backup directory.\",\n   \"reason\": \"The order of the returned list and the form of the paths (absolute vs. relative to the given backup_directory, e.g. os.path.join(backup_directory, name)) are not specified. Scanning order from os.listdir is arbitrary, so tests may differ depending on whether sorting is applied.\",\n   \"options\": [\n    \"Paths built with os.path.join(backup_directory, filename), in os.listdir order\",\n    \"Paths sorted alphabetically\",\n    \"Absolute paths to the copied files\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Syntactic\", \"level\": \"tackling\", \"matched_segment\": \"the files are copied into it\", \"reason\": \"This issue asks whether copying happens only when the backup directory was newly created or always. The options include 'Always copy files, creating the backup directory if needed', which matches the intended reading. They also include 'Copy files only when the backup directory is newly created; otherwise return an empty list', which matches the alternative reading.\"}, {\"type\": \"Vagueness\", \"level\": \"localization\", \"matched_segment\": \"Scans a specified directory for relevant files.\", \"reason\": \"The segment correctly flags 'relevant files' as undefined. One option ('Copy all regular files directly in the directory, with no filtering') matches the alternative reading. The intended reading is JSON files only. The only filtering option is a generic extension placeholder whose examples are .txt/.docx/.xlsx/.csv. It never mentions .json, so it is not equivalent to the intended reading.\"}], \"spurious_issues\": 1}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 2041,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 671,
+  "output_tokens_details": {
+   "thinking_tokens": 328
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2041,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 671,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2041,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2041
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.7,
+ "time": "2026-11-19 14:28:18"
+}

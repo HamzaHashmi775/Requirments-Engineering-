@@ -1,0 +1,47 @@
+{
+ "tag": "B8|original|claude-opus-5-5|2",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nBackup all '.log' files in a specified directory to a tar.gz file and delete the original files after backup. The backup file is named 'logs_backup.tar.gz' and placed in the specified backup directory.\nThe function should raise the exception for: FileNotFoundError: If the specified directory does not exist.\nThe function should output with:\n    str: The path to the backup file if logs are found, otherwise returns a message 'No logs found to backup'.\nYou should write self-contained code starting with:\n```\nimport os\nimport glob\nimport subprocess\ndef task_func(directory, backup_dir='/path/to/backup'):\n```",
+ "text": "```python\nimport os\nimport glob\nimport subprocess\nimport tarfile\n\n\ndef task_func(directory, backup_dir='/path/to/backup'):\n    \"\"\"\n    Back up all '.log' files in `directory` into 'logs_backup.tar.gz' inside\n    `backup_dir`, then delete the original log files.\n\n    Parameters:\n        directory (str): Directory containing the '.log' files.\n        backup_dir (str): Directory where the backup archive will be placed.\n\n    Returns:\n        str: Path to the backup file if logs were found,\n             otherwise 'No logs found to backup'.\n\n    Raises:\n        FileNotFoundError: If `directory` does not exist.\n    \"\"\"\n    if not os.path.exists(directory):\n        raise FileNotFoundError(f\"Directory '{directory}' not found.\")\n\n    log_files = glob.glob(os.path.join(directory, '*.log'))\n    if not log_files:\n        return 'No logs found to backup'\n\n    os.makedirs(backup_dir, exist_ok=True)\n    backup_file = os.path.join(backup_dir, 'logs_backup.tar.gz')\n\n    # Use tarfile instead of an external 'tar' call so this works on any platform.\n    with tarfile.open(backup_file, 'w:gz') as tar:\n        for log_file in log_files:\n            tar.add(log_file, arcname=os.path.basename(log_file))\n\n    # Delete originals only after the archive has been written successfully.\n    for log_file in log_files:\n        os.remove(log_file)\n\n    return backup_file\n```\n\n**Notes:**\n- The original log files are deleted only after the archive is closed without errors. If archiving fails, the originals are kept.\n- The script uses Python's `tarfile` module rather than calling the `tar` command through `subprocess`. This keeps it self-contained and portable to Windows, where `tar` might not be available. The required `subprocess` import is still included to match the given starting code.\n- If `backup_dir` doesn't exist, it is created.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 804,
+  "output_tokens": 758,
+  "output_tokens_details": {
+   "thinking_tokens": 103
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 758,
+    "cache_read_input_tokens": 804,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 12.9,
+ "time": "2026-11-19 14:17:35"
+}

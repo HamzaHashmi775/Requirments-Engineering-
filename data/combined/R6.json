@@ -1,0 +1,250 @@
+{
+ "id": "R6",
+ "task_id": "HumanEval/22",
+ "pair": [
+  "L",
+  "V"
+ ],
+ "original_prompt": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for integers\n    \"\"\"\n",
+ "ambiguous_prompt": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"",
+ "judge_passed": true,
+ "iterations_used": 2,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "whole numbers",
+    "explanation": "'Whole numbers' has more than one accepted meaning. In programming it can mean Python integers of any sign. In mathematics it usually means the non-negative integers {0, 1, 2, ...}. Under the second meaning, negative ints such as -5 would be dropped.",
+    "intended_reading": "Keep every element whose type is int (isinstance(x, int)), including negative integers and zero.",
+    "alternative_reading": "Keep only non-negative integers (0, 1, 2, ...). Negative ints are excluded even though they are Python integers.",
+    "alternative_implementation": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"\n    return [x for x in values if isinstance(x, int) and x >= 0]\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 209,
+     "n_tests": 956,
+     "first_witness": [
+      [
+       true,
+       false,
+       null,
+       0,
+       -10,
+       "test",
+       [],
+       {},
+       3.14
+      ]
+     ]
+    }
+   },
+   {
+    "type": "Vagueness",
+    "span": "which may include containers",
+    "explanation": "The phrase says containers may appear but not how to handle them. They could be treated as ordinary non-integer elements and dropped. They could also be searched, so that integers nested inside lists, tuples, sets or dicts are extracted.",
+    "intended_reading": "Containers are just non-integer elements. Only top-level elements that are ints are kept, and containers are discarded without looking inside them.",
+    "alternative_reading": "Search containers recursively: integers found inside nested lists, tuples, sets and dict values are collected into the flat output list, in traversal order.",
+    "alternative_implementation": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"\n    result: List[int] = []\n\n    def walk(item: Any) -> None:\n        if isinstance(item, int):\n            result.append(item)\n        elif isinstance(item, dict):\n            for v in item.values():\n                walk(v)\n        elif isinstance(item, (list, tuple, set, frozenset)):\n            for v in item:\n                walk(v)\n\n    for value in values:\n        walk(value)\n    return result\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 773,
+     "n_tests": 956,
+     "first_witness": [
+      [
+       true,
+       false,
+       null,
+       0,
+       -10,
+       "test",
+       [],
+       {},
+       3.14
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which can include containers, by integers\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "Filter",
+      "readings": [
+       "Filter means select and keep: return only the values that are integers.",
+       "Filter means screen out and remove: drop the integers and return the remaining values."
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "which can include containers",
+      "readings": [
+       "Containers such as lists, dicts and tuples are just ordinary non-integer values. Only top-level int values are returned, so [1, [2, 3]] gives [1].",
+       "Integers inside containers should also be collected, so [1, [2, 3]] gives [1, 2, 3]. The text never says whether nested contents are examined."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "[1, 'a', 2.5]",
+      "plausibility": 3
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "[1, [2, 3], (4,), 'x']",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 3,
+    "feedback": "Lexical: 'filter ... by integers' can mean keep the integers or remove them. The return type List[int] makes the 'remove integers' reading less plausible. Consider a word whose alternative meaning survives the signature, or accept the lower plausibility. Vagueness: the mention of containers properly leaves open whether integers nested inside lists or tuples should be extracted (flattened) or the containers just skipped. Naturalness: 'filter ... by integers' reads a little awkwardly. 'Filter integers from the given list of any python values, which may include containers' would read more naturally and keep both ambiguities ('filter from' = extract or remove)."
+   },
+   "passed": false,
+   "score": 20
+  },
+  {
+   "iteration": 2,
+   "candidate": {
+    "ambiguous_prompt": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"",
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "whole numbers",
+      "readings": [
+       "Any integer value, including negative integers and zero (everyday sense of 'whole number' as a synonym of 'integer'), e.g. [-3, 0, 5] stays [-3, 0, 5]",
+       "Only non-negative integers {0, 1, 2, ...} (mathematical sense of 'whole numbers'), so negative integers are dropped, e.g. [-3, 0, 5] becomes [0, 5]"
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "which may include containers",
+      "readings": [
+       "Containers such as lists, tuples or dicts are just non-integer values and are skipped entirely, e.g. [1, [2, 3]] gives [1]",
+       "Integers nested inside containers should also be extracted (flattened) into the result, e.g. [1, [2, 3]] gives [1, 2, 3]"
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "[-1, 2, 3.0, 'a']",
+      "plausibility": 4
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "[1, [2, 3], (4,), 'x']",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "naturalness": 4,
+    "feedback": ""
+   },
+   "passed": true,
+   "score": 22
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-17."
+ },
+ "rejected_attempts": [
+  {
+   "id": "R6",
+   "task_id": "HumanEval/22",
+   "pair": [
+    "L",
+    "V"
+   ],
+   "original_prompt": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for integers\n    \"\"\"\n",
+   "ambiguous_prompt": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for whole numbers, handling numeric-looking values appropriately\n    \"\"\"",
+   "judge_passed": true,
+   "iterations_used": 2,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "whole numbers",
+      "explanation": "'Whole numbers' has more than one standard meaning. It can mean the integers in general, or only the non-negative integers {0, 1, 2, ...}. Under the second meaning, negative ints such as -5 would be dropped from the output.",
+      "intended_reading": "'Whole numbers' means integers of any sign, so every value of Python type int is kept, including negative ones.",
+      "alternative_reading": "'Whole numbers' means the non-negative integers {0, 1, 2, ...}, so only int values >= 0 are kept and negative ints are filtered out.",
+      "alternative_implementation": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for whole numbers, handling numeric-looking values appropriately\n    \"\"\"\n    return [x for x in values if isinstance(x, int) and x >= 0]\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 209,
+       "n_tests": 956,
+       "first_witness": [
+        [
+         true,
+         false,
+         null,
+         0,
+         -10,
+         "test",
+         [],
+         {},
+         3.14
+        ]
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "handling numeric-looking values appropriately",
+      "explanation": "The phrase does not say what 'appropriately' means for values such as 3.0, '7' or '-2'. Such values could be excluded because they are not ints, or converted to ints and included. Each choice gives a different output list.",
+      "intended_reading": "No special conversion is done. Only values that are actually Python ints are kept. Floats such as 3.0 and strings such as '3' are excluded.",
+      "alternative_reading": "Numeric-looking values that represent an integer are converted to int and included. This covers floats with an integral value, such as 3.0, and strings that parse as integers, such as '42' or ' -7 '. Actual ints are kept as they are.",
+      "alternative_implementation": "from typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for whole numbers, handling numeric-looking values appropriately\n    \"\"\"\n    result = []\n    for x in values:\n        if isinstance(x, int):\n            result.append(x)\n        elif isinstance(x, float):\n            if x == x and x not in (float('inf'), float('-inf')) and x.is_integer():\n                result.append(int(x))\n        elif isinstance(x, str):\n            s = x.strip()\n            try:\n                result.append(int(s))\n            except ValueError:\n                try:\n                    f = float(s)\n                    if f == f and f not in (float('inf'), float('-inf')) and f.is_integer():\n                        result.append(int(f))\n                except ValueError:\n                    pass\n    return result\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 420,
+       "n_tests": 956,
+       "first_witness": [
+        [
+         true,
+         false,
+         null,
+         0,
+         -10,
+         "test",
+         [],
+         {},
+         3.14
+        ]
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Rejected: the intended reading of 'handling numeric-looking values appropriately' (do nothing special) is less natural than the alternative, and its span overlaps the lexical one (is 3.0 a whole number?). Use a lexical ambiguity on one word and a vagueness ambiguity that omits a detail at a different place, without overlap, so the intended reading (keep exactly the Python int values) stays at least as natural as the alternative."
+  }
+ ],
+ "source": "agent"
+}

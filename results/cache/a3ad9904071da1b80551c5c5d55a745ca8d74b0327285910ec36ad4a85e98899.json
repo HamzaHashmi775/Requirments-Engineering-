@@ -1,0 +1,47 @@
+{
+ "tag": "B12|original|claude-opus-5-5|3",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 3,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern and with a certain suffix, then determines their file types. The function returns a dictionary with file names as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping file names to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan `directory` for files that match `file_pattern` and contain `suffix`,\n    then work out each file's MIME type.\n\n    Parameters:\n        directory (str): The directory to scan.\n        file_pattern (str): A glob pattern, such as '*' or 'data_*'.\n        suffix (str): A regex fragment that must appear in the file name, such as '_suff' or r'\\.txt$'.\n\n    Returns:\n        dict: Maps file names to MIME types. A type is None if it cannot be determined.\n    \"\"\"\n    file_types = {}\n\n    # Search inside the target directory without changing the working directory.\n    matched_paths = glob.glob(os.path.join(directory, file_pattern))\n\n    for path in matched_paths:\n        file_name = os.path.basename(path)\n        if re.search(suffix, file_name):\n            mime_type, _ = mimetypes.guess_type(path)\n            file_types[file_name] = mime_type\n\n    return file_types\n\n\nif __name__ == \"__main__\":\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as tmp:\n        for name in [\"report_suff.txt\", \"image_suff.png\", \"notes.txt\", \"data_suff.csv\"]:\n            with open(os.path.join(tmp, name), \"w\") as f:\n                f.write(\"sample\")\n\n        result = task_func(tmp, \"*\", \"_suff\")\n        for name, mime in sorted(result.items()):\n            print(f\"{name}: {mime}\")\n```\n\nNotes:\n- The search uses `os.path.join(directory, file_pattern)`, so the process's working directory never changes. Calling `os.chdir` would have that side effect.\n- `suffix` is matched with `re.search`, so it can be plain text like `'_suff'` or a regex anchored to the end like `r'\\.txt$'`.\n- The dictionary keys are plain file names. The values come from `mimetypes.guess_type` and are `None` for unknown file types.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 754,
+  "output_tokens": 1080,
+  "output_tokens_details": {
+   "thinking_tokens": 402
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1080,
+    "cache_read_input_tokens": 754,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 14.5,
+ "time": "2026-11-19 14:06:12"
+}

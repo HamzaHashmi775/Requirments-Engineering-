@@ -1,0 +1,47 @@
+{
+ "tag": "B12|recognize-judge|claude-opus-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\nScans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```\n\nGround-truth ambiguities:\n1. Lexical: span \"the matched entries as keys\" — intended: The keys are the bare file names (base names) of the matching files. — alternative: The keys are the matched paths exactly as glob returns them, i.e. full paths that include the directory prefix.\n2. Syntactic: span \"files matching a given pattern with a certain suffix\" — intended: There are two separate conditions: a file must match file_pattern AND its name must also end with suffix. — alternative: The suffix belongs to the pattern. The search uses the single combined glob file_pattern + suffix, with no separate suffix filter.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"files matching a given pattern\",\n   \"reason\": \"The kind of pattern is not stated. It could be a glob pattern or a regular expression, and the two match different files.\",\n   \"options\": [\n    \"Treat file_pattern as a glob pattern applied within the directory (e.g. glob.glob(os.path.join(directory, file_pattern)))\",\n    \"Treat file_pattern as a regular expression matched against file names in the directory\"\n   ]\n  },\n  {\n   \"segment\": \"with a certain suffix\",\n   \"reason\": \"It is unclear how the suffix is checked. A plain string end-check, a regex anchored at the end, and an extension-only comparison give different results for some inputs (e.g. a suffix with regex metacharacters like '.txt', or a suffix given without its dot).\",\n   \"options\": [\n    \"Use filename.endswith(suffix)\",\n    \"Treat suffix as a regex anchored at the end (re.search(suffix + '$', filename))\",\n    \"Compare only the file extension with suffix (e.g. os.path.splitext)\"\n   ]\n  },\n  {\n   \"segment\": \"the matched entries as keys\",\n   \"reason\": \"The format of the keys is not specified. They could be bare file names, paths relative to the directory, or full paths including the directory.\",\n   \"options\": [\n    \"Keys are bare file names (relative to the directory)\",\n    \"Keys are full paths joined with the directory\"\n   ]\n  },\n  {\n   \"segment\": \"files\",\n   \"reason\": \"It is unclear whether directories or other non-regular entries that match the pattern and suffix should be included. The word 'entries' suggests any directory entry.\",\n   \"options\": [\n    \"Include only regular files\",\n    \"Include any matching directory entry\"\n   ]\n  },\n  {\n   \"segment\": \"their corresponding MIME types\",\n   \"reason\": \"MIME types may be guessed from the file name (mimetypes.guess_type) or found by inspecting file content. The value for unknown types is also unspecified: it could be None, a default like 'application/octet-stream', or the file could be left out.\",\n   \"options\": [\n    \"Use mimetypes.guess_type(name)[0] and keep None for unknown types\",\n    \"Use a default MIME type such as 'application/octet-stream' for unknown types\",\n    \"Leave out files whose MIME type cannot be determined\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Lexical\", \"level\": \"tackling\", \"matched_segment\": \"the matched entries as keys\", \"reason\": \"This segment targets the exact span. Its options cover both readings: bare file names (intended) and full paths joined with the directory, as glob returns them (alternative).\"}, {\"type\": \"Syntactic\", \"level\": \"localization\", \"matched_segment\": \"with a certain suffix\", \"reason\": \"The segment points to the suffix part of the span, but every option (endswith, regex anchored at the end, splitext) treats the suffix as a separate filter. No option offers the alternative reading, where the suffix belongs to the pattern and the search uses a single combined glob file_pattern + suffix.\"}], \"spurious_issues\": 3}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 2090,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 676,
+  "output_tokens_details": {
+   "thinking_tokens": 421
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2090,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 676,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2090,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2090
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.5,
+ "time": "2026-11-19 14:30:22"
+}

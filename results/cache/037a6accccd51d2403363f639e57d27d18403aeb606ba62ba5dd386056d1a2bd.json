@@ -1,0 +1,47 @@
+{
+ "tag": "B12|recognize|combined|claude-sonnet-5-5",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert software engineer who reviews requirements before implementing them.",
+ "prompt": "Below is the requirement for a Python function you are asked to implement.\n\nScans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```\n\nBefore implementing it, decide whether the requirement is ambiguous: does any wording allow more than one plausible interpretation that would lead to functionally different implementations (different outputs for some input)? Do not flag ordinary details that a competent developer would resolve the same way.\n\nIf it is ambiguous, list every ambiguous segment: quote the exact words, explain why they are ambiguous, and give concrete clarification options (the possible interpretations a stakeholder could choose between).\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"<exact quoted words>\", \"reason\": \"\", \"options\": [\"\", \"\"]}]}\nUse {\"ambiguous\": false, \"issues\": []} if it is not ambiguous.",
+ "text": "```json\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"files matching a given pattern with a certain suffix\", \"reason\": \"It is unclear how the pattern (a regex, given the `re` import, or a glob, given `glob`) and the suffix combine. They could be applied as separate filters, concatenated into one glob, or the suffix could be a filename ending or an extension. The set of matched files differs for each reading.\", \"options\": [\"file_pattern is a glob; the suffix is appended to it (e.g. glob(directory/file_pattern + suffix))\", \"file_pattern is a regex matched against filenames (re.match/search) and the file must also end with suffix (str.endswith)\", \"file_pattern is a glob on filenames and the suffix is a separate extension filter; the file must match both\", \"file_pattern is matched as a regex on the full filename, where the suffix is part of the match criteria (e.g. pattern + suffix + '$')\"]}, {\"segment\": \"The function returns a dictionary with the matched entries as keys\", \"reason\": \"'Entries' does not say whether keys are full paths, paths relative to the directory, or bare filenames. It also does not say whether subdirectories (or directories matching the pattern) count as entries or only files do.\", \"options\": [\"Keys are full paths, as returned by glob (directory joined with filename)\", \"Keys are bare filenames (basename) only\", \"Keys are paths relative to the directory\", \"Only regular files are included; directories are excluded\", \"Any matched entry, including directories, is included\"]}, {\"segment\": \"Scans a specified directory\", \"reason\": \"It is unclear whether the scan is recursive (including subdirectories) or only the top level of the directory.\", \"options\": [\"Non-recursive: only files directly in the directory\", \"Recursive: includes files in all subdirectories\"]}, {\"segment\": \"their corresponding MIME types as values\", \"reason\": \"mimetypes.guess_type can return None when the type is unknown. The requirement does not say whether such entries get None as the value, are omitted, or get a default type. It is also unclear whether the type is derived from the filename or from the file contents.\", \"options\": [\"Value is None for unknown types (raw guess_type()[0])\", \"Entries with unknown types are omitted from the dictionary\", \"A default such as 'application/octet-stream' is used for unknown types\", \"The type is determined from the file contents instead of the name\"]}]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1014,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 785,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1014,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 785,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1014,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1014
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 13.2,
+ "time": "2026-11-19 14:30:35"
+}

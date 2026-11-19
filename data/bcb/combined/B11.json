@@ -1,0 +1,208 @@
+{
+ "id": "B11",
+ "task_id": "BigCodeBench/125",
+ "pair": [
+  "S",
+  "M"
+ ],
+ "original_prompt": "Generates all possible combinations of a given set of letters of length 'n'. Counts the occurrences of each letter in these combinations and saves the results in a JSON file. The name of the file is prefix_<random-number-here>.json. The value of <random-number-here> is between 0 and 100.\nThe function should output with:\n    str: The name of the generated JSON file containing letter counts.\nYou should write self-contained code starting with:\n```\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n```",
+ "ambiguous_prompt": "Generates all possible length-'n' selections from a given set of letters. Counts how many times each letter occurs in every selection and saves the results in a JSON file. The name of the file is prefix_<random-number-here>.json. The value of <random-number-here> is between 0 and 100.\nThe function should output with:\n    str: The name of the generated JSON file containing the letter counts.\nYou should write self-contained code starting with:\n```\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n```",
+ "judge_passed": true,
+ "iterations_used": 3,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Syntactic",
+    "span": "Counts how many times each letter occurs in every selection",
+    "explanation": "The phrase 'in every selection' can attach in two ways. It can mean the total count over all selections combined, or a separate count done for each selection. The two readings produce different JSON structures.",
+    "intended_reading": "Aggregate the counts across all generated combinations. The result is a single mapping from each letter to its total number of occurrences over all combinations.",
+    "alternative_reading": "Count letter occurrences separately within each individual selection. The result maps each combination to its own letter-count dictionary.",
+    "alternative_implementation": "from collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n    results = {}\n    for combo in itertools.combinations(LETTERS, n):\n        counts = defaultdict(int)\n        for letter in combo:\n            counts[letter] += 1\n        results[''.join(combo)] = dict(counts)\n    filename = f'prefix_{random.randint(0, 100)}.json'\n    with open(filename, 'w') as f:\n        json.dump(results, f)\n    return filename\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 2,
+     "n_tests": 4,
+     "failing_tests": [
+      "TestCases.test_combination_length",
+      "TestCases.test_return_type"
+     ]
+    }
+   },
+   {
+    "type": "Semantic",
+    "span": "all possible length-'n' selections",
+    "explanation": "'Selections' does not say whether order matters or whether a letter may repeat. It could mean combinations, permutations, or a Cartesian product with repetition. Each choice generates a different set of tuples and therefore different letter counts.",
+    "intended_reading": "Unordered combinations without repetition, i.e. itertools.combinations(LETTERS, n).",
+    "alternative_reading": "All length-n sequences where letters may repeat and order matters, i.e. itertools.product(LETTERS, repeat=n).",
+    "alternative_implementation": "from collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n    letter_counts = defaultdict(int)\n    for combo in itertools.product(LETTERS, repeat=n):\n        for letter in combo:\n            letter_counts[letter] += 1\n    filename = f'prefix_{random.randint(0, 100)}.json'\n    with open(filename, 'w') as f:\n        json.dump(dict(letter_counts), f)\n    return filename\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 1,
+     "n_tests": 4,
+     "failing_tests": [
+      "TestCases.test_return_type"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "Generates all possible length-'n' selections from a given set of letters. Counts how often each letter occurs in them and saves the results in a JSON file. The name of the file is prefix_<random-number-here>.json. The value of <random-number-here> is between 0 and 100.\nThe function should output with:\n    str: The name of the generated JSON file containing letter counts.\nYou should write self-contained code starting with:\n```\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n```",
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "all possible length-'n' selections from a given set of letters",
+      "readings": [
+       "All unordered combinations of n distinct positions from LETTERS without repetition (itertools.combinations(LETTERS, n)).",
+       "All ordered selections, either permutations without repetition (itertools.permutations(LETTERS, n)) or sequences with repetition allowed (itertools.product(LETTERS, repeat=n)). Each yields different letter counts."
+      ]
+     },
+     {
+      "type": "Syntactic",
+      "span": "Counts how often each letter occurs in them",
+      "readings": [
+       "'them' refers to the generated selections: count each letter's total occurrences across all generated length-n selections.",
+       "'them' refers to the given set of letters: count each letter's occurrences in the input LETTERS itself, so the generated selections do not affect the counts."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Syntactic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "LETTERS=['a','b','c'], n=2",
+      "plausibility": 2
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "LETTERS=['a','b'], n=2",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "Semantic: 'length-n selections' plausibly means combinations, permutations or product-with-replacement. These give different letter counts in the file. For ['a','b'], n=2, combinations gives {a:1,b:1} and product gives {a:4,b:4}. This works. Syntactic: the pronoun 'them' in 'occurs in them' can refer to the selections or to the given set of letters. The second reading is fairly weak, since counting letters in the input set barely needs the generation step. To make the attachment more genuinely two-way, try 'Counts how often each letter occurs in the selections of the letters' or 'Counts each letter's occurrences across the generated selections and the given set'. Note that the only returned value is a random filename, so divergence appears only in the JSON file contents. Witnesses should be checked by reading the file, not by the return value."
+   },
+   "passed": false,
+   "score": 22
+  },
+  {
+   "iteration": 2,
+   "candidate": {
+    "ambiguous_prompt": "Generates all possible length-n selections from a given set of letters. Counts the occurrences of each letter in the given set that appears in the selections and saves the results in a JSON file. The name of the file is prefix_<random-number-here>.json. The value of <random-number-here> is between 0 and 100.\nThe function should output with:\n    str: The name of the generated JSON file containing letter counts.\nYou should write self-contained code starting with:\n```\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n```",
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "all possible length-n selections from a given set of letters",
+      "readings": [
+       "All length-n combinations without repetition and without regard to order (itertools.combinations(LETTERS, n)). For ['a','b'], n=2 the JSON file contains {\"a\": 1, \"b\": 1}.",
+       "All ordered length-n selections with repetition (itertools.product(LETTERS, repeat=n)) or all ordered selections without repetition (itertools.permutations). For ['a','b'], n=2, product writes {\"a\": 4, \"b\": 4} to the JSON file."
+      ]
+     },
+     {
+      "type": "Syntactic",
+      "span": "Counts the occurrences of each letter in the given set that appears in the selections",
+      "readings": [
+       "'in the given set' modifies 'each letter', and the occurrences are counted within the generated selections. Each letter is counted once for every time it appears across all selections. For ['a','b','c'], n=2 with combinations, the JSON file contains {\"a\": 2, \"b\": 2, \"c\": 2}.",
+       "'occurrences ... in the given set' is the counted quantity, and 'that appears in the selections' only filters which letters are included. Each letter that appears in the selections is counted by how many times it occurs in the input set. For ['a','b','c'], n=2, the JSON file contains {\"a\": 1, \"b\": 1, \"c\": 1}."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Syntactic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "LETTERS=['a', 'b', 'c'], n=4",
+      "plausibility": 2
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "LETTERS=['a', 'b'], n=2",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 3,
+    "feedback": "Semantic: 'length-n selections' can mean combinations, permutations or product-with-replacement. For LETTERS=['a','b'], n=2, combinations gives {a:1,b:1} and product gives {a:4,b:4}. This works and is plausible. Syntactic: in 'each letter in the given set that appears in the selections', the clause 'that appears in the selections' can attach to 'letter' (count only letters that occur, so zero-count letters are omitted, as in the original defaultdict behavior). It can also be read with 'in the given set' as the head scope (report every letter of the set, including zeros). The second parse is grammatically odd because 'the given set that appears in the selections' barely makes sense. That makes the ambiguity weak. It only diverges when n > len(LETTERS) (no combinations) or n == 0, so the witness relies on an edge case. To strengthen it, use a clearer attachment ambiguity. For example: 'Counts the occurrences of each letter in the selections of the given set', where it is unclear whether 'each letter' ranges over the set or over the letters present in the selections. Alternatively: 'counts each letter across all selections, including those not selected', where the scope of 'those' is unclear. Also smooth the awkward phrasing to improve naturalness."
+   },
+   "passed": false,
+   "score": 21
+  },
+  {
+   "iteration": 3,
+   "candidate": {
+    "ambiguous_prompt": "Generates all possible length-'n' selections from a given set of letters. Counts how many times each letter occurs in every selection and saves the results in a JSON file. The name of the file is prefix_<random-number-here>.json. The value of <random-number-here> is between 0 and 100.\nThe function should output with:\n    str: The name of the generated JSON file containing the letter counts.\nYou should write self-contained code starting with:\n```\nfrom collections import defaultdict\nimport itertools\nimport json\nimport random\ndef task_func(LETTERS, n):\n```",
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "all possible length-'n' selections from a given set of letters",
+      "readings": [
+       "All combinations of n distinct letters with order ignored (itertools.combinations(LETTERS, n)). For LETTERS=['a','b'] and n=2 the counts are {a:1, b:1}.",
+       "All ordered selections with repetition allowed (itertools.product(LETTERS, repeat=n)), or alternatively permutations. For LETTERS=['a','b'] and n=2, product gives the counts {a:4, b:4}."
+      ]
+     },
+     {
+      "type": "Syntactic",
+      "span": "Counts how many times each letter occurs in every selection",
+      "readings": [
+       "'in every selection' attaches to 'occurs', so occurrences are summed across all selections. The JSON holds a single aggregate dict of letter to total count.",
+       "'in every selection' attaches to 'Counts', so a separate count is made for every selection. The JSON holds one letter-count mapping per selection, for example a list of dicts."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Syntactic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "LETTERS=['a', 'b'], n=1",
+      "plausibility": 3
+     },
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "LETTERS=['a', 'b'], n=2",
+      "plausibility": 4
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "Both ambiguities pass; these are optional strengthening notes. (1) Syntactic: 'how many times each letter occurs in every selection' has a scope ambiguity. It can mean one aggregate count per letter across all selections (the original), or a separate count for each selection (a list of per-selection dicts). The per-selection reading is somewhat less plausible because the output is a single file of 'the letter counts'. A wording like 'counts each letter's occurrences in every selection' would make the per-selection reading stronger. (2) Semantic: 'length-n selections from a given set' can mean combinations without replacement, permutations, or itertools.product with replacement. For ['a','b'], n=2, combinations gives {a:1, b:1} and product gives {a:4, b:4}. The ambiguity rests mostly on the single word 'selections', so a strict reviewer could call it Lexical. Phrasing it as a clause, e.g. 'every way of picking n letters from the set', would anchor it more clearly as Semantic. Nothing else leaks or adds ambiguity: the filename prefix, the 0–100 range and the output line are unchanged from the original."
+   },
+   "passed": true,
+   "score": 23
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "date": "2026-11-19",
+  "notes": "Approved by the user 2026-11-19 (new task, pre-registered rules). Syntactic 'occurs in every selection' (aggregate vs per selection); Semantic 'selections' (combinations vs product). Both verified by the original tests."
+ },
+ "rejected_attempts": []
+}

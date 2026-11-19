@@ -1,0 +1,14 @@
+[
+  {"id": "B1", "task": "Count words in a CSV file", "task_id": "BigCodeBench/96", "pair": ["L", "M"]},
+  {"id": "B2", "task": "Find best-selling product", "task_id": "BigCodeBench/7", "pair": ["S", "V"]},
+  {"id": "B3", "task": "Count integers in dict values", "task_id": "BigCodeBench/4", "pair": ["M", "V"]},
+  {"id": "B4", "task": "Sum of logs of combination products", "task_id": "BigCodeBench/97", "pair": ["L", "S"]},
+  {"id": "B5", "task": "Serialize, compress and encode", "task_id": "BigCodeBench/25", "pair": ["S", "M"]},
+  {"id": "B6", "task": "Write IP range to CSV", "task_id": "BigCodeBench/145", "pair": ["L", "V"]},
+  {"id": "B7", "task": "Find latest matching log file", "task_id": "BigCodeBench/6", "pair": ["M", "V"]},
+  {"id": "B8", "task": "Back up log files to tar.gz", "task_id": "BigCodeBench/16", "pair": ["L", "V"]},
+  {"id": "B9", "task": "Interleave lists, sample, count", "task_id": "BigCodeBench/22", "pair": ["L", "M"]},
+  {"id": "B10", "task": "Copy JSON files to backup dir", "task_id": "BigCodeBench/118", "pair": ["S", "V"]},
+  {"id": "B11", "task": "Letter counts of combinations to JSON", "task_id": "BigCodeBench/125", "pair": ["S", "M"]},
+  {"id": "B12", "task": "MIME types of matching files", "task_id": "BigCodeBench/154", "pair": ["L", "S"]}
+]

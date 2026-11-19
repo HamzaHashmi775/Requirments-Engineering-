@@ -1,0 +1,47 @@
+{
+ "tag": "B7|original|claude-opus-5-5|2",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nFind the latest log file in a specified directory that matches a given regex pattern. This function searches through all files in the specified directory, filters them based on the provided regex pattern, and returns the path to the most recent log file based on modification time. If no files match the pattern or the directory is empty, the function returns None.\nThe function should output with:\n    str or None: The path to the most recent log file that matches the pattern, or None if no matching files are found.\nYou should write self-contained code starting with:\n```\nimport os\nimport re\ndef task_func(pattern, log_dir='/var/log/'):\n```",
+ "text": "```python\nimport os\nimport re\n\n\ndef task_func(pattern, log_dir='/var/log/'):\n    \"\"\"\n    Find the most recently modified file in `log_dir` whose name matches `pattern`.\n\n    Parameters:\n        pattern (str): Regex pattern matched against the start of each file name.\n        log_dir (str): Directory to search. Defaults to '/var/log/'.\n\n    Returns:\n        str or None: Path to the most recent matching file, or None if no\n        files match or the directory is empty or missing.\n    \"\"\"\n    try:\n        entries = os.listdir(log_dir)\n    except (FileNotFoundError, NotADirectoryError, PermissionError):\n        return None\n\n    regex = re.compile(pattern)\n    log_files = [name for name in entries if regex.match(name)]\n\n    if not log_files:\n        return None\n\n    latest_path = None\n    latest_mtime = None\n    for name in log_files:\n        path = os.path.join(log_dir, name)\n        try:\n            mtime = os.path.getmtime(path)\n        except OSError:\n            # The file was removed or can't be read, so skip it.\n            continue\n        if latest_mtime is None or mtime > latest_mtime:\n            latest_mtime = mtime\n            latest_path = path\n\n    return latest_path\n\n\nif __name__ == \"__main__\":\n    import tempfile\n    import time\n\n    with tempfile.TemporaryDirectory() as d:\n        for i, fname in enumerate([\"app.log\", \"app.log.1\", \"other.txt\"]):\n            p = os.path.join(d, fname)\n            with open(p, \"w\") as f:\n                f.write(\"data\")\n            t = time.time() + i\n            os.utime(p, (t, t))\n\n        print(task_func(r\"^app\\.log\", d))   # .../app.log.1\n        print(task_func(r\"^nomatch\", d))    # None\n```\n\nNotes:\n- `re.match` checks the pattern against the start of each file name.\n- If the directory is missing or can't be read, the function returns `None` instead of raising an error.\n- Files that disappear between listing and the `getmtime` call are skipped.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 788,
+  "output_tokens": 798,
+  "output_tokens_details": {
+   "thinking_tokens": 117
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 798,
+    "cache_read_input_tokens": 788,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 15.8,
+ "time": "2026-11-19 14:11:13"
+}

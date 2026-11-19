@@ -1,0 +1,9 @@
+{
+  "models_under_test": ["claude-opus-5-5", "claude-sonnet-5-5"],
+  "agent_model": "claude-opus-5-5",
+  "effort": "medium",
+  "n_samples": 5,
+  "pass_k": [1, 3, 5],
+  "max_rewrite_iterations": 5,
+  "call_timeout_s": 600
+}

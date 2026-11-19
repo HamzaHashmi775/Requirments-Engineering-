@@ -1,0 +1,47 @@
+{
+ "tag": "R5|combined|claude-opus-5-5|0",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    subtracting the smallest number from each number divided by the spread of the list\n    \"\"\"\n```",
+ "text": "```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1.\n\n    >>> rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])\n    [0.0, 0.25, 0.5, 0.75, 1.0]\n    \"\"\"\n    min_number = min(numbers)\n    max_number = max(numbers)\n    spread = max_number - min_number\n\n    # If every element is the same, the spread is zero, so map all values to 0.0.\n    if spread == 0:\n        return [0.0 for _ in numbers]\n\n    return [(x - min_number) / spread for x in numbers]\n\n\nif __name__ == \"__main__\":\n    import doctest\n    doctest.testmod()\n\n    print(rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0]))  # [0.0, 0.25, 0.5, 0.75, 1.0]\n    print(rescale_to_unit([2.0, 49.9]))                # [0.0, 1.0]\n    print(rescale_to_unit([100.0, 49.9]))              # [1.0, 0.0]\n```\n\nThe function subtracts the minimum from each number and divides by the spread (`max - min`). The smallest value becomes `0.0` and the largest becomes `1.0`. If all the values are the same, the spread is zero, so the function returns all `0.0` instead of dividing by zero.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 704,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 522,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 704,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 522,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 704,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 704
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 18.1,
+ "time": "2026-11-17 17:57:42"
+}

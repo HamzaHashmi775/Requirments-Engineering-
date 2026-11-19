@@ -1,0 +1,47 @@
+{
+ "tag": "B12|combined|claude-sonnet-5-5|2",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "This is the original task's known shape: the function matches files in a directory against a regex pattern and a suffix, then maps each to its MIME type. Here is a self-contained solution.\n\n```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan `directory` for files whose names match the regex `file_pattern`\n    and end with `suffix`, and return a dict mapping each matched file name\n    to its MIME type (None if the type cannot be determined).\n    \"\"\"\n    result = {}\n    if not os.path.isdir(directory):\n        return result\n\n    # Use glob to list entries with the given suffix, then filter by regex.\n    search = os.path.join(glob.escape(directory), \"*\" + glob.escape(suffix))\n    regex = re.compile(file_pattern)\n\n    for path in sorted(glob.glob(search)):\n        if not os.path.isfile(path):\n            continue\n        name = os.path.basename(path)\n        if regex.match(name):\n            mime_type, _ = mimetypes.guess_type(name)\n            result[name] = mime_type\n\n    return result\n\n\nif __name__ == \"__main__\":\n    import sys\n    if len(sys.argv) == 4:\n        print(task_func(sys.argv[1], sys.argv[2], sys.argv[3]))\n    else:\n        print(\"Usage: python script.py <directory> <file_pattern_regex> <suffix>\")\n```\n\n**How it works:**\n- `glob.glob` finds files in the directory ending in `suffix` (special characters are escaped, so the suffix is treated literally).\n- Each file name is checked against the regex `file_pattern` using `re.match` (anchored at the start of the name).\n- `mimetypes.guess_type` determines the MIME type from the file name; it returns `None` when the type is unknown.\n- The result is a dictionary of `{file_name: mime_type}`. A nonexistent directory yields an empty dict.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 762,
+  "output_tokens": 637,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 637,
+    "cache_read_input_tokens": 762,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.4,
+ "time": "2026-11-19 14:09:34"
+}

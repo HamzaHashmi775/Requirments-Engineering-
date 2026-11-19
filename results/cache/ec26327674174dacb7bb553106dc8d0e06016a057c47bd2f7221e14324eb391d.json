@@ -1,0 +1,47 @@
+{
+ "tag": "B10|combined|claude-sonnet-5-5|3",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 3,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for relevant files. If the backup directory does not exist, it is created and the files are copied into it. The function returns a list of paths to the copied files in the backup directory.\nNote that: The function assumes that the source directory exists and contains the files to be backed up.\nThe function should output with:\n    list: Paths to the copied files in the backup directory.\nYou should write self-contained code starting with:\n```\nimport os\nimport shutil\ndef task_func(directory, backup_directory):\n```",
+ "text": "```python\nimport os\nimport shutil\n\n\ndef task_func(directory, backup_directory):\n    \"\"\"\n    Scan `directory` for relevant files (JSON files, i.e. ending in '.json'),\n    copy them into `backup_directory` (created if missing), and return a\n    list of the paths of the copied files in the backup directory.\n    \"\"\"\n    copied_files = []\n\n    if not os.path.exists(backup_directory):\n        os.makedirs(backup_directory)\n\n    for filename in sorted(os.listdir(directory)):\n        source_path = os.path.join(directory, filename)\n        if os.path.isfile(source_path) and filename.lower().endswith(\".json\"):\n            destination_path = os.path.join(backup_directory, filename)\n            shutil.copy(source_path, destination_path)\n            copied_files.append(destination_path)\n\n    return copied_files\n```\n\nThe problem doesn't say which files count as \"relevant\", so I assumed JSON files (`.json`). To back up other types, change the extension check in the `if` condition, for example to `filename.lower().endswith((\".txt\", \".csv\"))`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 767,
+  "output_tokens": 763,
+  "output_tokens_details": {
+   "thinking_tokens": 408
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 763,
+    "cache_read_input_tokens": 767,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.8,
+ "time": "2026-11-19 14:00:09"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B3|original|claude-sonnet-5-5|2",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nCount the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+ "text": "```python\nfrom collections import Counter\nimport itertools\n\ndef task_func(d):\n    \"\"\"Count occurrences of each integer across all list values in dictionary d.\"\"\"\n    counts = Counter(itertools.chain.from_iterable(d.values()))\n    return dict(counts)\n```\n\nThis flattens all the lists in the dictionary's values into one iterable using `itertools.chain.from_iterable`, counts each integer with `Counter`, and returns the result as a plain `dict`. For an empty input dictionary, it returns an empty dictionary.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 790,
+  "output_tokens": 173,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 173,
+    "cache_read_input_tokens": 790,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 3.8,
+ "time": "2026-11-18 00:35:46"
+}

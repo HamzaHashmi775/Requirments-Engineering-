@@ -1,0 +1,47 @@
+{
+ "tag": "B5|combined|claude-opus-5-5|2",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nProduces the base64 encoding of a JSON serialization of the dictionary's entries, compressed using zlib.\nThe function should output with:\n    str: The resulting encoded string representation of the dictionary.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+ "text": "```python\nimport base64\nimport json\nimport zlib\n\n\ndef task_func(data_dict):\n    \"\"\"\n    Serialize a dictionary to JSON, compress it with zlib, and encode the\n    compressed bytes using base64.\n\n    Parameters:\n        data_dict (dict): The dictionary to encode.\n\n    Returns:\n        str: The base64-encoded string of the zlib-compressed JSON data.\n    \"\"\"\n    json_str = json.dumps(data_dict)\n    compressed = zlib.compress(json_str.encode('utf-8'))\n    encoded = base64.b64encode(compressed).decode('utf-8')\n    return encoded\n\n\nif __name__ == \"__main__\":\n    sample = {\"key1\": \"value1\", \"key2\": \"value2\"}\n    result = task_func(sample)\n    print(result)\n\n    # Round-trip check\n    decoded = json.loads(zlib.decompress(base64.b64decode(result)).decode('utf-8'))\n    assert decoded == sample\n    print(\"Round-trip OK:\", decoded)\n```\n\nThe function works in three steps:\n\n1. **Serialize:** `json.dumps` converts the dictionary to a JSON string.\n2. **Compress:** `zlib.compress` compresses the UTF-8 bytes of that string.\n3. **Encode:** `base64.b64encode` turns the compressed bytes into base64, which is decoded to a `str`.\n\nTo reverse the process, apply the steps backwards: base64 decode, then zlib decompress, then JSON load. The round-trip check in the `__main__` block does exactly that.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 715,
+  "output_tokens": 508,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 508,
+    "cache_read_input_tokens": 715,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 8.3,
+ "time": "2026-11-19 12:25:36"
+}

@@ -1,0 +1,225 @@
+{
+ "id": "R2",
+ "task_id": "HumanEval/34",
+ "pair": [
+  "S",
+  "V"
+ ],
+ "original_prompt": "\n\ndef unique(l: list):\n    \"\"\"Return sorted unique elements in a list\n    \"\"\"\n",
+ "ambiguous_prompt": "\n\ndef unique(l: list):\n    \"\"\"Order the list and return the unique elements in it.\n    \"\"\"\n",
+ "judge_passed": null,
+ "iterations_used": 0,
+ "source": "manual_reinjection",
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Syntactic",
+    "span": "return the unique elements in it",
+    "explanation": "The pronoun 'it' can refer to the ordered list or to the original list, which decides whether the result is ordered.",
+    "intended_reading": "Return the unique elements of the ordered list (ascending, duplicates removed).",
+    "alternative_reading": "Return the unique elements of the original list, in their original order of first appearance.",
+    "alternative_implementation": "def unique(l: list):\n    return list(dict.fromkeys(l))\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 793,
+     "n_tests": 904,
+     "first_witness": [
+      [
+       5,
+       3,
+       5,
+       2,
+       3,
+       3,
+       9,
+       0,
+       123
+      ]
+     ]
+    }
+   },
+   {
+    "type": "Vagueness",
+    "span": "Order the list",
+    "explanation": "The requirement omits the ordering direction.",
+    "intended_reading": "Order ascending.",
+    "alternative_reading": "Order descending.",
+    "alternative_implementation": "def unique(l: list):\n    return sorted(set(l), reverse=True)\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 893,
+     "n_tests": 904,
+     "first_witness": [
+      [
+       5,
+       3,
+       5,
+       2,
+       3,
+       3,
+       9,
+       0,
+       123
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "history": [],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-17. Manually reinjected after two agent attempts were rejected (paper Sec. 4.1.3 allows manual reinjection). Syntactic part follows the paper's Fig. 3 example for this task; vagueness = unstated sort direction. Both verified by execution."
+ },
+ "rejected_attempts": [
+  {
+   "id": "R2",
+   "task_id": "HumanEval/34",
+   "pair": [
+    "S",
+    "V"
+   ],
+   "original_prompt": "\n\ndef unique(l: list):\n    \"\"\"Return sorted unique elements in a list\n    \"\"\"\n",
+   "ambiguous_prompt": "def unique(l: list):\n    \"\"\"Return every element that appears in the list only once, arranged in order\n    \"\"\"",
+   "judge_passed": true,
+   "iterations_used": 1,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "Return every element that appears in the list only once",
+      "explanation": "The phrase 'only once' can attach to 'Return', meaning each element is returned a single time, or to 'appears in the list', meaning only elements that occur exactly once are returned. The first reading keeps every distinct value. The second drops any value that is duplicated.",
+      "intended_reading": "Return each distinct element of the list exactly once, removing duplicates, so every value present in the input appears once in the output.",
+      "alternative_reading": "Return only the elements that occur exactly once in the input list, excluding any value that appears two or more times.",
+      "alternative_implementation": "def unique(l: list):\n    \"\"\"Return every element that appears in the list only once, arranged in order\n    \"\"\"\n    return sorted([x for x in l if l.count(x) == 1])\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 846,
+       "n_tests": 904,
+       "first_witness": [
+        [
+         5,
+         3,
+         5,
+         2,
+         3,
+         3,
+         9,
+         0,
+         123
+        ]
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "arranged in order",
+      "explanation": "'In order' does not say which order. It could mean sorted ascending, or it could mean the order in which elements first occur in the input list. These give different outputs for unsorted input.",
+      "intended_reading": "The returned elements are sorted in ascending order.",
+      "alternative_reading": "The returned elements keep the order of their first appearance in the input list.",
+      "alternative_implementation": "def unique(l: list):\n    \"\"\"Return every element that appears in the list only once, arranged in order\n    \"\"\"\n    result = []\n    for x in l:\n        if x not in result:\n            result.append(x)\n    return result\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 793,
+       "n_tests": 904,
+       "first_witness": [
+        [
+         5,
+         3,
+         5,
+         2,
+         3,
+         3,
+         9,
+         0,
+         123
+        ]
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Rejected: the intended meaning (each distinct value once) became the less natural reading of 'every element that appears in the list only once', and it duplicates R3's keep-first vs drop-all-repeated ambiguity. Keep the vagueness about sort order, but use a different syntactic ambiguity (e.g. attachment or pronoun reference) where the intended reading stays at least as natural as the alternative."
+  },
+  {
+   "id": "R2",
+   "task_id": "HumanEval/34",
+   "pair": [
+    "S",
+    "V"
+   ],
+   "original_prompt": "\n\ndef unique(l: list):\n    \"\"\"Return sorted unique elements in a list\n    \"\"\"\n",
+   "ambiguous_prompt": "def unique(l: list):\n    \"\"\"Return every element that appears in the list once, in order\n    \"\"\"",
+   "judge_passed": true,
+   "iterations_used": 3,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "every element that appears in the list once",
+      "explanation": "The attachment of 'once' is unclear. It can modify 'Return', meaning each element is returned a single time (deduplication). It can also modify 'appears', meaning only elements that occur exactly one time qualify. The two readings return different sets of elements.",
+      "intended_reading": "Return each distinct element of the list a single time, removing duplicates, so every value in the list appears once in the output.",
+      "alternative_reading": "Return only the elements whose occurrence count in the list is exactly one, dropping every value that appears more than once.",
+      "alternative_implementation": "def unique(l: list):\n    \"\"\"Return every element that appears in the list once, in order\n    \"\"\"\n    return sorted([x for x in l if l.count(x) == 1])\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 846,
+       "n_tests": 904,
+       "first_witness": [
+        [
+         5,
+         3,
+         5,
+         2,
+         3,
+         3,
+         9,
+         0,
+         123
+        ]
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "in order",
+      "explanation": "'in order' does not say which order. It could mean ascending sorted order or the original order of the elements in the input list, and these give different output sequences.",
+      "intended_reading": "The returned unique elements are sorted in ascending order.",
+      "alternative_reading": "The returned unique elements keep the order in which they first appear in the input list.",
+      "alternative_implementation": "def unique(l: list):\n    \"\"\"Return every element that appears in the list once, in order\n    \"\"\"\n    result = []\n    for x in l:\n        if x not in result:\n            result.append(x)\n    return result\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 793,
+       "n_tests": 904,
+       "first_witness": [
+        [
+         5,
+         3,
+         5,
+         2,
+         3,
+         3,
+         9,
+         0,
+         123
+        ]
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Still overlaps with R3's keep-first vs. drop-all-repeated ambiguity; agent ignored the request for a different syntactic ambiguity. Replaced by a manual reinjection."
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "R6|recognize-judge|claude-sonnet-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values, which may include containers, only for whole numbers\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Lexical: span \"whole numbers\" — intended: Keep every element whose type is int (isinstance(x, int)), including negative integers and zero. — alternative: Keep only non-negative integers (0, 1, 2, ...). Negative ints are excluded even though they are Python integers.\n2. Vagueness: span \"which may include containers\" — intended: Containers are just non-integer elements. Only top-level elements that are ints are kept, and containers are discarded without looking inside them. — alternative: Search containers recursively: integers found inside nested lists, tuples, sets and dict values are collected into the flat output list, in traversal order.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"only for whole numbers\",\n   \"reason\": \"It is unclear which values count as whole numbers. In Python, bool is a subclass of int, so True and False could be kept or excluded. Floats with integral values such as 3.0 could also be kept or excluded. Each choice gives different outputs for the same input.\",\n   \"options\": [\n    \"Keep only values whose type is int, and exclude bool (e.g. [1, True, 2.0] -> [1])\",\n    \"Keep anything that isinstance(x, int), including bool (e.g. [1, True, 2.0] -> [1, True])\",\n    \"Keep int values and floats with integral values, converting them to int (e.g. [1, True, 2.0] -> [1, 2])\"\n   ]\n  },\n  {\n   \"segment\": \"which may include containers\",\n   \"reason\": \"It is unclear how containers such as lists, tuples, sets, or dicts should be handled. They might simply be skipped as non-integers, or their contents might be searched for integers. These readings give different results for input like [1, [2, 3], 'a'].\",\n   \"options\": [\n    \"Treat containers as non-integers and skip them, without looking inside (e.g. [1, [2, 3], 'a'] -> [1])\",\n    \"Recursively flatten nested containers and collect all integers found inside (e.g. [1, [2, 3], 'a'] -> [1, 2, 3])\",\n    \"Look only inside lists and tuples, not dicts or sets, or only one level deep\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Lexical\", \"level\": \"localization\", \"matched_segment\": \"only for whole numbers\", \"reason\": \"The segment pinpoints 'whole numbers', and the option 'isinstance(x, int), including bool' roughly matches the intended reading. However, no option covers the alternative reading of keeping only non-negative integers. The options deal with bool and integral floats, not with negative integers.\"}, {\"type\": \"Vagueness\", \"level\": \"tackling\", \"matched_segment\": \"which may include containers\", \"reason\": \"The options include skipping containers without looking inside (the intended reading) and recursively flattening containers to collect the integers inside (the alternative reading).\"}], \"spurious_issues\": 0}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1750,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 316,
+  "output_tokens_details": {
+   "thinking_tokens": 72
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1750,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 316,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1750,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1750
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 10.6,
+ "time": "2026-11-17 18:11:22"
+}

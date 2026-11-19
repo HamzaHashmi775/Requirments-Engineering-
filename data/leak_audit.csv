@@ -1,0 +1,25 @@
+id,type,span,verdict,cue_in_unchanged_part
+R1,Lexical,Screen,hinted,"function name filter_by_substring: 'filter by' conventionally keeps matches"
+R1,Semantic,include the characters of the given substring,hinted,"parameter and function name 'substring' suggest a contiguous match"
+R2,Syntactic,return the unique elements in it,open,
+R2,Vagueness,Order the list,open,
+R3,Semantic,remove the duplicated elements,counter-hint,"function name remove_duplicates suggests the ALTERNATIVE (keep first copy); models still chose the intended reading (HumanEval/26 likely memorised)"
+R3,Vagueness,Keep the remaining elements in order,open,
+R4,Lexical,a given pattern,resolved,"parameter is named substring (literal string, not regex)"
+R4,Syntactic,in the original string Count overlaping cases.,open,
+R5,Syntactic,subtracting the smallest number from each number divided by the spread,resolved,"function name rescale_to_unit: only (x - min) / range maps to [0, 1]"
+R5,Semantic,the spread of the list,resolved,"function name rescale_to_unit: dividing by the standard deviation does not map to [0, 1]"
+R6,Lexical,whole numbers,resolved,"function name filter_integers and return type List[int]: negative ints are integers"
+R6,Vagueness,which may include containers,open,
+B1,Lexical,counts the frequency of each entry,open,
+B1,Semantic,It returns a list of tuples for the most common words,hinted,"output section: 'a list of tuples ... sorted by count in descending order' suggests the full list"
+B2,Syntactic,determines the product with the highest one,resolved,"output section: 'top-selling product based on the total quantity sold'"
+B2,Vagueness,"if several products end up tied, the preferred one is returned",open,
+B3,Semantic,each value is a list containing integers,open,
+B3,Vagueness,the values are how often they appear across the lists,resolved,"output section: 'the count of how often that integer appears in all the lists combined'"
+B4,Lexical,all possible arrangements,resolved,"output section: 'products of all combinations of numbers'"
+B4,Syntactic,computes the logarithm of each product summed together,resolved,"output section: 'the sum of the logarithms of the products'"
+B5,Syntactic,"which is compressed using zlib, and then encodes it with base64",resolved,"output section: 'base64 encoded string that represents the zlib-compressed JSON string'"
+B5,Semantic,the entries of a dictionary,hinted,"output section: 'the zlib-compressed JSON string of the dictionary' (not of its entries)"
+B6,Lexical,within the specified IP range,open,
+B6,Vagueness,with the rows sorted,open,

@@ -1,0 +1,47 @@
+{
+ "tag": "R4|original|claude-opus-5-5|4",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 4,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    \"\"\"\n```",
+ "text": "```python\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\"Find how many times a given substring can be found in the original string.\n    Count overlapping cases.\n\n    >>> how_many_times('', 'a')\n    0\n    >>> how_many_times('aaa', 'a')\n    3\n    >>> how_many_times('aaaa', 'aa')\n    3\n    \"\"\"\n    if not substring:\n        return 0\n\n    count = 0\n    sub_len = len(substring)\n    for i in range(len(string) - sub_len + 1):\n        if string[i:i + sub_len] == substring:\n            count += 1\n    return count\n\n\nif __name__ == \"__main__\":\n    import doctest\n    doctest.testmod()\n\n    # Additional quick checks\n    assert how_many_times('', 'a') == 0\n    assert how_many_times('aaa', 'a') == 3\n    assert how_many_times('aaaa', 'aa') == 3\n    assert how_many_times('abababa', 'aba') == 3\n    assert how_many_times('abc', 'abcd') == 0\n    assert how_many_times('abc', '') == 0\n    print(\"All tests passed.\")\n```\n\nThe function checks every starting position `i` where the substring could fit and compares the slice `string[i:i+len(substring)]` to the substring. It moves forward one character at a time instead of jumping past a match, so overlapping matches are counted. For example, `'aa'` appears 3 times in `'aaaa'`.\n\nAn empty substring returns `0`, so the result is always a meaningful count.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 669,
+  "output_tokens": 501,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 501,
+    "cache_read_input_tokens": 669,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 7.9,
+ "time": "2026-11-18 11:49:27"
+}

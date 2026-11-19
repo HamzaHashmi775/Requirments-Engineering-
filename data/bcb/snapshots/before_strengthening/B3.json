@@ -1,0 +1,380 @@
+{
+ "id": "B3",
+ "task_id": "BigCodeBench/4",
+ "pair": [
+  "M",
+  "V"
+ ],
+ "original_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+ "ambiguous_prompt": "Count how often each integer occurs across the lists stored as values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the relevant integers, and the values are their respective counts.\nThe function should output with:\n    dict: A dictionary where each key is one of the relevant integers from the input lists, and the value is how often that integer occurs across the lists.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+ "judge_passed": true,
+ "iterations_used": 3,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Semantic",
+    "span": "how often each integer occurs across the lists",
+    "explanation": "\"Occurs across the lists\" can mean every individual occurrence of the integer. It can also mean how many of the lists contain the integer. The two readings give different counts when an integer is repeated within one list.",
+    "intended_reading": "Count every occurrence of each integer in all lists combined, including repeats inside the same list. This gives the total frequency.",
+    "alternative_reading": "Count how many distinct lists (dictionary values) contain each integer, so repeats within one list count once. This is a per-list presence count.",
+    "alternative_implementation": "from collections import Counter\nimport itertools\n\ndef task_func(d):\n    # Count, for each integer, the number of lists in which it appears\n    counts = Counter(itertools.chain.from_iterable(set(lst) for lst in d.values()))\n    return dict(counts)\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 1,
+     "n_tests": 8,
+     "failing_tests": [
+      "TestCases.test_case_3"
+     ]
+    }
+   },
+   {
+    "type": "Vagueness",
+    "span": "the relevant integers",
+    "explanation": "The text does not say which integers are \"relevant\". It leaves open whether every integer is included or only those meeting some condition. That changes which keys appear in the output.",
+    "intended_reading": "Every integer that appears in any of the input lists is a key in the result.",
+    "alternative_reading": "Only integers that are notable, meaning they appear more than once in total, are included as keys. Integers seen only once are left out.",
+    "alternative_implementation": "from collections import Counter\nimport itertools\n\ndef task_func(d):\n    # Total occurrences across all lists, keeping only integers that occur more than once\n    counts = Counter(itertools.chain.from_iterable(d.values()))\n    return {k: v for k, v in counts.items() if v > 1}\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 4,
+     "n_tests": 8,
+     "failing_tests": [
+      "TestCases.test_case_1",
+      "TestCases.test_case_2",
+      "TestCases.test_case_3",
+      "TestCases.test_case_8"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with the counts. The resulting dictionary's keys are the relevant integers, and the values are how often each one occurs across the lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary mapping integers to their counts across the input lists.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "how often each one occurs across the lists in the input dictionary",
+      "readings": [
+       "The total number of times the integer appears in all lists combined, so every occurrence counts, including repeats within one list (e.g. {'a': [1, 1]} gives {1: 2}).",
+       "The number of lists the integer appears in, so it is counted at most once per list (e.g. {'a': [1, 1]} gives {1: 1})."
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "the relevant integers",
+      "readings": [
+       "Every integer that appears in any of the input lists is included as a key.",
+       "Only some integers are included, for example those that occur more than once, so integers that appear a single time are left out of the result."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "{'a': [1, 1], 'b': [1]}",
+      "plausibility": 3
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "{'a': [1, 2], 'b': [1]}",
+      "plausibility": 2
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "Semantic: 'how often each one occurs across the lists' supports two readings. One is total occurrences, the original. The other is the number of lists that contain the integer. For {'a':[1,1],'b':[1]} these give {1:3} and {1:2}. This works. Vagueness: 'the relevant integers' is underspecified, but the only alternative reading is weak. That reading keeps just some integers, for example those that repeat or appear in more than one list. For {'a':[1,2],'b':[1]} it gives {1:2} where the original gives {1:2, 2:1}. A competent developer would most likely take 'relevant' to mean every integer present, so plausibility is low. To strengthen it, use a filter that is clearly underspecified, such as 'return counts for the frequent integers' or 'the integers of interest', so the omitted threshold or selection rule is an obvious gap. Also check that the vague phrase does not overlap the semantic span: keep the vagueness on key selection and the semantic ambiguity on how counting is done."
+   },
+   "passed": false,
+   "score": 21
+  },
+  {
+   "iteration": 2,
+   "candidate": {
+    "ambiguous_prompt": "Tally the integers found in the values of the input dictionary, where each value is a list of integers, and return a dictionary of counts for the integers of interest. The resulting dictionary's keys are those integers, and the values record how often each one occurs across the lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is one of the integers of interest, and the value is how often each one occurs across the lists.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+    "ambiguities": [
+     {
+      "type": "Vagueness",
+      "span": "the integers of interest",
+      "readings": [
+       "Every integer that appears in any of the input lists gets a key in the result (for {'a':[1,2],'b':[1]} the result is {1:2, 2:1}).",
+       "Only some selected integers get keys, such as those occurring more than once or in more than one list, but the selection rule is never stated (for {'a':[1,2],'b':[1]} the result is {1:2})."
+      ]
+     },
+     {
+      "type": "Semantic",
+      "span": "how often each one occurs across the lists",
+      "readings": [
+       "The total number of occurrences of the integer across all lists combined (for {'a':[1,1],'b':[1]} the result is {1:3}).",
+       "The number of lists that contain the integer at least once (for {'a':[1,1],'b':[1]} the result is {1:2})."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "{'a': [1, 1], 'b': [1]}",
+      "plausibility": 4
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "{'a': [1, 2], 'b': [1]}",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 3,
+    "feedback": "Both ambiguities are present and divergent. The Semantic one is 'how often each one occurs across the lists': it can mean total occurrences ({1: 3}) or the number of lists containing the integer ({1: 2}). The Vagueness one is 'integers of interest', which never says which integers to include: all of them, only repeated ones, or only those in several lists. 'Integers of interest' reads as artificial and hints that something was left out on purpose. To improve naturalness, consider a more ordinary underspecified phrase such as 'the relevant integers', or tie it to an implied but unstated criterion, e.g. 'return counts for the integers that matter for reporting'."
+   },
+   "passed": false,
+   "score": 22
+  },
+  {
+   "iteration": 3,
+   "candidate": {
+    "ambiguous_prompt": "Count how often each integer occurs across the lists stored as values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the relevant integers, and the values are their respective counts.\nThe function should output with:\n    dict: A dictionary where each key is one of the relevant integers from the input lists, and the value is how often that integer occurs across the lists.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "how often each integer occurs across the lists",
+      "readings": [
+       "The total number of occurrences of the integer summed over all lists (e.g., {'a': [1, 1], 'b': [1]} gives {1: 3}).",
+       "The number of distinct lists in which the integer appears (e.g., {'a': [1, 1], 'b': [1]} gives {1: 2})."
+      ]
+     },
+     {
+      "type": "Vagueness",
+      "span": "the relevant integers",
+      "readings": [
+       "Every integer that appears in any of the input lists is included as a key.",
+       "Only some subset of integers is included, such as integers that appear more than once or integers that appear in more than one list, while the others are omitted."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Semantic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "{'a': [1, 1], 'b': [1]}",
+      "plausibility": 4
+     },
+     {
+      "type": "Vagueness",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "{'a': [1, 2, 2], 'b': [3]}",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": "Both ambiguities are valid and divergent.\n\nSemantic: 'how often each integer occurs across the lists' can mean either of two things:\n- Total occurrences: {1: 3} for the witness.\n- Number of lists containing the integer: {1: 2} for the witness.\n\nVagueness: 'relevant integers' leaves the selection criterion unstated. It could mean:\n- All integers: {1: 1, 2: 2, 3: 1}.\n- Only repeated ones or some other filtered subset: e.g. {2: 2}.\n\nThe word 'relevant' reads a bit artificial. A more natural phrasing such as 'the integers of interest' or 'the applicable integers' would raise naturalness while keeping the vagueness."
+   },
+   "passed": true,
+   "score": 23
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "notes": "Approved by user 2026-11-18 after leak fix (old output lines said 'count ... in all the lists combined'). Vagueness 'the relevant integers' has plausibility 3."
+ },
+ "rejected_attempts": [
+  {
+   "id": "B3",
+   "task_id": "BigCodeBench/4",
+   "pair": [
+    "M",
+    "V"
+   ],
+   "original_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+   "ambiguous_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. Repeated integers within a list are counted per list. Values that aren't proper lists should be handled gracefully. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+   "judge_passed": true,
+   "iterations_used": 2,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "Repeated integers within a list are counted per list.",
+      "explanation": "'Counted per list' has two readings. It can mean every occurrence inside each list is counted. It can also mean an integer contributes at most one count per list. The second reading gives a count of lists containing the integer, not a count of total occurrences.",
+      "intended_reading": "Every occurrence of an integer is counted, including repeats within the same list. For example, {'a': [1, 1, 2]} yields {1: 2, 2: 1}. This matches 'how often that integer appears in all the lists combined'.",
+      "alternative_reading": "Each integer is counted once per list in which it appears, so duplicates within a single list are collapsed. For example, {'a': [1, 1, 2]} yields {1: 1, 2: 1}.",
+      "alternative_implementation": "from collections import Counter\nimport itertools\ndef task_func(d):\n    # Each integer counts at most once per list (duplicates within a list collapsed)\n    counts = Counter(itertools.chain.from_iterable(set(v) for v in d.values()))\n    return dict(counts)\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_3"
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "Values that aren't proper lists should be handled gracefully.",
+      "explanation": "'Handled gracefully' does not say what should happen to a non-list value. Options include skipping it, wrapping a scalar, converting another iterable, or raising a clear error. It is also unclear whether a tuple or other iterable counts as 'proper'. Each choice gives different outputs for the same input.",
+      "intended_reading": "No special type filtering. Every dictionary value is treated as an iterable of integers and flattened directly, as in Counter(itertools.chain.from_iterable(d.values())). Any iterable value, such as a tuple, therefore has its elements counted.",
+      "alternative_reading": "Only values that are actual list instances are counted. Any other value, such as a tuple, set, None, or scalar, is silently skipped rather than iterated or raising an error.",
+      "alternative_implementation": "from collections import Counter\nimport itertools\ndef task_func(d):\n    # Gracefully skip any value that is not an actual list; count all occurrences in lists\n    valid_lists = (v for v in d.values() if isinstance(v, list))\n    counts = Counter(itertools.chain.from_iterable(valid_lists))\n    return dict(counts)\n",
+      "divergence_check": {
+       "verified": false,
+       "n_diverging_tests": 0,
+       "n_tests": 8,
+       "failing_tests": []
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Replace both ambiguities. 'handled gracefully' implies doing something special, while the intended reading does nothing; 'counted per list' leans toward counting once per list. Do not add new sentences that introduce behaviour; make the original wording itself ambiguous, so that the intended reading (count every occurrence across all lists) stays the most natural one and the alternative changes the counts."
+  },
+  {
+   "id": "B3",
+   "task_id": "BigCodeBench/4",
+   "pair": [
+    "M",
+    "V"
+   ],
+   "original_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+   "ambiguous_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list containing integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are how often they appear across the lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+   "judge_passed": true,
+   "iterations_used": 1,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "each value is a list containing integers",
+      "explanation": "'A list containing integers' can mean a list made up only of integers, or a list that has some integers among other kinds of elements. The second reading means the function must skip non-integer items when counting.",
+      "intended_reading": "Each value is a list of integers only (homogeneous). Every element is counted directly.",
+      "alternative_reading": "Each value is a list that may hold mixed types (e.g., strings, floats, None) along with integers. Only the integer elements are counted and all others are ignored.",
+      "alternative_implementation": "from collections import Counter\nimport itertools\ndef task_func(d):\n    all_items = itertools.chain.from_iterable(d.values())\n    ints_only = (x for x in all_items if isinstance(x, int) and not isinstance(x, bool))\n    return dict(Counter(ints_only))\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_6"
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "the values are how often they appear across the lists in the input dictionary",
+      "explanation": "'How often' does not specify the measure. It could be an absolute count of occurrences or a relative frequency (a proportion of all elements). This changes the output values from ints to floats.",
+      "intended_reading": "Each value is the absolute number of times the integer occurs across all lists combined.",
+      "alternative_reading": "Each value is the relative frequency of the integer: its occurrence count divided by the total number of integers across all lists.",
+      "alternative_implementation": "from collections import Counter\nimport itertools\ndef task_func(d):\n    counts = Counter(itertools.chain.from_iterable(d.values()))\n    total = sum(counts.values())\n    if total == 0:\n        return {}\n    return {k: v / total for k, v in counts.items()}\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 5,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_1",
+        "TestCases.test_case_2",
+        "TestCases.test_case_3",
+        "TestCases.test_case_7",
+        "TestCases.test_case_8"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "approved",
+   "human_review": {
+    "approved": true,
+    "notes": "Approved by user 2026-11-18 (second agent attempt). M = 'list containing integers', V = 'how often they appear' (count vs relative frequency)."
+   },
+   "source": "agent",
+   "rejection_feedback": "Leak: the output lines say 'the count of how often that integer appears in all the lists combined', which resolves the vagueness ambiguity (count vs relative frequency). Keep both ambiguities but reword the output lines so they reveal neither reading."
+  },
+  {
+   "id": "B3",
+   "task_id": "BigCodeBench/4",
+   "pair": [
+    "M",
+    "V"
+   ],
+   "original_prompt": "Count the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+   "ambiguous_prompt": "Determine how much each integer contributes to the values of the input dictionary, where each value is a list of integers, and return a dictionary with these results. The resulting dictionary's keys are the integers, and the values are based on how often that integer appears in the lists.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the result computed for that integer.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+   "judge_passed": false,
+   "iterations_used": 5,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Semantic",
+      "span": "Determine how much each integer contributes to the values of the input dictionary",
+      "explanation": "\"How much each integer contributes\" has more than one meaning. It can mean the plain number of times the integer appears, or its weighted contribution to the total of all values. Under the second meaning the integer is multiplied by its count, which gives different outputs for every integer except 1 (and 0 always yields 0).",
+      "intended_reading": "Each integer's contribution is simply its number of occurrences, so the output maps each integer to how many times it appears across all lists.",
+      "alternative_reading": "Each integer's contribution is its share of the overall sum of all list elements. The output maps each integer to integer * (total occurrences across all lists).",
+      "alternative_implementation": "from collections import Counter\nimport itertools\ndef task_func(d):\n    counts = Counter(itertools.chain.from_iterable(d.values()))\n    return {k: k * v for k, v in counts.items()}\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 5,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_1",
+        "TestCases.test_case_2",
+        "TestCases.test_case_3",
+        "TestCases.test_case_7",
+        "TestCases.test_case_8"
+       ]
+      }
+     },
+     {
+      "type": "Vagueness",
+      "span": "the values are based on how often that integer appears in the lists",
+      "explanation": "The phrase does not say how often is measured. It does not say whether repeats inside one list are counted, or whether only the number of lists containing the integer matters. It also does not say whether the result is a raw count or something derived from it. As a result, an integer repeated within a single list can get different values.",
+      "intended_reading": "The value is the total number of occurrences of the integer across all lists combined, with every occurrence counted, including repeats within the same list.",
+      "alternative_reading": "The value is the number of lists (dictionary values) that contain the integer at least once, so repeats within a single list are counted only once.",
+      "alternative_implementation": "from collections import Counter\nimport itertools\ndef task_func(d):\n    counts = Counter(itertools.chain.from_iterable(set(lst) for lst in d.values()))\n    return dict(counts)\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 1,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_3"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Do not use 'contributes' (unnatural; counting occurrences is not a natural reading of it). Keep the wording close to the original 'Count the occurrence of each integer...'. The semantic ambiguity should be about WHAT is counted (e.g. every occurrence vs once per list); the vagueness about an omitted detail of the result. Neither the description ('these counts') nor the output lines may reveal either reading."
+  }
+ ],
+ "source": "agent"
+}

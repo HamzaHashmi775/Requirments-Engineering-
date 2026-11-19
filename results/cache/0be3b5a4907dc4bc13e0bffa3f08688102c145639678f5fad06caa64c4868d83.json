@@ -1,0 +1,47 @@
+{
+ "tag": "B8|combined|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nBackup all log files in a specified directory to a tar.gz file and clear the original files after backup. The backup file is named 'logs_backup.tar.gz' and placed in the specified backup directory.\nThe function should raise the exception for: FileNotFoundError: If the specified directory does not exist.\nThe function should output with:\n    str: The path to the backup file if logs are found, otherwise returns a message 'No logs found to backup'.\nYou should write self-contained code starting with:\n```\nimport os\nimport glob\nimport subprocess\ndef task_func(directory, backup_dir='/path/to/backup'):\n```",
+ "text": "```python\nimport os\nimport glob\nimport subprocess\n\n\ndef task_func(directory, backup_dir='/path/to/backup'):\n    \"\"\"\n    Back up all '.log' files in `directory` into 'logs_backup.tar.gz' inside\n    `backup_dir`, then delete the original log files.\n\n    Parameters:\n        directory (str): Directory that contains the log files.\n        backup_dir (str): Directory where the backup archive will be placed.\n\n    Returns:\n        str: Path to the backup file if logs were found,\n             otherwise 'No logs found to backup'.\n\n    Raises:\n        FileNotFoundError: If `directory` does not exist.\n    \"\"\"\n    if not os.path.exists(directory):\n        raise FileNotFoundError(f\"Directory '{directory}' not found.\")\n\n    log_files = glob.glob(os.path.join(directory, '*.log'))\n    if not log_files:\n        return 'No logs found to backup'\n\n    os.makedirs(backup_dir, exist_ok=True)\n    backup_file = os.path.join(backup_dir, 'logs_backup.tar.gz')\n\n    # Create the archive. '-C directory' stores the files without their full path.\n    subprocess.run(\n        ['tar', '-czf', backup_file, '-C', directory]\n        + [os.path.basename(f) for f in log_files],\n        check=True,\n        stdout=subprocess.DEVNULL,\n        stderr=subprocess.DEVNULL,\n    )\n\n    # Clear the original log files after a successful backup.\n    for file in log_files:\n        os.remove(file)\n\n    return backup_file\n\n\nif __name__ == '__main__':\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as dst:\n        for i in range(3):\n            with open(os.path.join(src, f'app{i}.log'), 'w') as fh:\n                fh.write(f'log entry {i}\\n')\n\n        print(task_func(src, dst))   # -> path to logs_backup.tar.gz\n        print(os.listdir(src))       # -> [] (originals removed)\n        print(task_func(src, dst))   # -> 'No logs found to backup'\n```\n\n**How it works:**\n- If `directory` does not exist, the function raises `FileNotFoundError`.\n- It uses `glob` to find every `*.log` file. If there are none, it returns `'No logs found to backup'`.\n- It creates `backup_dir` if needed. Then it runs `tar -czf` through `subprocess` to build `logs_backup.tar.gz`. The `check=True` flag makes a failed `tar` raise an exception, so the original files are never deleted after a bad backup.\n- After a successful backup, it deletes the original log files and returns the path to the archive.\n\n`tar` is included on Windows 10/11, Linux and macOS, so the script runs on all of them.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 801,
+  "output_tokens": 1117,
+  "output_tokens_details": {
+   "thinking_tokens": 170
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1117,
+    "cache_read_input_tokens": 801,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 20.7,
+ "time": "2026-11-19 14:20:36"
+}

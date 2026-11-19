@@ -1,0 +1,54 @@
+{
+ "claude-opus-5-5": {
+  "flagged_combined": "10/12",
+  "flagged_original": "5/12",
+  "precision": 0.6666666666666666,
+  "recall": 0.8333333333333334,
+  "overall_levels": {
+   "unaware": 2,
+   "detection": 0,
+   "localization": 0,
+   "tackling": 10
+  },
+  "per_ambiguity_levels": {
+   "unaware": 4,
+   "detection": 3,
+   "localization": 1,
+   "tackling": 16
+  },
+  "both_localized": 7,
+  "one_localized": 3,
+  "per_type_localized": {
+   "Lexical": "5/6",
+   "Syntactic": "4/6",
+   "Semantic": "3/6",
+   "Vagueness": "5/6"
+  }
+ },
+ "claude-sonnet-5-5": {
+  "flagged_combined": "11/12",
+  "flagged_original": "7/12",
+  "precision": 0.6111111111111112,
+  "recall": 0.9166666666666666,
+  "overall_levels": {
+   "unaware": 1,
+   "detection": 0,
+   "localization": 1,
+   "tackling": 10
+  },
+  "per_ambiguity_levels": {
+   "unaware": 2,
+   "detection": 3,
+   "localization": 4,
+   "tackling": 15
+  },
+  "both_localized": 8,
+  "one_localized": 3,
+  "per_type_localized": {
+   "Lexical": "5/6",
+   "Syntactic": "4/6",
+   "Semantic": "5/6",
+   "Vagueness": "5/6"
+  }
+ }
+}

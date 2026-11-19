@@ -1,0 +1,172 @@
+{
+ "id": "B9",
+ "task_id": "BigCodeBench/22",
+ "pair": [
+  "L",
+  "M"
+ ],
+ "original_prompt": "Combine two lists by alternating their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combined list, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+ "ambiguous_prompt": "Combine two lists by zipping their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combination, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+ "judge_passed": null,
+ "iterations_used": 0,
+ "source": "manual_reinjection",
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "zipping their elements",
+    "explanation": "'zip' can mean interleaving the elements into one flat list, or pairing them as tuples like Python's zip().",
+    "intended_reading": "Interleave the two lists into one flat list (l1[0], l2[0], l1[1], l2[1], ...); leftover elements of the longer list are appended on their own.",
+    "alternative_reading": "Pair the elements as tuples (l1[i], l2[i]) like Python's zip(); leftover elements of the longer list are included on their own (not in a tuple). The sample then consists of tuples and single elements.",
+    "alternative_implementation": "import collections\nfrom itertools import zip_longest\nfrom random import choices, sample\ndef task_func(l1, l2, K=10):\n    combined = [tuple(v for v in p if v is not None) if None not in p else next(v for v in p if v is not None) for p in zip_longest(l1, l2)]\n    return collections.Counter(choices(combined, k=K))\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 2,
+     "n_tests": 8,
+     "failing_tests": [
+      "TestCases.test_case_with_non_integers",
+      "TestCases.test_imbalanced_lists"
+     ]
+    }
+   },
+   {
+    "type": "Semantic",
+    "span": "create a random sample of size K from the combination",
+    "explanation": "'a random sample of size K' can mean K independent draws with replacement, or K distinct positions drawn without replacement.",
+    "intended_reading": "Draw K items with replacement (random.choices(combined, k=K)).",
+    "alternative_reading": "Draw K distinct positions without replacement (random.sample(combined, K)); raises ValueError if K exceeds the combined length.",
+    "alternative_implementation": "import collections\nfrom itertools import zip_longest\nfrom random import choices, sample\ndef task_func(l1, l2, K=10):\n    combined = [v for p in zip_longest(l1, l2) for v in p if v is not None]\n    return collections.Counter(sample(combined, K))\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 2,
+     "n_tests": 8,
+     "failing_tests": [
+      "TestCases.test_case_with_non_integers",
+      "TestCases.test_imbalanced_lists"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "date": "2026-11-19",
+  "notes": "Manually reinjected after two agent attempts were rejected (new task, pre-registered rules). Lexical 'zipping' (interleave vs tuple pairs); Semantic 'random sample of size K' (with vs without replacement, taken from the agent's 2nd attempt, judge plausibility 4). Both verified by the original tests. Approved by the user."
+ },
+ "rejected_attempts": [
+  {
+   "id": "B9",
+   "task_id": "BigCodeBench/22",
+   "pair": [
+    "L",
+    "M"
+   ],
+   "original_prompt": "Combine two lists by alternating their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combined list, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+   "ambiguous_prompt": "Combine two lists by alternating their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combined list, giving every element of the combined list an equal chance of being picked, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object mapping each element in the sample to its frequency.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+   "judge_passed": true,
+   "iterations_used": 2,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "collections.Counter: An object mapping each element in the sample to its frequency.",
+      "explanation": "The word 'frequency' can mean an absolute count (how many times an element occurs) or a relative frequency (the proportion of the sample it makes up). The original wording, 'counts the frequency', implies integer counts. 'Mapping ... to its frequency' also allows fractional proportions. That changes the values stored in the returned Counter.",
+      "intended_reading": "Frequency means the absolute number of occurrences of each element in the sample of size K. The result is Counter(sample), with integer values that sum to K.",
+      "alternative_reading": "Frequency means relative frequency. Each element maps to its count divided by K, so the values are proportions that sum to 1.",
+      "alternative_implementation": "import collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n    _missing = object()\n    combined = [elem for pair in zip_longest(l1, l2, fillvalue=_missing) for elem in pair if elem is not _missing]\n    sample = choices(combined, k=K)\n    counts = collections.Counter(sample)\n    total = len(sample)\n    if total == 0:\n        return collections.Counter()\n    return collections.Counter({elem: cnt / total for elem, cnt in counts.items()})\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 8,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_1",
+        "TestCases.test_case_2",
+        "TestCases.test_case_3",
+        "TestCases.test_case_4",
+        "TestCases.test_case_5",
+        "TestCases.test_case_with_non_integers",
+        "TestCases.test_empty_first_list",
+        "TestCases.test_imbalanced_lists"
+       ]
+      }
+     },
+     {
+      "type": "Semantic",
+      "span": "giving every element of the combined list an equal chance of being picked",
+      "explanation": "'Every element' can refer to every position (entry) in the combined list or to every distinct value in it. If the list has duplicates, uniform-per-position sampling makes repeated values more likely. Uniform-per-distinct-value sampling gives every unique value the same probability. The two readings produce different sampling distributions.",
+      "intended_reading": "Each position in the combined list is equally likely to be picked on each draw, with replacement. This is the default behaviour of random.choices(combined, k=K), so a value that appears more often in the combined list is proportionally more likely to be sampled.",
+      "alternative_reading": "Each distinct value in the combined list is equally likely to be picked, however many times it appears. The combined list is reduced to its unique values first, and those are sampled uniformly with replacement.",
+      "alternative_implementation": "import collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n    _missing = object()\n    combined = [elem for pair in zip_longest(l1, l2, fillvalue=_missing) for elem in pair if elem is not _missing]\n    unique_elements = []\n    for elem in combined:\n        if elem not in unique_elements:\n            unique_elements.append(elem)\n    sample = choices(unique_elements, k=K)\n    return collections.Counter(sample)\n",
+      "divergence_check": {
+       "verified": false,
+       "n_diverging_tests": 0,
+       "n_tests": 8,
+       "failing_tests": []
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Rejected by the reviewer. (1) The Lexical ambiguity 'frequency' (absolute count vs relative frequency) is already used by another task in this benchmark - use a different word with several meanings. (2) The Semantic ambiguity (equal chance per position vs per distinct value) is not detectable: the tests only check that the Counter's values sum to K and that the result is a Counter, so both readings must change the size, the type, or the number of samples, or which elements can appear (e.g. how the lists are combined). Keep the intended reading fully plausible and do not add new requirements."
+  },
+  {
+   "id": "B9",
+   "task_id": "BigCodeBench/22",
+   "pair": [
+    "L",
+    "M"
+   ],
+   "original_prompt": "Combine two lists by alternating their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combined list, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+   "ambiguous_prompt": "Combine two lists by alternating their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own, with any blank entries discarded. Then, create a random sample of size K from the combination, and calculate the frequency of each drawn item in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each drawn item in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+   "judge_passed": false,
+   "iterations_used": 5,
+   "explanation": {
+    "ambiguities": [
+     {
+      "type": "Lexical",
+      "span": "with any blank entries discarded",
+      "explanation": "The word \"blank\" has two senses. It can mean the missing slots that zip_longest pads with None when the lists differ in length. It can also mean blank values, such as empty or whitespace-only strings. The two senses remove different elements from the combined list, so the sampling population and the resulting counts differ.",
+      "intended_reading": "\"Blank entries\" are the None filler values that zip_longest inserts where the shorter list has no counterpart. Only these None placeholders are dropped, and every real element of l1 and l2 is kept.",
+      "alternative_reading": "\"Blank entries\" are blank values: None plus empty or whitespace-only strings (e.g. '' or '   '). Any such value is dropped from the combined list, even when it was an actual element of l1 or l2.",
+      "alternative_implementation": "import collections\nfrom itertools import zip_longest\nfrom random import choices\n\ndef task_func(l1, l2, K=10):\n    def is_blank(v):\n        if v is None:\n            return True\n        if isinstance(v, str) and v.strip() == '':\n            return True\n        return False\n\n    combined = [v for pair in zip_longest(l1, l2) for v in pair if not is_blank(v)]\n    sample = choices(combined, k=K)\n    freq = collections.Counter(sample)\n    return freq\n",
+      "divergence_check": {
+       "verified": false,
+       "n_diverging_tests": 0,
+       "n_tests": 8,
+       "failing_tests": []
+      }
+     },
+     {
+      "type": "Semantic",
+      "span": "create a random sample of size K from the combination",
+      "explanation": "The phrase \"random sample of size K\" does not say whether items are drawn with or without replacement. With replacement (random.choices), the same element can be drawn many times and K may exceed the list length. Without replacement (random.sample), each position is drawn at most once, so counts are bounded by occurrences in the list and K larger than the list raises an error.",
+      "intended_reading": "Draw K items with replacement from the combined list using random.choices(combined, k=K), then count them with collections.Counter.",
+      "alternative_reading": "Draw K distinct positions without replacement from the combined list (random.sample), so no list position is reused. This fails with ValueError if K exceeds the combined list's length.",
+      "alternative_implementation": "import collections\nfrom itertools import zip_longest\nfrom random import choices\n\ndef task_func(l1, l2, K=10):\n    from random import sample as random_sample\n    combined = [v for pair in zip_longest(l1, l2) for v in pair if v is not None]\n    drawn = random_sample(combined, K)\n    freq = collections.Counter(drawn)\n    return freq\n",
+      "divergence_check": {
+       "verified": true,
+       "n_diverging_tests": 2,
+       "n_tests": 8,
+       "failing_tests": [
+        "TestCases.test_case_with_non_integers",
+        "TestCases.test_imbalanced_lists"
+       ]
+      }
+     }
+    ]
+   },
+   "status": "pending_human_review",
+   "human_review": {
+    "approved": null,
+    "notes": ""
+   },
+   "rejection_feedback": "Rejected by the reviewer: judge never passed (5 rounds); Lexical 'blank entries' plausibility 2 and undetectable."
+  }
+ ]
+}

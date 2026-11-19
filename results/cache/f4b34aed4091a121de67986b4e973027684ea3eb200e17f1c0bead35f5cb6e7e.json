@@ -1,0 +1,47 @@
+{
+ "tag": "B1|combined|claude-sonnet-5-5|0",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nReads a CSV file and finds the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and determines the frequency of each word across the file's rows. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its frequency,\n    sorted by frequency in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+ "text": "```python\nimport csv\nfrom collections import Counter\nimport operator\n\n\ndef task_func(csv_file, csv_delimiter):\n    counter = Counter()\n    with open(csv_file, 'r', newline='', encoding='utf-8') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            for cell in row:\n                counter[cell] += 1\n    return sorted(counter.items(), key=operator.itemgetter(1), reverse=True)\n```\n\nThe function reads every cell of the CSV with the given delimiter, counts how often each one appears, and returns `(word, count)` tuples sorted by count in descending order. Words with equal counts keep the order in which they first appeared, since Python's sort is stable.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 837,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 247,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 837,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 247,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 837,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 837
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 4.5,
+ "time": "2026-11-19 12:20:54"
+}

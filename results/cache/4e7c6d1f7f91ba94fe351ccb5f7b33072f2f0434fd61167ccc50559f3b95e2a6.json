@@ -1,0 +1,47 @@
+{
+ "tag": "R5|original|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    \"\"\"\n```",
+ "text": "```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    >>> rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])\n    [0.0, 0.25, 0.5, 0.75, 1.0]\n    \"\"\"\n    if len(numbers) < 2:\n        raise ValueError(\"Input list must contain at least two elements.\")\n\n    min_val = min(numbers)\n    max_val = max(numbers)\n    span = max_val - min_val\n\n    if span == 0:\n        # All values are identical; no linear transform can map min to 0 and max to 1.\n        # Return all zeros as a sensible default.\n        return [0.0 for _ in numbers]\n\n    return [(x - min_val) / span for x in numbers]\n\n\nif __name__ == \"__main__\":\n    assert rescale_to_unit([2.0, 49.9]) == [0.0, 1.0]\n    assert rescale_to_unit([100.0, 49.9]) == [1.0, 0.0]\n    assert rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0]) == [0.0, 0.25, 0.5, 0.75, 1.0]\n    assert rescale_to_unit([2.0, 1.0, 5.0, 3.0, 4.0]) == [0.25, 0.0, 1.0, 0.5, 0.75]\n    assert rescale_to_unit([12.0, 11.0, 15.0, 13.0, 14.0]) == [0.25, 0.0, 1.0, 0.5, 0.75]\n    print(\"All tests passed.\")\n```\n\nThe function subtracts the minimum from each number and divides by the range (max − min). The smallest value becomes 0, the largest becomes 1, and everything else keeps its relative position in between.\n\nIf every value is the same, the range is zero and no linear transform can do the job. In that case the function returns all zeros instead of crashing with a division by zero.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 703,
+  "output_tokens": 706,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 706,
+    "cache_read_input_tokens": 703,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 14.8,
+ "time": "2026-11-17 17:56:25"
+}

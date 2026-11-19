@@ -1,0 +1,8 @@
+[
+  {"id": "R1", "task": "Filter a list",          "task_id": "HumanEval/7",  "pair": ["L", "M"]},
+  {"id": "R2", "task": "Sort a collection",      "task_id": "HumanEval/34", "pair": ["S", "V"]},
+  {"id": "R3", "task": "Remove duplicates",      "task_id": "HumanEval/26", "pair": ["M", "V"]},
+  {"id": "R4", "task": "Search a string",        "task_id": "HumanEval/18", "pair": ["L", "S"]},
+  {"id": "R5", "task": "Transform a list",       "task_id": "HumanEval/21", "pair": ["S", "M"]},
+  {"id": "R6", "task": "Find matching elements", "task_id": "HumanEval/22", "pair": ["L", "V"]}
+]

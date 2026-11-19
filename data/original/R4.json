@@ -1,0 +1,7062 @@
+{
+ "id": "R4",
+ "task": "Search a string",
+ "task_id": "HumanEval/18",
+ "pair": [
+  "L",
+  "S"
+ ],
+ "entry_point": "how_many_times",
+ "original_prompt": "\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    \"\"\"\n",
+ "reference_solution": "\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    >>> how_many_times('', 'a')\n    0\n    >>> how_many_times('aaa', 'a')\n    3\n    >>> how_many_times('aaaa', 'aa')\n    3\n    \"\"\"\n\n\n    occurences = 0\n    for i in range(len(string)):\n        if string[i:].startswith(substring):\n            occurences += 1\n    return occurences\n\n",
+ "single_type_exemplars": {
+  "Lexical": {
+   "prompt": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count relevant cases.\n    \"\"\"",
+   "explanation": "\"relevant\": Could mean overlapping occurrences (as implied by the examples), non-overlapping occurrences, or occurrences meeting some other unspecified criteria. Ambiguous here because it fails to specify the precise counting method (overlapping vs. non-overlapping), unlike the original description which explicitly mentioned \"overlapping\"."
+  },
+  "Syntactic": {
+   "prompt": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string Count overlaping cases.\n    \"\"\"",
+   "explanation": "Ambiguous phrase placement of \"Count overlaping cases\": it is unclear whether this phrase modifies \"Find how many times\" (indicating how to count) or is a separate instruction (to count overlapping cases as an additional operation)."
+  },
+  "Semantic": {
+   "prompt": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Determine the number of instances a given substring can be found in the original string. \n    \"\"\"",
+   "explanation": "The phrase \"instances a given substring can be found\" is semantically ambiguous—it can mean (A) the total number of occurrences of the substring within the string, including overlaps (e.g., in 'aaaa', 'aa' occurs 3 times: positions 0-1, 1-2, and 2-3), or (B) the total number of non-overlapping occurrences of the substring within the string (e.g., in 'aaaa', 'aa' would occur 2 times: positions 0-1 and 2-3), each interpretation leading to different code and results."
+  },
+  "Vagueness": {
+   "prompt": "def how_many_times(string: str, substring: str) -> int:\n    \"\"\" Determine the presence of a given substring in the original string. Count overlaping cases.\n    \"\"\"",
+   "explanation": "Ambiguous Explanation:\nThe ambiguous phrase \"Determine the presence of a given substring\" could be interpreted as simply checking whether the substring exists within the original string or it could mean to count how many times the substring occurs. The ambiguity lies in what exactly \"determining the presence\" is supposed to entail."
+  }
+ },
+ "atol": 0,
+ "n_base": 4,
+ "tests": [
+  {
+   "input": [
+    "",
+    "x"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "xyxyxyx",
+    "x"
+   ],
+   "expected": 4
+  },
+  {
+   "input": [
+    "cacacacac",
+    "cac"
+   ],
+   "expected": 4
+  },
+  {
+   "input": [
+    "john doe",
+    "john"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ababa",
+    "aba"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "abcdefg",
+    "efg"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abababab",
+    "aba"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "hello world",
+    "o"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "aaaabbbbcccc",
+    "bb"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "12211221122",
+    "122"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "racecar",
+    "car"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "mississippi",
+    "ss"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "thequickbrownfox",
+    "fox"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "fizzbuzz",
+    "zz"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "aaaabbbbccccc",
+    "bb"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "bbb",
+    "bb"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "zz",
+    "bbb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "122",
+    "zz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bb",
+    "bb"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "misracecarsissippi",
+    "ss"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abababab",
+    "fox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "e",
+    "e"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "thequickbrownfox",
+    "thequickbrownfox"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bb",
+    "thequickbrownfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fizzbuzz",
+    "fizzbuzz"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "122",
+    "12mississippi2"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaacarabbbbcccc",
+    "efg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello world",
+    "fox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ababa",
+    "ababa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "fizzbuzz",
+    "fizzzbuzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "12mississippi2",
+    "efg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello worrld",
+    "ababao"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thebquickbrownfox",
+    "thequickbrownfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaacarabbbbcccc",
+    "aaacabrabbbbcccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zz",
+    "ababao"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thequickbrrownfox",
+    "thequickbrrownfox"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "hello woorrld",
+    "abaabaaoo"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaabbbbcccc",
+    "thequickbrownfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abababab",
+    "hello woorrld"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zz",
+    "efhello worrldssg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fiuzzbuzz",
+    "efg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaabbbcbcccc",
+    "hello woorrld"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bb",
+    "bssb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zz",
+    "zz"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "12hello woorrld",
+    "zz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbaaaabbbcbcccc",
+    "bssb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sss",
+    "sefhello worrldssgs"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fiuzzbuzz",
+    "aaaabbbbccccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efg",
+    "hello woorrld"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ababathequickbrownfox",
+    "abaaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efgg",
+    "12mtheqabaabaaoouickbrrownfoxississippi2"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bb",
+    "mississippababao"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fizzbuzz",
+    "fizzzbbbzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sss",
+    "sfizzzbbbzzss"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccar",
+    "rccar"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efg",
+    "abaabaabcdefg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbaaaabbbcbccc",
+    "bbb"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "hello world",
+    "oo"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fizzbuz",
+    "zzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaabbbcbcccc",
+    "aaaaabbbcbcccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello lwoorrld",
+    "hello lwoorr"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "eg",
+    "egccarfiuzzbuzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "12211221122",
+    "1222"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efg",
+    "efg"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ss",
+    "ssfizzzbbbzzsss"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zz",
+    "zzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "s1222bssbs",
+    "s1222bssbbs"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "12hello woo1rrcarld",
+    "zz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello worrlod",
+    "ababao"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sfizabaabazbbbzzss",
+    "sfizabaabazbbbzzsabcdefg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ezzbuzz",
+    "essfizzzbbbzzssszzbuzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zz",
+    "zmississippababaoz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "mississiezzbuzzpi",
+    "ss"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "eg",
+    "eg"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abababab",
+    "ab"
+   ],
+   "expected": 4
+  },
+  {
+   "input": [
+    "12hello woorrld",
+    "zzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efgbbaaaabbbcbcccc",
+    "efgbbaaababbbcbcccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello woorrld",
+    "hello worldaaacarabbbbcccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aba",
+    "aba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ef12mtheqabaabaaoouickbrrownfoxississippi2g",
+    "effg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ezzbuzz",
+    "efg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cgareg",
+    "careg122"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "122bbaaaabbbcbcccc11221122",
+    "1221122112aaaabbbcbcccc2"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sefhello worrldssgs",
+    "aaaaabbbcbcccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fiuababathequickbrownfoxzzbuzz",
+    "fiuizzbuzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zzz",
+    "z"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "fizzbuzz",
+    "effg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caregsfizabaabazbbbzzss122",
+    "cggareg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fiuzzbuzz",
+    "egfg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hellol lwoorr",
+    "hellol lw"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "12mtheqabaabaaoouickbrrownfoxississippi2",
+    "efgg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "12hello whello lwoorroorrld",
+    "zabababab"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zz",
+    "zzzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello lwoorr",
+    "zz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efg",
+    "effizzbuzzfg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "efg",
+    "egfg"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "zef12mtheqabaabaaoouickbrrownfoxississippi2gz",
+    "zz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello woorrld",
+    "whello woorrld"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thequickbrownfox",
+    "thequickbrownracecarfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bb",
+    "thequickbrownracecarfoxbbb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fiessfizzzbbbzzssszzbuzzuababathequickbrownfoxzzbuzz",
+    "fiuizzbuzz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbaaaabbbcb12hello whello lwoorroorrldcccc",
+    "bssb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "therbquickbrownfox",
+    "thequickbrownfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbaaaabbbcbccc",
+    "oo"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "aaa"
+   ],
+   "expected": 5
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "abc"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "ipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "banana",
+    "ana"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "cacccccac",
+    "cac"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "of"
+   ],
+   "expected": 7
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "ap"
+   ],
+   "expected": 5
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "AAAAAAA"
+   ],
+   "expected": 44
+  },
+  {
+   "input": [
+    "dog.",
+    "ap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabrownaaaa",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumps over the lazy dog.",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "foipsumx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    ".dogfox.",
+    "dogfox."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit.",
+    "ipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ba",
+    "aaaaadogfox.aa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickraceacarapenapapayapineapple",
+    "quickracecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "ap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "aaaaofabbbbtheaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "the",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "aaaaofabbbbtheaelit.aaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaabrownaaaaaaaaaa",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abc",
+    "abc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicfox",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sit",
+    "sit"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "gg.",
+    "dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cac",
+    "cac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quickraceacarapenapapayapineapple",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "amlazyet,",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccac",
+    "cacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    ".dogfox.",
+    "quickcfoxk"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicfoxcacccccac",
+    "quicfoxcacccccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaabrownaaaa",
+    "over"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumps over the lazy dog.",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccac",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccaac",
+    "cac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "the",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumps over the lazy dog.",
+    "The quick brown fox jumps over the  lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "foipsuconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAA",
+    "abc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "tAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ataaaaaaaabaaaabrownaaaaaaaaaa",
+    "thequickracecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAA",
+    "elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelit.aaahe",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the  lazy dog.",
+    "brown"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "baccac",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccccacc",
+    "cacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccaac",
+    "quickraecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbe",
+    "ccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amet,",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "ataaaaaaaabaaaabrownaaaaaaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelitaaaaofabbbbtheaaaa.abrownaahe",
+    "taaaaofabbbbtheaelit.abrownaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ap",
+    "of"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicaccfox",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumps over the lazy dog.",
+    "cacccccacipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickraceacarapenapapayapineapple",
+    "eapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit.",
+    "ielit.psum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabrownaaaa",
+    "aaabrownaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaadogfox.aa",
+    "ccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "consectetur"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "over",
+    "over"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    ".dogfox",
+    "dogfdox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsumx",
+    "foipsumx"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaabrownaaaaaaaaaa",
+    "aaaaaaaabaaaabrownaaaaaaaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ipsum",
+    "ipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "consectetur",
+    "consecur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsumx",
+    "cacccccaac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaathequickracecarapenapapayapineapplerownaaaaaaaaaa",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "b",
+    "b"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "sit",
+    "foipsuconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaaaa",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foipsuconsecteturmx",
+    "foipsuconsecteturmx"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaLorem ipsum dolor sit amet, consectetur adipiscing elit.aaaaaaaa",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "eapple",
+    "ap"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "AAAAAAA"
+   ],
+   "expected": 44
+  },
+  {
+   "input": [
+    "bThe quick brown fox jumps over the lazycacccccacipsum dog.a",
+    "bThe quick brown fox jumps over the lazy dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "c",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amlazyet,",
+    "amlazyet,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bThe quick brown fox jumps over the lazy dog.a",
+    "banana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccac",
+    "cacbaaaaofabbbbtheaelit.aaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "jumps"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccccacc",
+    "ccccacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amt, consectetur adipiscing elit.",
+    "ipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicfoxcaccccccac",
+    "quicfoxcacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxsityzabc",
+    "abc"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "bb",
+    "bba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAA",
+    "AAAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "banana",
+    ".dogfox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicaccfox",
+    "quicaccfox"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxsvityzabct",
+    "abcdefghijklmnopqrstuvwxsityzabct"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsumx",
+    "abcdefghijklmnopqrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAA",
+    "ipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccac",
+    "caac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbb",
+    "bbbb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amt, consectetur adipiscing elit.",
+    "cacccccaac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabcacccccacipsumbbbtheaelit.aaahe",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit.",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "abcdefghijklmnopqrstuvwxsvityzabct"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabbaaabbbbaaaa",
+    "aaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laz",
+    "lazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caac",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsequickcfoxkurmx",
+    "AAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bana",
+    "thequickracecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ipoversum",
+    "aaaaadogfox.aa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsequickcfoxkurmx",
+    "foipsuconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "amt,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaadogfLoremox.aa",
+    "ccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfoxcacccccacc",
+    "quicfoxcacccccacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumps over the lazy dog.",
+    "quicaccfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thequickracecarapenapapayapineapple",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "over",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "b",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "eapple",
+    ".dogfox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consecur",
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaAaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickraceacarapenapapayapineapple",
+    "eaAAApple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bba",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaathequickracecarapenapapayapineapplerownaaaaaaaaaa",
+    "bbaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aap",
+    "ap"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxsityzabc",
+    "The"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amlazyet,",
+    "amlazyety,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccccacc",
+    "cacac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "banaipsum",
+    "thequickracecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccaccccccac",
+    "caccccccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bana",
+    "cquicfoxkacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ovlazycacccccacipsumer",
+    "over"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bLorem ipsum dolor sit amet, consetctetur adipiscing elit.a",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccac",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bb",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaadogfox.aa",
+    "aaaaadogfox.aa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foipsumx",
+    "abcdefghijklmnopqovlazycacccccacipsumerrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbaccac",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ataaaaaaaabaaaabrownaaaaaaaaaa",
+    "aaabrownaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacbaaaaofabbbbtheaelit.aaaa",
+    "cacccccacipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofofaaabrownaaaa",
+    "oof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amlazyety,",
+    "amlazyety,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelit.aaahbThee",
+    "taaaaofabbbbtheaelit.aaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amet,",
+    "AAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "over",
+    "dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaLorem",
+    "quicfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oveamt,",
+    "dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAbanaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ovlazycacccccacipsumer",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacbaaaaofabbbbtheaelit.aaaa",
+    "aap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "bLorem ipsum dolor sit amet, consetctetur adipiscing elit.aconsecur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.",
+    "dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaamt,",
+    "amt,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacbaaaaofabbbbtheaelit.aaaa",
+    "cacbaaaaofabbbbtheaelit.aaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "AAAAAAA"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bb",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAadipiscingAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "qLoremuicaccfox",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbe",
+    "celit.acccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "baccac",
+    "ccacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaamt,",
+    "cacccccacamt,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccac",
+    "cacccccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "caac",
+    "caac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ap",
+    "quick"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicaccfox",
+    "aa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscilng elit.",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscilng elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "thequickracecarapenapapayaquicfoxcacccccaccpineapple",
+    "thequickracecaraaaapenapapayaquicfoxcacccccaccpineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dogovlazycacccccacipstAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABheumer.",
+    "over"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "oever"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    ".dogfox.",
+    "quicfoxcacccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAA",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "banana",
+    "bbaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofofaaabroaaAAAAAaaaaaabaaaabrownaaaaaaaaaaaaaa",
+    "oof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "The"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAA",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.a",
+    "epjs"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ipoccccaccversum",
+    "aaaaadogfox.aa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aap",
+    "cacbaaaaofabbbbtheaelibLoremaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ataaaaaaaabaaaabrownaaaaaaaaaa",
+    "The quicfoxk brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amt,",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    ".dogfox",
+    "dogfox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing eliot.",
+    "ipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cac",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelit.aaahbThee",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "AAAAAA"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "elit.a",
+    "foipsuconsequickcfoxquicfoxcaccccccackurmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consecteur",
+    "ataaLorem ipsum dolor sit amet, consetctetur adipiscing elit.aaaaaabaaaabrownaaaaaaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cquicfoxkacc",
+    "quick"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAA",
+    "AAAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAA",
+    "bbelit.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur aditamet,piscing elit.",
+    "quicaccfoxsit amet, consetctetur adiamet,piscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fobbaccacx jumps over the lazy dog.",
+    "The quick brown fox jumps over the  lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "fofoothequickracecarapenapapayapineapplefoofof",
+    "of"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "The quicfoxamlazyet,k brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumups over the lazy dog.",
+    "The quicfoxk brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumps over azy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsecteturmx",
+    "foataaLorem ipsum dolor sit amet, consetctetur adipiscing elit.aaaaaabaaaabrownaaaaaaaaaaipsuconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfoxcacccccac",
+    "cacccccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cac",
+    "cafoipsuconsecteturmxc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsumx",
+    "abcdefghijklmnopqrstuvwxsvityzabct"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "the",
+    "AAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ba",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccacamt,",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfoxcacccccacc",
+    "quicfThe quicfoxk brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumps over azy dog.oxcacccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccaac",
+    "cacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicaccfox",
+    "elit.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bba",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "consuecur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccccacc",
+    "fofofofofofofof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dogovlazycacccccacipstAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABheumer.",
+    "fofofofofofofofaaabroaaAAAAAaaaaaabaaaabrownaaaaaaaaaaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "etaaaaofabbe",
+    "taaaaofabbe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anab",
+    "ana"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "boverb",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ovlazycacccccer",
+    "over"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fobccacx",
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaAaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "gg.",
+    "dodg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aquicaccfoxsit amet, consetctetur adiamet,piscing elit.et,",
+    "amet,"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "quickcfoxk",
+    "qLoremuicaccfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaobfabbbbtheaelit.aaahe",
+    "TThe quick brown fox jumps over the lazy dog.he quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum odolor sit amet, consetctetur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Thconsecteture",
+    "The"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bba",
+    "aaaaathequickracecarapenapapayapineapplerownaaaaaaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAA",
+    "ap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "ipsu"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicfoxacccccac",
+    "quicfoxcacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabrownaaaaa",
+    "over"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaaaa",
+    "foataaLorem"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cccacc",
+    "cccquicfoxcacccccaccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabbThe quicfoxamlazyet,k brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumups over the lazy dog.aabbbbaaaa",
+    "ccacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caccccc",
+    "cacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "aap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cafkoipsuconsequickcfoxkurmxcac",
+    "cafoipsuconsequickcfoxkurmxcac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickcfoxk",
+    "quickcfoxk"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaamt,",
+    "aaaamt,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dodg.",
+    "abc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AA",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscilng elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abc",
+    "ab"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaababbbaaaa",
+    "aaa"
+   ],
+   "expected": 5
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxsityzabc",
+    "abcdefghijklmnopqrstuvwxsityzabc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaabrownaaaaa",
+    "aaabrownaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "AAAAAAAthequickracecaraaaapenapapayaquicfoxcacccccaccpineappleAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "eliot.",
+    "ap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cccacc",
+    "ccaccccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscilang elit.",
+    "dolor"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaabrownaaaa",
+    "aaabrownaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quuicaccfox",
+    "elit.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickraceacarapenapapayapineapplee",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cac",
+    "cacccccaac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "brothequickraAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcarapenapapayaquicfoxcacccccaccpineapplewwn",
+    "brothequickracecarapenapapayaquicfoxcacccccaccpineapplewwn"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "gg",
+    "brownfoipsuconsequickcfoxquicfoxcaccccccackurmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amet,",
+    "aemet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caacc",
+    "caac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "AAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "brothequickraAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAelit.aaaaaabaaaabrownaaaaaaaaaaipsuconsecteturmxAAAAAAAAAAAAAAAABcarapenapapayaquicfoxcacccccaccpineapplewwn",
+    "brothequickraAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcarapenapapayaquicfoxcacccccaccpineapplewwn"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "o.dogffox",
+    "aaaaofabbbbtheaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsecteturmx",
+    "faaaaaaaabaaaaaaaoiconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsumx",
+    "eaAAApple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.he",
+    "consuecur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "quickcfoxk"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dodg.",
+    "b"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbc",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.aconsecur",
+    "bbbbquicfoxcacccccacap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "brown",
+    "brown"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsecteturmx",
+    "faaaaaaaabaaaaoiconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thequickracecaraaaapenapapayaquicfoxcacccccaccpineapple",
+    "quickracecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The qfoxuick brown fox jumps over the lazy dog.",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "of",
+    "brown"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fmoipsumx",
+    "foipsumx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.aconsecur",
+    "ab"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amlazyetquicfThe quicfoxk brownfoipsuconsequickcfoxquicfoxcaccThconsectetureccccackurmx fox jumps over azy dog.oxcacccccacc",
+    "amlazyetquicfThe quicfoxk brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumps over azy dog.oxcacccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ovver",
+    "oveThe quicfoxk brown fobbaccacx jumps over the lazy dog.r"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccc",
+    "caac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amt,",
+    "aaabrownaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAdolorAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brownn fox jumps over the lazy dog.",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAadipiscingAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAadipiscingAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quickraceacarapeabcnapapayapineapple",
+    "eapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABhe",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABhe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccacccac",
+    "cacc"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "baditamet,piscinga",
+    "quicaccfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "etaaaaofabbe",
+    "etaaaaofaeapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ipsu",
+    "cacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.aconsecur",
+    "elit.aconsecur"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foipsumx",
+    "cfofoothequickracecarapenapapayapineapplefoofofacccccaac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccaccccccac",
+    "ccaccccccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foipsuconsecamlazyety,teturmx",
+    "foipsuconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaabrownaaaa",
+    "brown"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "elit.aaaaaaaa",
+    "quicfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "etaaaaofaeapplee",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oveamt,",
+    "aemet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsecteturtmx",
+    "foipsuconsecteturtmx"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    ".cafoipsuconsecteturmxcdogfox.",
+    ".dogfox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "aaaaabbbbaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "gg.",
+    "Thconsecteture"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaAaaa",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelitaaaaofabbbbtheaaaa.abrownaahe",
+    "taaaaofabbbcfofoothequickracecaracaaccpenapapayapineapbbaccacplefoofofacccccaacbtheaelit.abrownaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bannana",
+    "banana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccc",
+    "cacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dog.r",
+    "cquicfoxkacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ba",
+    "abcdefghijklmnopqrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccacipsum",
+    "cacccccacipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "sist",
+    "sist"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cafoipsuconsequickcfoxkurmxcac",
+    "cafoipsuconsequickcfoxkurmxcac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bLorem ipsum dolor sit amet, consetctetur adipiscing elit.a",
+    "bThe quick brown fox jumps over the lazycacccccacipsum dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laz",
+    "cacccccacipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caccccccaac",
+    "cacccccaac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ovvr",
+    "ovver"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsucAAAAAx",
+    "foipsuconsecteturtmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsecteturmx",
+    "aquicaccfoxsit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfoxcacccccocac",
+    "quicfoxcaccccThe quicfoxk brown fox jumps over the lazy dog.cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbbbquicfoxcacccccacap",
+    "bbbbquicfoxcacccccacap"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bbb",
+    "oever"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaabbaaabbbbaaaahe",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "browwn",
+    "brown"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem",
+    "banana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsuconsecteturmx",
+    "fquickcfoxkaaaaaaaabaaaaoiconsecTThe quick brown fox jumps over the lazy dog.he quick brown fox jumps over the lazy dog.teturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "eappleThe qfoxuick brown fox jumps over the lazy dog.",
+    "The qfoxuick brown fox jumps over the lazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicaccfoxsit amet, consetctetur adiamet,piscing elit.",
+    "quicaccfoxsit amet, consetctetur adiamet,piscing telit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "acaac",
+    "caac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ataaaaaaaabaaaabrownaaaaaaaaaa",
+    "thequickracelcarapenapapayapineappl"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfoxdolor",
+    "The"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccaccccccac",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ipsu",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caac",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "baccac",
+    "baccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "caaaabrownaaaaac",
+    "ccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adip.iscing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "faaaaaaaabasecteturmx",
+    "faaaaaaaabasecteturmx"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dog.aaaaaofabbbbtheaaaa",
+    "epjs"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "browwn",
+    "browwn"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "thequickracecaraaaapenapapayaquicfoxcacccccaccpineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "racecarapenapapaeyapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oof",
+    "bThe quick brown fox jumps over the lazy dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipmet, consectetur adip.iscing elit.",
+    "Lorem ipsum dol adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amet,",
+    "aemaditamet,piscing"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aquicaccfoxsit amet, consetctetur adiamet,pistcing elit.et,",
+    "amlazyet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caccccccacac",
+    "cacccccacac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickcfoxk",
+    "quic"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccabbbccccccac",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "brothequirckracecarapenapapayaquicconsetcteturfoxcacccccaccpineapplewwn",
+    "brothequickracecarapenapapayaquicfoxcacccaaaaofabbbbtheaelit.aaaccaccpineapplewwn"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAA",
+    "sist"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dol",
+    "a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaamt,",
+    "racecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofoothequickracecarapenapapayapineapplefoofof",
+    "abcdefghijklmnopqrstuvwxsvityzabct"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.a",
+    "cacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofoipsumxfabbbbtheaelit.aaahe",
+    "The quick brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaaaaa",
+    "quicfoxamlazyet,k"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccacccac",
+    "banana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfThe quicfoxk brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumps over azy dog.oxcacccccacc",
+    "cacccccacccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsruconsecteturmquicfoxcaccccccacx",
+    "foipsuconsecteturmquicfoxcaccccccacx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.aaaaaaa",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dogfdox.",
+    "quickraceacarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.",
+    "gdog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "qLoremuicaccfox",
+    "of"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lor",
+    "Lorem"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabrowanaaaa",
+    "aaabrowanaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "caccccaaataaLoremc",
+    "caccccaaataaLoremc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ccafkoipsuconsequickcfoxkurmxcac",
+    "ccafkoipsuconsequickcfoxkurmxcac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "banana",
+    "g.dogfox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AquicfoxAAAAA",
+    "cafkoipsuconsequickcfoxkurmxcac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccc",
+    "aaaaofabbbbtheaelit.aaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "faaaaaaaabaaaaoiconsecteturmx",
+    "foipsucoonsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "adipiscingcor",
+    "taaaaofabbbbtheaelitaaaaofabbbbtheaaaa.abrownaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quiickraecarapenapapayapineapple",
+    "quickraecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "LLorem ipsum dolobanar sit amt, consectetur adipiscing elit.or",
+    "LLorem ipsum dolobanar sit amt, consectetur adipiscing elit.or"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cccquicfoxcacccccaccacc",
+    "b"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "banna",
+    "anna"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cactAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAAAAAABheccc",
+    "cactAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAAAAAABheccc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ieliLorem ipsum dol adipiscing elit.t.psum",
+    "ielit.psum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bananna",
+    "bThe quick brown fox jumps over the lazy dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "vvr",
+    "vvr"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dog.",
+    "The quick brown fox jumps ovefr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelit.aaahbThee",
+    "tAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabrowanaaaa",
+    "aaaabrowanaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ovver",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aqeuicaccfoxsit amet, consetctetur adiamet,pistcing elit.et,",
+    "aquicaccfoxsit amet, consetctetur adiamet,pistcing elit.et,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaaa",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "thequickracelcarapenapapayapineappl",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "",
+    "adipiscilang"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAapAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "c"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dol adipiscing elit.",
+    "Lorem ipsum dol adipiscing elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "LLorem ipsum dolobanar sit amt, consectetur adipiscing elit.or",
+    "Lorem ipsum dol adipiscing adip.iscingit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofoothequickracecarapenapapayapineapplefoofof",
+    "abcdeuvwxsvityzabct"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur adipiscilng eolit.",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscilng elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aquicaccfoxsit amet, consetctetur adiamet,piscing elit.et,",
+    "bba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consecttetur",
+    "The"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofoothequickracecarapenapapayapineapplefoofof",
+    "oabcdefghijklmnopqrstuvwxsvityzabctf"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "b",
+    "bbbb"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "amet,",
+    "aemaditametn,piscing"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aemet,",
+    "aemet,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dooveamt,dg.",
+    "dodg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetcteadipiscilangtur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consetctetur adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "etaaaaaofabbe",
+    "etaaaaofabbe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcc",
+    "abcc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bananna",
+    "bananna"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "faaaaaaaabasecteturmx",
+    "aaabrowanaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quickraceacarapenapapayapineapple",
+    "quickraceacarapenapapayapineappple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dolor",
+    "Lorem ipsum dol adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipmet, consectetur adip.iscing elit.",
+    "Lorem ipmet, consectetur adip.iscing elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "taaaaofabbbbtheaelitaaaaofabbbbtheaaaa.abrownaahe",
+    "taaaaofabbbbtheaelitaaaaofabbbbtheaaaa.abrownaahe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaoaaabbThefabbbbtheaelit.aaa",
+    "cacccccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaabbaaabbbbaaaa",
+    "browwn"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ipsum",
+    "quicbbbbquicfoxcacccccacapk"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "quickraceacarapenapapayapineapelit.t.psumple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "aacaccccccacacaaabbbbaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quuicaccfox",
+    "faaaaaaaabasecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "quicfoxcacccccacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcc",
+    "elit.aconsecur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "browwn",
+    "etaaaaaofabbe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsucaaabbaaabbbbaaaaonsecteturmx",
+    "foataaLorem ipsum dolor sit amet, consetctetur adipiscing elit.aaaaaabaaaabrownaaaaaaaaaaipsuconsecteturmx"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dogetaaaaofaeapplee.cac",
+    "dog.cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dolor",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laz",
+    "laz"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "banaipsum",
+    "acaadog.rc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thte",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bThe quick brown fox jumps over the lazycaccoveamt,cccacipsum dog.a",
+    "bThe quick brown fox jumps over the lazycaccoveamt,cccacipsum dog.a"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "LLorem ipsum dolobanar sit amt, consectetur adipiscing elit.or",
+    "aemaditametn,piscing"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caacc",
+    "abcdefghijklmnopqovlazycacccccacipsumerrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AA",
+    "AA"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "caaaabrownaaaaac",
+    "aaaaathequickracecarapenapapayapineapplerownaaaaaaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cquicfoxkacc",
+    "dog.r"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "banaana",
+    "banaacaccccccacacaaabbbbaaaaaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfThe quicfoxk brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumps over azy dog.oxcacccccacc",
+    "bThe quick brown fox jumps over the lazycacccccacipsum dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAA",
+    "bThe quick brown fox jumps over the lazycaccoveamt,cccacipsum dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caaaabrownaaaaaac",
+    "aaaaathequickracecarapenapapayapineapplerownaaaaaaaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "LLorem ipsum dolobanar sit amt, consectetur adipiscing elit.or",
+    "taaaaofoipsumxfabbbbtheaelit.aaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fobccacx",
+    "taaaaobfabbbbtheaelit.aaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacbaaaaofabbbbtheaelibLoremaaaa",
+    "Lorem ipsum dolor sit amet, consetctetur aditpiacaacscilang elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caccccc",
+    "AA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumpxs over the lazy dog.",
+    "quicaccfoxsit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "acaagdog.rc",
+    "acaadog.quickraceacarapeabcnapapayapineapplerc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbbb",
+    "bbbb"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dog.aaaaaofabbbbtheaaaa",
+    "ovvr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "adiamet,piscing",
+    "bannana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccaac",
+    "caac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccac",
+    "cacccccacipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "eielit.psumfabbe",
+    "etaaaaofaeapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aquicaccfoxsit amet, consetctetur adiamet,piscing elit.et,",
+    "bThe quick brown fox jumps over the lazycacccccacipsum dog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapernapapayapineapple",
+    "racecarapernapapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAquicfoxAAAAAeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhe",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "a",
+    "AAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbelit.a",
+    "acaadog.rc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bThse quick brown fox jumps over the lazycaccoveamt,cccacipsum dog.a",
+    "bThse quick brown fox jumps over the lazycaccoveamt,cccacipsum dog.a"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "bba",
+    "quicfox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    ".cafoipsuconfobbaccacxsecteturmxcdogfox.",
+    ".cafoipsuconsecteturmxcdogfox."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccabcdefghijklmnopqovlazycacccccacipsumerrstuvwxyzabcccacc",
+    "fofofofofofofof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "browbwn",
+    "browwn"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaamt,",
+    "bbc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "banaana",
+    "aaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbbbb",
+    "bbbb"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "banaipsum",
+    "banaipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dogovlazycaccccAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABheumer.",
+    "dogovlazycacccccacipstAAAAAAquicfoxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABheumer."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcc",
+    "aabcc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anab",
+    "adiamet,pistcing"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccaac",
+    "cacccccaac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "caacccccac",
+    "caacccccac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aap",
+    "aaabbThe quicfoxamlazyet,k brownfoipsucolnsequickcfoxquicfoxcaccccccackurmx fox jumups over the lazy dog.aabbbbaaaaaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcacccccaac",
+    "caac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "quicfoxcacccccac",
+    "racecarapenapapaeyapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaaabrownaaaaaaaaaa",
+    "quickcfoxk"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foipsumx",
+    "dodg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofofaaabroaaAAAAAaaaaaabaaaabrownaaaaaaaaaaaaaa",
+    "fofofofofofofofaaabroaaAAAAAaaaaaabaaaabrownaaaaaaaaaaaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxsityzabc",
+    "ThLorem ipsum dolor sit amet, consetctetur adipiscilang elit.e"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaAAAAAaaaaaabaaLorem",
+    "daog.a"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "vvr",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "faaaaaaaabaaaaoaaabbThe quicfoxamlazyet,k brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumups over the lazy dog.aabbbbaaaaiconsecteturmx",
+    "faaaaaaaabaaaaoaaabbThe quicfoxamlazyet,k brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumups over the lazy dog.aabbbbaaaaiconsecteturmx"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "celit.aaaaaaacabcdefghijklmnopqovlazycacccccacipsumerrshtuvwxyzabcccacc",
+    "dgog.cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown fox jumps over the lazy dog.",
+    "cacccccabThe quick brown fox jumps over the lazy dog.ac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laz",
+    "cccaacacccccacipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsccccaccum dolor sit amet, consetctetg elit.",
+    "Lorem ipsum dooveamt,or sit ametfaaaaaaaabaaaaaaaoiconsecteturmx, consetctetur adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxk brown foxbrothequickracecarapenapapayaquicfoxcacccaaaaofabbbbtheaelit.aaaccaccpineapplewwn jumps over the lazy dog.",
+    "The quicfoxk brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.",
+    "Lor"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "gg.",
+    "dogg.dg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bbaba",
+    "bbaba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaabrquicbbbbquicfoxcacccccacapkaquicaccfoxsitowanaaaa",
+    "aaabrowanaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicfoxcacccccacc",
+    "taaabbaaabbbbaaaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quicfoxkthe brown fox jumps over the lazy dog.",
+    "The quicfoxk brown fox jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacccccabThe",
+    "ab"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "The quick brown fps over the lazy dog.",
+    "The quick brown fps over the lazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaabbaaAAAAfoipsuconsequickcfoxkurmxAaaaaaabaaaabrownaaccccaccaaabbaaaa",
+    "aaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqovlazycacccccacipsumerrstuvwxyzabc",
+    "abcdefghijklmnopqovlazycacccccacipsumerrstuvwxyzabc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqovlazycacccccacipsumerrstuvkwxyzabc",
+    "abcdefghijklmnopqovlazycacccccacipsumerrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicacthequickracecarapenapapayapineapplecfox",
+    "quicaccaaaaaaaabaaaabrownaaaaaaaaaafox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cccaacacccccacipsum",
+    "etaaaaofaeapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofbLorem ipsum dolor sit amet, consetctetur adipiscing elit.aofofofofof",
+    "fofofofofofofof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consuecurAquicfoxAAAAA",
+    "consuecur"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaaaelit.aaaaaaaaabaaaabrownaaaaaaaaaa",
+    "aaaaaaaabaaaabrownaaaaaaaaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "of",
+    "ccaac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.aconsbbbbecu",
+    "elit.aconsecu"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "g.dogfox.",
+    "aaaabofabbbbtheaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quicaccfoxsit amet, consetctetur adiamet,piscing elit.",
+    "quicaccfoxsit amet, consetctetur adiamet,piscing elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABheaaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABhe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABheaaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa",
+    "acaagdog.rc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ab",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cafoipsuconsequickcfoxkurmxcac",
+    "consuecur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quiaaaaoaaabbThefabbbbtheaelit.aaacfoxcacccccac",
+    "cacccccaquicfThe quicfoxk brownfoipsuconsequickcfoxquicfoxcaccccccackurmx fox jumps over azy dofoxcaccc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABheaaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa",
+    "taaaaofabbbbtheaelitaaaaofabbbbtheaaaa.abrownaahe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapcaaabbaaaa",
+    "tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAquickracecarapenapapayapineappleAAAAAABheaaaaabbaaAAAAAaaaaaabaaaabrownaaccccaccaaabbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "celit.aaaaaaacabcdefghijklmnopqovlazycacccccacipsumerrshtuvwxyzabcccacc",
+    "dgog.cacc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amt, consectetur adipiscing elit.",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abaccac",
+    "ccacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "theequickracecarapenapapayaquicfoxcacccccaccpineapple",
+    "theequickracecarapenapapayaquicfoxcacccccaccpineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consetctetur aditpiacaacscilang elit.",
+    "Lorem ipsum dolor sit amet, consetctetur aditpiacaacscilang elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "",
+    "xyz"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "hello",
+    "hello world"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "apple",
+    "pineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "12$34$56",
+    "$"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "x",
+    "x"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "x",
+    "y"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    " ",
+    " "
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "hellohello",
+    "hello"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "aaaaaa",
+    "aa"
+   ],
+   "expected": 5
+  },
+  {
+   "input": [
+    "abcabcabc",
+    "abcabc"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown foxamet, jumps over the lazy dog.",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anaap",
+    "ana"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "The quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "elit.",
+    "abcdefghijklmnopqrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarrapenapapayapineapple",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aAAAAAAAna",
+    "racecaracecarrapenapapayapineapplerrapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "jumpsba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ipsum",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "appp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAaaaaaaaabaaaaaaaAAA",
+    "AAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anabanana",
+    "ana"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "anracecarapenapapayapineapplea",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "of",
+    "fofofofofofofof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineapple",
+    "ap"
+   ],
+   "expected": 5
+  },
+  {
+   "input": [
+    "ipsum",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "racecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "AAAAAAAA"
+   ],
+   "expected": 43
+  },
+  {
+   "input": [
+    "ba",
+    "basit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ap",
+    "ap"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "consectetur",
+    "racecaracecarrapenapapayapineapplerrapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "of",
+    "of"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "ana",
+    "anaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaba",
+    "anabanana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consecteturr",
+    "consectetur"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxamet,",
+    "foxamet,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anracecarapenapapayapineapplea",
+    "an"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAAA",
+    "racecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarrapenapapayapineapple",
+    "racecarrapenapapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaa",
+    "aaa"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "jfoxumpsba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecaAAAAAAArapenapapayapineapple",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem",
+    "aAAAAaaaaaaaabaaaaaaaAAAaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "Th e quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oof",
+    "of"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anracecarapenapapayapineapplea",
+    "lazzy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "lazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "sit"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxaet,",
+    "quick"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "foxamet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "abcdefghijklmnopqrstuvwxyzabc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anaap",
+    "aaaaaaaabaaaaaaaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "na"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineapple",
+    "foxaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "of"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaap",
+    "anaap"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem",
+    "ipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consecrteturr",
+    "consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ba",
+    "of"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineapple",
+    "The quick brown foLoremxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The",
+    "ap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ajumpsaaa",
+    "jumps"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabcipsum",
+    "ipsum"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "na",
+    "racecaracecarrapenapapayapineapapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ba",
+    "an"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abasitna",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abasitna",
+    "racecaraquAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABrpenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "obrownf",
+    "anabanana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ajumpsaaa",
+    "racecaracecarrapenapapayapineapapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineapeple",
+    "foxfaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabcipsum",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Thazy dog.",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAArapenapapayapineapplee",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The",
+    "dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appp",
+    "apppp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineapple",
+    "racecarapenaapapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "abasitna",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "of",
+    "aaaaabbbbaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appp",
+    "appp"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccac",
+    "appp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAaaaaaaaabaaaaaaaAAA",
+    "racepcaAAAAAAArapenapapayapineapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAArapenapaadipiscingpayapineapplee",
+    "aaaaaaaabaaaaaaaaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cacc",
+    "cacc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "elit.",
+    "abcdefghijklmnopqrappppstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "the",
+    "lazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ajumpsaaa",
+    "anaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAaaaafoxamconsecteturet,aaaabaaaaaaaAAA",
+    "Aelit.AAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "p"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "na",
+    "sit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appppconsAelit.AAAAAAectetur",
+    "consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consecteturr",
+    "consecteturr"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "na",
+    "anaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "consectedturThe quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dotheg.",
+    "racecarapenaapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineapple",
+    "foxfaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ba",
+    "babcdefghijklmnopqrstuvwxyzabcsit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "dolorof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oof",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appp",
+    "app"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccac",
+    "foxaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown fox jumps over the lazy dotheg.",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxfaect,consecteturr",
+    "appppconsAelit.AAAAAAectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appppconsAelit.AAAAAAectetur",
+    "conse ctedturThe quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aAAAAAAAna",
+    "aAAAAAAAnaracecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "Th e quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oof",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Aelit.AAAAAAA",
+    "Aelit.AAAAAA"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAAA",
+    "AAAAAAA"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "e"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThe quick brown foxamet, jumps over the lazy dog.",
+    "abcdefghijklmnopqrappppstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzaaAAAAAAAnabcipsum",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "pp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbafofofofofofofofaaa",
+    "aaaaabbbbafofofofofofofofaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "appp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog.",
+    "conse ctedturThedotheg. quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jumpsba",
+    "AAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbba",
+    "aaa"
+   ],
+   "expected": 3
+  },
+  {
+   "input": [
+    "elit.",
+    "jumpsba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineappale",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "consecteturr",
+    "racecarapenaapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxaomconsecteturet,",
+    "foxamconsecteturet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheg. quick brown foxamet, jumps over the lazy dog.",
+    "aaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "pcacp",
+    "AAAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "racecaAAAAAAArapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaracecarapenanpapayapineapeplea",
+    "aaaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The quick brown foLoremxamet, jumps over the lazy dog.",
+    "an"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aanaap",
+    "aaaaaaaabaaaaaaaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThsit over the lazy dog.",
+    "conse ctedturThe quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAanaba",
+    "AAAAAAAanaba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineapple",
+    "The quick brown fox jumps over the lazy dotheg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.",
+    "foxamconsecteturet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quAAAAAAAAA",
+    "quAAAAAAAAA"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "elit.",
+    "basit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetuabcdefghijklmnopqrappppstuvwxyzabcrr",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "babcdefghijklmnopqrstuvwxyzabcsit",
+    "consecuteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenapapayeapineapple",
+    "ba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxaet,",
+    "foxaet,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "cacccccac",
+    "consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "baa",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anaaa",
+    "anaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineappale",
+    "an"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaap",
+    "apfoox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "app",
+    "apppp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quick",
+    "quicik"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse",
+    "The quick brown foxamet, jumps over the lazy doTg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sbasit",
+    "an"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog.",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "nna",
+    "racecaraquAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABrpenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaaaLorem",
+    "anaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "conse",
+    "coonse"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "consectetur"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineappale",
+    "racecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamet,",
+    "fxoxamet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "apppp",
+    "appp"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "basit",
+    "apppp"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oxaet,",
+    "foxaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog.",
+    "abc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAAranpenapapayapineapplee",
+    "racepcaAAAAAAArapenapapayapinThazy dog.eapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "e",
+    "conse"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAA",
+    "quicik"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sbasit",
+    "anaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAAA",
+    "AAAAAAAA"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "fooff",
+    "foof"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "basit",
+    "basit"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaabbbbafofofofofofofofaaa",
+    "Thazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "na",
+    "anaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sit",
+    "na"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineappapfooxale",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Aelit.AAAAAA",
+    "racecaracecarrapenapapayapineapplerrapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineappapfooxale",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr",
+    "aaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The",
+    "ddog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturetp,",
+    "foxaomconsecteturet,p"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaba",
+    "anaba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "over",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog.",
+    "bc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aThazynaap",
+    "anaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The",
+    "TAAAAaaaaaaaabaaaaaaaAAAhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "e",
+    "laazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "coonsecteturr",
+    "consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThsit over the lazy dog.",
+    "aThazynaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thhe",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "basit",
+    "bassit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foLoremxamet,",
+    "quicik"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaba",
+    "abcdefghijklmnopqrappppstguvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "annnaaba",
+    "anaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sit",
+    "bassit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecaracecarrapenapapayapineapplerrapenapapayapineapple",
+    "racecaracecarrapenapapayapineapplerrapenapapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "Th e quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog.",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAArapenapapayapineapplee",
+    "racecaAAAAAAArapenapapayapifoxaet,neapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sbasist",
+    "anaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sitfox",
+    "bassit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "bAAAAaaaafoxamconsecteturet,aaaabaaaaaaaAAAa",
+    "ba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog.",
+    "oxaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    "racecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr",
+    "jracecarapenanpapayapineappleumps"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sit",
+    "ncaca"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jumpsba",
+    "consectedturThe quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzaaAAAAAAAnaabcipsum",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "cac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laazy",
+    "aapfoox"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenracecaAAAAAAArapenapapayapineapple",
+    "racecarapenaapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jumpsba",
+    "AA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedturThe",
+    "conse"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "AAAAaaaaaaaabaaaaaaaAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog.",
+    "dolor"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jracecarapenanpapayapineappleumps",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturacepcaAAAAAAArapenapapayapinThazy dog.eappleerThsit over the lazy dog.",
+    "aThazynddog.aap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAArapenapapayapinThazy",
+    "racecarapenaapapayapineappapfooxale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "tbassithe",
+    "the"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineapeple",
+    "an"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lor",
+    "ipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog.",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxamconsectetret,",
+    "Th e quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lconse ctedturThsit over the lazy dog.orem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "sit"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "foxamconsecteturetp,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaaaaabaaaaaaa",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedtAelit.AAAAAAick brown foxamet, jumps over the lazy dog.",
+    "dconsectedturThe quick brown foxamet, jumps over the lazy dog.og."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aAAAAAAAnaracecarapenaapapayapineappale",
+    "foxfaect,consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jraaaaaaaabaaaaaaaaanaaceacarapenanpapayapineappleumps",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxaomconseet,",
+    "foxamconsecteturet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jracecarapenanpapayapiracepcaAAAAAAArapenapapayapineappleeneappleumps",
+    "jracecarapenanpapayapiracepcaAAAAAAArapenapapayapineappleeneappleumps"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Th",
+    "doTg."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "foxamconsecteturet,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "doTg.",
+    "oof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedtAelit.AAAAAAick brown foxamet, jumps over the lazy dog.",
+    "foxaomconsecteturet,p"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "babcdefghianaaajklmnopqrstuvwxyzabcsit",
+    "babcdefghijklmnopqrstuvwxyzabcsit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbaaaa",
+    "racecaAAAAAAArapenapapayapifoxaet,neapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineapple",
+    "racecarapenanpapayapineapple"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aAAAAAAAna",
+    "racecaracecarrapenapapayapineracecaracecarrapenapapayapineapapapayapineappleapplerrapenarpapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aapfoox",
+    "laazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abasitna",
+    "racecarapenanpapayapineapeple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbracecarapenaapapayapineappapfooxalebaaaa",
+    "consectedturThe quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "thlaazyeana",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oxt,",
+    "oxaet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "an",
+    "an"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAA",
+    "apfoo"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAArapenapapayapineapplee",
+    "racepcaAAAAAAAraracecaracecarrapenapapayapineracecaracecarrapenapapayapineapapapayapineappleapplerrapenarpapayapineapplepenapapayapineapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foLoremxamet,",
+    "qk"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "rpapayeapineapple",
+    "anaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ajumpsaaa",
+    "racecaracecarrapenapapayanpineapapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appppconsAelit.AAAAAAectetur",
+    "bc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAThe quick brown foLoremxamet, jumps over the lazy dog.A",
+    "AAAAAAThe quick brown foLoremxamet, jumps over the lazy dog.A"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "baa",
+    "Aelit.AAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quAAAAAAAAA",
+    "Aelit.AAAAAAAaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aana",
+    "ana"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarrapenapapayapineapple",
+    "aaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrappppstguvwxyzabc",
+    "racecarapenaapapayapineappapfooxale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedtAelit.AAAAAAick brown foxamet, jumps over the lazy dog.",
+    "racecaraquAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABrpenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecfoxfaect,consecteturrarapenaapapayapineappapfooxale",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxfaect,consecteturr",
+    "anaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aac",
+    "abcappppbc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaaaLorem",
+    "abcdefghijklmnopqrappppstguvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th e quAAAAAAAAA AAAAaazy dog.",
+    "dconsectedturThe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "coonsecteturr",
+    "consencteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaa",
+    "aaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "qobrownffuick",
+    "abcdefghijklmnopqrstuvwxbc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aapfoox",
+    "aapfoox"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineappl",
+    "racecarapenanpapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "racecarapenaapapayapineappale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAsitAAAA",
+    "apfoo"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "na",
+    "aanaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anracecarapenapapayapineapplea",
+    "nan"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedturThe quick brown foxamet, jumps over the lazy dog.consecrteturr",
+    "consecrteturr"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecaAAAAAAArapenapapayapifoxaet,neapple",
+    "jfoxumpsba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ffoxamconsecteturet,",
+    "ffoxamconsecteturet,"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "The quick brown foxamet,racecarapenanpapayapineapple jumconsecteturps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog.",
+    "conse ctedturThedotheg. quick brown foxamet, juAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenanpapayapineapepl",
+    "racecarapenanpapayapineapeple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oof",
+    "babcdefghianaaajklmnopqrstuvwxyzabcsit"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectetur",
+    "AAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapineappapfooxale",
+    "of"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "TAAAAaaaaaaaadog.AbaaaaaaaAAAhe",
+    "TAAAAaaaaaaaabaaaaaaaAAAhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aanaap",
+    "aaaaconsecteturaaaabaaaaaaaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "confoLoremxamet,e",
+    "conse"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAdotheg.AAA",
+    "AAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "The",
+    "aap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapineppale",
+    "racecarapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aanaap",
+    "rpapayeapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog.",
+    "ee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anabba",
+    "anaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "conscectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAA",
+    "abcdefghijklmnopqrstuvwxyzaaAAAAAAAnabcipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAanaba",
+    "aaaaabbbbafofofofofofofofaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedturThe",
+    "dog.eapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapThe quick brown foLoremxamet, jumps over the lazy dog.ayapineapple",
+    "racecarapenaapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaconsannnaabae ctedturacepcaAAAAAAArapenapapayapinThazy dog.eappleerThsit over the lazy dog.aa",
+    "aaaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "quAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr",
+    "aThazynddog.aapquAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "deTg.",
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laaaaabbbbaaaaazy",
+    "The quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "fofofofofofofof",
+    ".dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.eapplee",
+    "oof"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "caccccacac",
+    "cacccccac"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "pappp",
+    "appp"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem",
+    "Lorappem"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.A",
+    "aaconsannnaabae ctedturacepcaAAAAAAArapenapapayapinThazy dog.eappleerThsit over the lazy dog.aa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.eapplee",
+    "quAAAAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog.",
+    "racecaAAAAAAArapenapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "app",
+    "app"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "dog.eappleerT",
+    "TAAAAaaaaaaaabaaaaaaaAAAhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "iracecarapenracecaAAAAAAArapenapapayapineapplesum",
+    "ipsum"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oof",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjracecarapenanpapayapineappleuctedturThempsAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbba",
+    "AAAdotheg.AAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Lor",
+    "anaba"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "jus",
+    "aaaaaaaabaaaaaaaana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "TAAAAaaaaaaaabaaaaaaaAAAhe",
+    "The"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedturThe quick brown foxamet, jumps over the lazThazy dog.y dog.",
+    "consectedturThe quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racepcaAAAAAAArapenapapayapineapplee",
+    "racecaAAAAAAArapenapapAelit.AAAAAAayapifoxaet,neapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturacepcaAAAAAAArapenapapayapinThazy dog.eappleerThsit over the lazy dog.",
+    "conse ctedturacepcaAAAAAAArapenapapayapinThazy dog.eappleerThsit over the lazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "babcdefghijklmnopqrstuvwxyzabcsit",
+    "babcdefghijklmnopqrstuvwxyzabcsit"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "oof",
+    "ofracepcaAAAAAAArapenapaadipiscingpayapineapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Tjfoxumpsbahe",
+    "TAAAAaaaaaaaabaaaaaaaAAAhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "nana",
+    "ana"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aanaanasit",
+    "na"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "apgciRKR",
+    "dPgciRKR"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "an",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "sitoof",
+    "na"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aaaaabbbbafofofofofofofofaaa",
+    "aaaaabbbbafofofofofofaa"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aAAAAAAAnaconsecteturracecarapenaapapayapineappale",
+    "foxfaect,consecteturr"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "an",
+    "AAAdotheg.AAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ajumpsaaa",
+    "ajumpsaaa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "laaznay",
+    "laazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "Lorem",
+    "racepcaAAAAAAAraracecaracecarrapenapapayapineracecaracecarrapenapapayapineapapapayapineappleapplerrapenarpapayapineapplepenapapayapineapplee"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "na",
+    "na"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxamconsecteracecarapenanpapayapineapplre,",
+    "foxamconsecteracecarapenanpapayapineapplret,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "laazy",
+    "alaazy"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvwxyzabc",
+    "c"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "o",
+    "of"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "p",
+    "p"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "conaaaaracecarapenanpapayapineapepleasectetur",
+    "AAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ssit",
+    "ncaca"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "coonsecteturr",
+    "aana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxamconsecteturet,",
+    "racecfoxfaect,consecteturrarapenaapapayapineappapfooxale"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaaaLelit.or",
+    "anaaaLelit.or"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "daog.aa",
+    "daog.aa"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxamconsectetuAAAdotheg.AAAret,",
+    "foxamconsecteturet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapineppale",
+    "racecarapenapineppale"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxaomconsecteturet,p",
+    "foxaomconsecteturet,p"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "brown",
+    "e"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anabanana",
+    "anabanana"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "TAAAAaaaaaaaadog.AbaaaaaaaAAAhe",
+    "TAAAAaaaaaaaadog.AbaaaaaaaAAAhe"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "jumpsba",
+    "jumpsba"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aaaaaa",
+    "aaaaa"
+   ],
+   "expected": 2
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrstuvconsectedturThe quick brown foxamet, jumps over the lazy dog.wxyzabc",
+    "abcdefghijklmnopqrstuvwxyzabc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "consectedtAelit.AAAAAAick brown foxamr theconse ctedturThe quick brown foxamet, jumps over the lazy dog.g.",
+    "consectedtAelit.AAAAAAick brown foxamr the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "cc",
+    "cc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "racecarapenaaanabapapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "apppp",
+    "apppp"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "nana",
+    "racecarapenanpapayapineapple"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjracecarapenanpapayapineappleuctedturThempsAAAAAAAAAAAAAAAAAB",
+    "quAAAAAAAAA"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenapapayapineapple",
+    "The quick brown foxamet,racecarapenanpapayapineapple jumconsecrps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "dog.y",
+    "dconsectedturThe quick brown foxamet, jumps over the lazy dog.og."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog.",
+    "conse ctedturThedotheobrownfg. quick brown foxamet, jumps over the lazy dog."
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "iupsum",
+    "the"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ansbasit",
+    "Th e quAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr the laaaaabbbbaaaaazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "ccac",
+    "cac"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "sitoof",
+    "consectetur"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aana",
+    "anaap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "aAAAAAAAAAAAAAAAAAAAAAAAAAAAABna",
+    "ana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "foxaet,",
+    "cquick"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "racecarapenaapapayapbAAAAaaaafoxamconsecteturet,aaaabaaaaaaaAAAapple",
+    "The quick brown foLoremxamet, jumps over the lazy dog."
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "anaaaLorem",
+    "anaaaLorem"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anabanana",
+    "anansbasitabanana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "oxaet,",
+    "foxaeet,"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "conse ctedturacepcaAcAAAAAArapenapapayapinThazy dog.eappleerThsit over the lazy dog.",
+    "aThazynddog.aap"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "abcdefghijklmnopqrappppstguvwxyzabc",
+    "abcdefghijklmnopqrappppstguvwxyzabc"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "anabanana",
+    "annabanana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "TAAAAaaaaaaaaaaaaaadog.AbaaaaaaaAAAhe",
+    "TAAAAaaaaaaaadog.AbaaaaaaaAAAhe"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "broown",
+    "e"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "Th",
+    "Th"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aadipiscing",
+    "aadipiscing"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "aAAAAAAAAabcdefghijklmnopqrstuvwxyzaaAAAAAaaaaaAAnabcipsumna",
+    "aAAAAAAAAabcdefghijklmnopqrstuvwxyzaaAAAAAaaaaaAAnabcipsumna"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "foxaet,",
+    "quickanansbasitabanana"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "appppconsAelit.AAAAAAectretur",
+    "bc"
+   ],
+   "expected": 0
+  },
+  {
+   "input": [
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjracecarapenanpapayapineappleuctedturThempsAAAAAAAAAAAAAAAAAB",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjracecarapenanpapayapineappleuctedturThempsAAAAAAAAAAAAAAAAAB"
+   ],
+   "expected": 1
+  },
+  {
+   "input": [
+    "consecrteturr",
+    "consecrteturr"
+   ],
+   "expected": 1
+  }
+ ]
+}

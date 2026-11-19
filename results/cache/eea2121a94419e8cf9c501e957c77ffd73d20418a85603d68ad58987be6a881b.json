@@ -1,0 +1,47 @@
+{
+ "tag": "B9|original|claude-sonnet-5-5|2",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nCombine two lists by alternating their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combined list, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+ "text": "The function interleaves the two lists with `zip_longest`, using a unique sentinel so that `None` or other legitimate values in the inputs are preserved. It then draws K elements with `random.choices` (sampling with replacement, as the imported function implies) and counts them with `Counter`.\n\n```python\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\n\n\ndef task_func(l1, l2, K=10):\n    sentinel = object()\n    combined = [\n        item\n        for pair in zip_longest(l1, l2, fillvalue=sentinel)\n        for item in pair\n        if item is not sentinel\n    ]\n    sample = choices(combined, k=K)\n    return collections.Counter(sample)\n```\n\nNotes:\n- Elements from the longer list with no counterpart are appended on their own, since the sentinel filler is dropped.\n- If both lists are empty, `choices` raises an `IndexError` when `K > 0`, which is the standard behavior of `random.choices` on an empty population.\n- For reproducible results, call `random.seed(...)` before calling `task_func`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 786,
+  "output_tokens": 352,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 352,
+    "cache_read_input_tokens": 786,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.3,
+ "time": "2026-11-19 14:23:57"
+}

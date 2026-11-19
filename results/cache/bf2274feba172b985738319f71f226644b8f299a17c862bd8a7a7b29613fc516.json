@@ -1,0 +1,47 @@
+{
+ "tag": "R5|original|claude-opus-5-5|4",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 4,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    \"\"\"\n```",
+ "text": "The script maps the smallest value to 0 and the largest to 1. If every number is the same, there is no range to divide by, so it returns all zeros instead of raising a division error.\n\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    >>> rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])\n    [0.0, 0.25, 0.5, 0.75, 1.0]\n    \"\"\"\n    if len(numbers) < 2:\n        raise ValueError(\"List must contain at least two elements\")\n\n    min_number = min(numbers)\n    max_number = max(numbers)\n    span = max_number - min_number\n\n    if span == 0:\n        # All values are identical; avoid division by zero\n        return [0.0 for _ in numbers]\n\n    return [(x - min_number) / span for x in numbers]\n\n\nif __name__ == \"__main__\":\n    import doctest\n    doctest.testmod()\n\n    print(rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0]))  # [0.0, 0.25, 0.5, 0.75, 1.0]\n    print(rescale_to_unit([2.0, 49.9]))                # [0.0, 1.0]\n    print(rescale_to_unit([100.0, 49.9]))              # [1.0, 0.0]\n```\n\nHow it works:\n1. It finds the smallest and largest values.\n2. For each number `x`, it computes `(x - min) / (max - min)`. The minimum becomes 0, the maximum becomes 1, and everything else falls in between in proportion.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 703,
+  "output_tokens": 584,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 584,
+    "cache_read_input_tokens": 703,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 8.8,
+ "time": "2026-11-18 11:50:37"
+}

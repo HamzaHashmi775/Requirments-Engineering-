@@ -1,0 +1,47 @@
+{
+ "tag": "B7|combined|claude-sonnet-5-5|4",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 4,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nFind the latest log file in a specified directory whose name fits a given regex pattern. This function searches through all files in the specified directory, keeps only those whose names fit the provided regex pattern, and returns the path to the most recent log file based on its file timestamp. If no files fit the pattern or the directory is empty, the function returns None.\nThe function should output with:\n    str or None: The path to the most recent log file that fits the pattern, or None if no matching files are found.\nYou should write self-contained code starting with:\n```\nimport os\nimport re\ndef task_func(pattern, log_dir='/var/log/'):\n```",
+ "text": "```python\nimport os\nimport re\n\n\ndef task_func(pattern, log_dir='/var/log/'):\n    try:\n        entries = os.listdir(log_dir)\n    except (FileNotFoundError, NotADirectoryError, PermissionError):\n        return None\n\n    regex = re.compile(pattern)\n    matching = []\n    for name in entries:\n        path = os.path.join(log_dir, name)\n        if os.path.isfile(path) and regex.match(name):\n            matching.append(path)\n\n    if not matching:\n        return None\n\n    return max(matching, key=os.path.getmtime)\n```\n\nThe function lists the directory, keeps regular files whose names match the pattern (via `re.match`, anchored at the start of the name), and returns the path with the most recent modification time. It returns `None` if the directory is missing or unreadable, empty, or has no matching files. If you want the pattern to match anywhere in the name, swap `regex.match` for `regex.search`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 803,
+  "output_tokens": 308,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 308,
+    "cache_read_input_tokens": 803,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 7.9,
+ "time": "2026-11-19 14:16:46"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "R2|recognize-judge|claude-sonnet-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\ndef unique(l: list):\n    \"\"\"Order the list and return the unique elements in it.\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Syntactic: span \"return the unique elements in it\" — intended: Return the unique elements of the ordered list (ascending, duplicates removed). — alternative: Return the unique elements of the original list, in their original order of first appearance.\n2. Vagueness: span \"Order the list\" — intended: Order ascending. — alternative: Order descending.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"return the unique elements in it\",\n   \"reason\": \"\\\"Unique elements\\\" can mean either distinct values with duplicates collapsed, or only the values that occur exactly once. For input like [1, 1, 2, 3], these give different outputs.\",\n   \"options\": [\n    \"Return each distinct value once, removing duplicates: [1, 2, 3]\",\n    \"Return only elements that appear exactly once in the list: [2, 3]\"\n   ]\n  },\n  {\n   \"segment\": \"Order the list and return the unique elements in it.\",\n   \"reason\": \"The wording doesn't say which order applies to the result (ascending, descending, or the original order), or whether the input list should be sorted in place as a side effect. Both change the observable behavior.\",\n   \"options\": [\n    \"Return a new list of distinct elements sorted in ascending order, leaving the input unchanged\",\n    \"Return a new list of distinct elements sorted in descending order\",\n    \"Sort the input list in place, then return the unique elements\",\n    \"Return unique elements in order of first appearance (no sorting of the result)\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Syntactic\", \"level\": \"tackling\", \"matched_segment\": \"Order the list and return the unique elements in it.\", \"reason\": \"The second issue asks whether the result follows the sorted order or the original order. Its options include sorted ascending distinct elements (intended) and distinct elements in order of first appearance without sorting (alternative). The first issue covers the same words but raises a different question (distinct values vs. values occurring exactly once), so it does not match this ambiguity.\"}, {\"type\": \"Vagueness\", \"level\": \"tackling\", \"matched_segment\": \"Order the list and return the unique elements in it.\", \"reason\": \"The second issue points out that the sort direction is not specified. Its options include both ascending (intended) and descending (alternative).\"}], \"spurious_issues\": 1}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1486,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 611,
+  "output_tokens_details": {
+   "thinking_tokens": 339
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1486,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 611,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1486,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1486
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 23.1,
+ "time": "2026-11-17 18:06:39"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B2|combined|claude-opus-5-5|0",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nFind the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. For each product it accumulates the quantity from every row and determines the product with the highest one; if several products end up tied, the preferred one is returned. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+ "text": "```python\nimport csv\nimport collections\nimport operator\n\n\ndef task_func(csv_file_path):\n    \"\"\"\n    Find the best-selling product from a CSV file with sales data.\n\n    The CSV must have a header row with at least the columns 'product'\n    and 'quantity'. Quantities are summed per product, and the product\n    with the highest total is returned. If several products tie for the\n    highest total, the one that appears first in the file is returned.\n\n    Args:\n        csv_file_path (str): Path to the CSV file containing sales data.\n\n    Returns:\n        str: The name of the top-selling product by total quantity sold.\n\n    Raises:\n        ValueError: If the required columns are missing, a quantity is\n                    not a valid integer, or the file has no data rows.\n    \"\"\"\n    # OrderedDict keeps file order explicit, which decides ties.\n    totals = collections.OrderedDict()\n\n    with open(csv_file_path, newline=\"\", encoding=\"utf-8\") as f:\n        reader = csv.DictReader(f)\n\n        fieldnames = reader.fieldnames or []\n        missing = {\"product\", \"quantity\"} - set(fieldnames)\n        if missing:\n            raise ValueError(\n                f\"CSV is missing required column(s): {', '.join(sorted(missing))}\"\n            )\n\n        for line_no, row in enumerate(reader, start=2):\n            product = row[\"product\"]\n            raw_qty = row[\"quantity\"]\n            try:\n                quantity = int(str(raw_qty).strip())\n            except (TypeError, ValueError):\n                raise ValueError(\n                    f\"Invalid quantity {raw_qty!r} on line {line_no}\"\n                ) from None\n\n            totals[product] = totals.get(product, 0) + quantity\n\n    if not totals:\n        raise ValueError(\"CSV file contains no sales data rows.\")\n\n    # max() returns the first maximal item, so ties go to the\n    # product that appeared first in the file.\n    top_product, _ = max(totals.items(), key=operator.itemgetter(1))\n    return top_product\n\n\nif __name__ == \"__main__\":\n    import os\n    import tempfile\n\n    sample = (\n        \"product,quantity\\n\"\n        \"Apple,10\\n\"\n        \"Banana,5\\n\"\n        \"Apple,3\\n\"\n        \"Cherry,13\\n\"\n        \"Banana,2\\n\"\n    )\n\n    with tempfile.NamedTemporaryFile(\n        \"w\", suffix=\".csv\", delete=False, newline=\"\", encoding=\"utf-8\"\n    ) as tmp:\n        tmp.write(sample)\n        path = tmp.name\n\n    try:\n        # Apple = 13, Cherry = 13 (tie), Banana = 7 -> Apple appears first\n        print(task_func(path))  # Output: Apple\n    finally:\n        os.remove(path)\n```\n\n**Notes:**\n- **Accumulation:** Quantities are added up for each product across all rows.\n- **Tie-breaking:** The problem asks for \"the preferred one\" on a tie but doesn't define it. Here, the product that appears first in the file wins. `max()` returns the first maximal element, and an `OrderedDict` keeps file order. To change the rule (for example, alphabetical order), adjust the `key` passed to `max`.\n- **Validation:** The function raises a clear `ValueError` if a required column is missing, a quantity is not an integer, or the file has a header but no data rows.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 859,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 1187,
+  "output_tokens_details": {
+   "thinking_tokens": 81
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 859,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1187,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 859,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 859
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 12.3,
+ "time": "2026-11-18 00:34:29"
+}

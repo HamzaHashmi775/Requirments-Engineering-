@@ -1,0 +1,47 @@
+{
+ "tag": "R1|recognize-judge|claude-opus-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\nfrom typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen the input list for strings that include the characters of the given substring\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Lexical: span \"Screen\" — intended: Keep only the strings that contain the given substring; return them in their original order. — alternative: Screen out (remove) the strings that contain the given substring; return only the strings that do not contain it.\n2. Semantic: span \"include the characters of the given substring\" — intended: A string matches if the substring occurs in it as a contiguous sequence (substring in s). — alternative: A string matches if every character of the substring appears somewhere in it, regardless of order or adjacency.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"include the characters of the given substring\",\n   \"reason\": \"This could mean the string contains the substring as one contiguous sequence. It could also mean the string contains each character of the substring somewhere, in any order or position. For example, 'bca' contains the characters of 'abc' but not the substring 'abc'.\",\n   \"options\": [\n    \"Keep strings that contain the substring as a contiguous sequence (substring in s)\",\n    \"Keep strings that contain every character of the substring, in any order or position\",\n    \"Keep strings that contain the substring's characters in order, but not necessarily next to each other (subsequence match)\"\n   ]\n  },\n  {\n   \"segment\": \"Screen the input list for strings\",\n   \"reason\": \"'Screen' could mean selecting the matching strings or screening them out (removing them).\",\n   \"options\": [\n    \"Return only the strings that match\",\n    \"Return only the strings that do not match (remove the matches)\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Lexical\", \"level\": \"tackling\", \"matched_segment\": \"Screen the input list for strings\", \"reason\": \"The segment targets 'Screen'. The options cover both keeping the matches (intended) and removing the matches (alternative).\"}, {\"type\": \"Semantic\", \"level\": \"tackling\", \"matched_segment\": \"include the characters of the given substring\", \"reason\": \"The segment is the same phrase. The options include a contiguous substring match (intended) and every character appearing in any order or position (alternative). The extra subsequence option is harmless.\"}], \"spurious_issues\": 0}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1520,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 208,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1520,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 208,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1520,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1520
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.2,
+ "time": "2026-11-17 18:04:43"
+}

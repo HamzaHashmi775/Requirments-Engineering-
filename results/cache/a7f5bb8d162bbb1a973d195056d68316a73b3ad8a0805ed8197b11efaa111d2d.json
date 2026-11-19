@@ -1,0 +1,47 @@
+{
+ "tag": "B12|original|claude-sonnet-5-5|0",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern and with a certain suffix, then determines their file types. The function returns a dictionary with file names as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping file names to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan `directory` for files whose names match the regex `file_pattern`\n    and end with `suffix`, and return a dict mapping each file name to its\n    MIME type (None if the type cannot be determined).\n    \"\"\"\n    result = {}\n    for path in glob.glob(os.path.join(directory, \"*\")):\n        if not os.path.isfile(path):\n            continue\n        name = os.path.basename(path)\n        if re.search(file_pattern, name) and name.endswith(suffix):\n            result[name] = mimetypes.guess_type(name)[0]\n    return result\n\n\nif __name__ == \"__main__\":\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as d:\n        for fname in (\"report_1.txt\", \"report_2.csv\", \"image_1.png\", \"report_3.txt\"):\n            open(os.path.join(d, fname), \"w\").close()\n        print(task_func(d, r\"^report\", \".txt\"))\n        # {'report_1.txt': 'text/plain', 'report_3.txt': 'text/plain'}\n```\n\nThe function globs every entry in the directory and skips anything that isn't a regular file. It keeps files whose name matches `file_pattern` (via `re.search`) and ends with `suffix`, then guesses the MIME type from the file name. Files with an unrecognized extension map to `None`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 758,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 691,
+  "output_tokens_details": {
+   "thinking_tokens": 214
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 758,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 691,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 758,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 758
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 10.2,
+ "time": "2026-11-19 14:06:37"
+}

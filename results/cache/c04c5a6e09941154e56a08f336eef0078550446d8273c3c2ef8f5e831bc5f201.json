@@ -1,0 +1,47 @@
+{
+ "tag": "B5|combined|claude-opus-5-5|0",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nSerializes the entries of a dictionary to a JSON string, then compresses the string using zlib and encodes it with base64.\nThe function should output with:\n    str: The final base64 encoded result as a string.\nYou should write self-contained code starting with:\n```\nimport base64\nimport json\nimport zlib\ndef task_func(data_dict):\n```",
+ "text": "```python\nimport base64\nimport json\nimport zlib\n\n\ndef task_func(data_dict):\n    \"\"\"\n    Serialize a dictionary to a JSON string, compress it using zlib,\n    and encode the compressed data with base64.\n\n    Parameters:\n        data_dict (dict): The dictionary to serialize and compress.\n\n    Returns:\n        str: The base64 encoded string of the zlib-compressed JSON data.\n    \"\"\"\n    # Serialize the dictionary to a JSON string\n    json_str = json.dumps(data_dict)\n\n    # Compress the UTF-8 encoded JSON string using zlib\n    compressed = zlib.compress(json_str.encode('utf-8'))\n\n    # Encode the compressed bytes with base64 and convert to a string\n    encoded = base64.b64encode(compressed).decode('utf-8')\n\n    return encoded\n\n\nif __name__ == \"__main__\":\n    data = {'key1': 'value1', 'key2': 'value2'}\n    encoded_data = task_func(data)\n    print(encoded_data)\n\n    # Round-trip check: decode, decompress, and deserialize\n    decoded = json.loads(zlib.decompress(base64.b64decode(encoded_data)).decode('utf-8'))\n    assert decoded == data\n    print(\"Round-trip successful:\", decoded)\n```\n\n**How it works:**\n1. **`json.dumps`** turns the dictionary into a JSON string.\n2. **`zlib.compress`** compresses the UTF-8 encoded bytes of that string.\n3. **`base64.b64encode`** encodes the compressed bytes as base64, and `.decode('utf-8')` turns the result into a regular `str`.\n\nThe `__main__` block shows a usage example and checks that you can reverse the process to get back the original dictionary.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 714,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 582,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 714,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 582,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 714,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 714
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 6.9,
+ "time": "2026-11-18 01:16:32"
+}

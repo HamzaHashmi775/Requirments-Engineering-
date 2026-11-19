@@ -1,0 +1,161 @@
+{
+ "id": "B12",
+ "task_id": "BigCodeBench/154",
+ "pair": [
+  "L",
+  "S"
+ ],
+ "original_prompt": "Scans a specified directory for files matching a given pattern and with a certain suffix, then determines their file types. The function returns a dictionary with file names as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping file names to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "ambiguous_prompt": "Scans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "judge_passed": true,
+ "iterations_used": 2,
+ "explanation": {
+  "ambiguities": [
+   {
+    "type": "Lexical",
+    "span": "the matched entries as keys",
+    "explanation": "The phrase \"matched entries\" does not say what form each dictionary key should take. It could be a bare file name or the full path that glob returns. The two choices produce different keys.",
+    "intended_reading": "The keys are the bare file names (base names) of the matching files.",
+    "alternative_reading": "The keys are the matched paths exactly as glob returns them, i.e. full paths that include the directory prefix.",
+    "alternative_implementation": "import re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n    result = {}\n    for path in glob.glob(os.path.join(directory, file_pattern)):\n        if os.path.isfile(path) and os.path.basename(path).endswith(suffix):\n            result[path] = mimetypes.guess_type(path)[0]\n    return result\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 3,
+     "n_tests": 6,
+     "failing_tests": [
+      "TestCases.test_dictionary_content",
+      "TestCases.test_file_type_identification",
+      "TestCases.test_re_search_called_with_suffix"
+     ]
+    }
+   },
+   {
+    "type": "Syntactic",
+    "span": "files matching a given pattern with a certain suffix",
+    "explanation": "The prepositional phrase \"with a certain suffix\" can attach in two ways. Under one attachment the files themselves must have the suffix, so there are two independent conditions. Under the other, it modifies \"pattern\", so the suffix becomes part of the search pattern. Dropping \"and\" from the original makes both readings possible.",
+    "intended_reading": "There are two separate conditions: a file must match file_pattern AND its name must also end with suffix.",
+    "alternative_reading": "The suffix belongs to the pattern. The search uses the single combined glob file_pattern + suffix, with no separate suffix filter.",
+    "alternative_implementation": "import re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n    result = {}\n    for path in glob.glob(os.path.join(directory, file_pattern + suffix)):\n        if os.path.isfile(path):\n            name = os.path.basename(path)\n            result[name] = mimetypes.guess_type(path)[0]\n    return result\n",
+    "divergence_check": {
+     "verified": true,
+     "n_diverging_tests": 3,
+     "n_tests": 6,
+     "failing_tests": [
+      "TestCases.test_dictionary_content",
+      "TestCases.test_file_type_identification",
+      "TestCases.test_re_search_called_with_suffix"
+     ]
+    }
+   }
+  ]
+ },
+ "history": [
+  {
+   "iteration": 1,
+   "candidate": {
+    "ambiguous_prompt": "Scans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with file names as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping file names to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "files matching a given pattern with a certain suffix",
+      "readings": [
+       "\"with a certain suffix\" attaches to \"files\": select files that match the glob pattern AND, as a separate check, contain the suffix (e.g. glob(file_pattern) filtered by re.search(suffix, name)).",
+       "\"with a certain suffix\" attaches to \"pattern\": the suffix is appended to the pattern to form a single glob (e.g. glob(file_pattern + suffix)), so only names ending in the suffix right after the pattern match. With pattern '*' and suffix '.txt', 'a.txt.bak' is included under the first reading but excluded under this one."
+      ]
+     },
+     {
+      "type": "Lexical",
+      "span": "file names",
+      "readings": [
+       "The name as matched within the scanned directory, i.e. the relative path returned by the glob (e.g. 'sub/report.txt' when the pattern includes a subfolder).",
+       "Only the base name of the file without any directory component (e.g. 'report.txt' via os.path.basename), which yields different keys and can merge entries for same-named files in different subfolders."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": false,
+      "divergent": false,
+      "witness_input": "",
+      "plausibility": 1
+     },
+     {
+      "type": "Syntactic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('/tmp/d', '*', '.txt')  # where /tmp/d contains 'a.txt.bak' and 'b.txt'. Reading 1 (suffix filters the files, original): glob '*' then re.search('.txt') gives {'a.txt.bak': None, 'b.txt': 'text/plain'}. Reading 2 (suffix is appended to the pattern): glob '*.txt' gives {'b.txt': 'text/plain'}",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 5,
+    "feedback": "No Lexical ambiguity was injected. The only edit was dropping 'and' from 'matching a given pattern and with a certain suffix'. That edit creates the Syntactic attachment ambiguity: 'with a certain suffix' can modify 'files' (a separate filter) or 'pattern' (the suffix is concatenated into the glob). Every other word is unchanged from the original, which already left 'suffix' and 'pattern' underspecified, so no new lexical ambiguity exists. Add one at a separate span by replacing a single word with a polysemous term whose senses lead to different outputs. Example: change 'with a certain suffix' to 'with a certain extension'. 'Extension' can mean the final dot-separated part of the name (os.path.splitext, so 'a.tar.gz' has '.gz') or any trailing string (endswith or re.search). Another example: change 'file names as keys' to 'file paths as keys' or 'entries as keys', so a key could be a basename or a full or relative path. Keep the Syntactic edit as it is."
+   },
+   "passed": false,
+   "score": 19
+  },
+  {
+   "iteration": 2,
+   "candidate": {
+    "ambiguous_prompt": "Scans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+    "ambiguities": [
+     {
+      "type": "Syntactic",
+      "span": "files matching a given pattern with a certain suffix",
+      "readings": [
+       "'with a certain suffix' modifies 'files': select files that match the pattern and, as a separate filter, also end with the suffix.",
+       "'with a certain suffix' modifies 'pattern': the suffix is appended to the pattern to form a single glob, such as file_pattern + suffix, and the files are matched against that combined pattern."
+      ]
+     },
+     {
+      "type": "Lexical",
+      "span": "entries",
+      "readings": [
+       "Entry means the file name, the bare name relative to the scanned directory, so keys look like 'report.txt'.",
+       "Entry means the full directory entry path returned by the scan, such as os.path.join(directory, name) or the glob result, so keys look like '/data/report.txt'."
+      ]
+     }
+    ]
+   },
+   "judge": {
+    "per_type": [
+     {
+      "type": "Lexical",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('/tmp/testdir', '*_file*', '.txt')  # dir contains 'test_file.txt'; keys 'test_file.txt' (file name) vs '/tmp/testdir/test_file.txt' (full matched path returned by glob)",
+      "plausibility": 4
+     },
+     {
+      "type": "Syntactic",
+      "type_correct": true,
+      "divergent": true,
+      "witness_input": "task_func('/tmp/testdir', '*_file', '.txt')  # dir contains 'test_file.txt'; 'with a certain suffix' attached to 'pattern' (glob '*_file' + '.txt' -> {'test_file.txt': 'text/plain'}) vs attached to 'files' (glob '*_file' then filter on suffix -> {})",
+      "plausibility": 3
+     }
+    ],
+    "intent_preserved": true,
+    "no_extra_ambiguity": true,
+    "signature_unchanged": true,
+    "no_leak": true,
+    "naturalness": 4,
+    "feedback": ""
+   },
+   "passed": true,
+   "score": 23
+  }
+ ],
+ "status": "approved",
+ "human_review": {
+  "approved": true,
+  "date": "2026-11-19",
+  "notes": "Approved by the user 2026-11-19 (new task, pre-registered rules). Lexical 'matched entries' (base names vs full paths); Syntactic 'pattern with a certain suffix' (two conditions vs combined glob). Both verified by the original tests."
+ },
+ "rejected_attempts": []
+}

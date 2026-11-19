@@ -1,0 +1,47 @@
+{
+ "tag": "B12|original|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern and with a certain suffix, then determines their file types. The function returns a dictionary with file names as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping file names to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "This script changes into the target directory, globs for files matching the pattern, keeps only the files whose names contain the suffix, and maps each kept file name to its guessed MIME type.\n\n```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan a directory for files matching a glob pattern and containing a given\n    suffix, then determine their MIME types.\n\n    Parameters:\n        directory (str): The directory to scan.\n        file_pattern (str): The glob pattern used to match files (e.g. '*').\n        suffix (str): The suffix (regex) that file names must contain.\n\n    Returns:\n        dict: A dictionary mapping file names to their MIME types\n              (None if the type cannot be guessed).\n    \"\"\"\n    os.chdir(directory)\n    files = glob.glob(file_pattern)\n    file_types = {}\n\n    for file in files:\n        if re.search(suffix, file):\n            file_type = mimetypes.guess_type(file)[0]\n            file_types[file] = file_type\n\n    return file_types\n\n\nif __name__ == \"__main__\":\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as tmp:\n        for name in [\"report_suffix.txt\", \"image_suffix.png\", \"notes.txt\", \"data_suffix.csv\"]:\n            with open(os.path.join(tmp, name), \"w\") as f:\n                f.write(\"sample\")\n\n        original_cwd = os.getcwd()\n        try:\n            result = task_func(tmp, \"*\", \"_suffix\")\n        finally:\n            os.chdir(original_cwd)\n\n        for name, mime in sorted(result.items()):\n            print(f\"{name}: {mime}\")\n```\n\n**How it works:**\n1. **`os.chdir(directory)`**: switches into the target directory, so the glob results are plain file names rather than full paths.\n2. **`glob.glob(file_pattern)`**: lists the files that match the pattern, such as `*` or `*.txt`.\n3. **`re.search(suffix, file)`**: keeps only the files whose names contain the suffix. The suffix is treated as a regular expression.\n4. **`mimetypes.guess_type(file)[0]`**: guesses the MIME type from the file extension, such as `text/plain` or `image/png`. It returns `None` if the type is unknown.\n\nThe demo in `__main__` builds a temporary directory and runs the function on it. It then changes back to the original working directory, because `task_func` changes the working directory as a side effect.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 754,
+  "output_tokens": 1263,
+  "output_tokens_details": {
+   "thinking_tokens": 439
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1263,
+    "cache_read_input_tokens": 754,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 15.7,
+ "time": "2026-11-19 14:05:42"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B3|combined|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nCount each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers found in each of the lists, and the values are how many times they show up across the lists.\nThe function should output with:\n    dict: A dictionary where each key is an integer found in each of the lists, and the value is how many\n    times it shows up across the lists.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+ "text": "```python\nfrom collections import Counter\nimport itertools\n\n\ndef task_func(d):\n    \"\"\"\n    Count how often each integer appears across all list values of a dictionary.\n\n    Parameters:\n        d (dict): A dictionary whose values are lists of integers.\n\n    Returns:\n        dict: A dictionary mapping each integer found in the lists to the\n              total number of times it appears across all lists.\n    \"\"\"\n    # Join all the lists into one sequence, then count each integer\n    all_values = itertools.chain.from_iterable(d.values())\n    counts = Counter(all_values)\n    return dict(counts)\n\n\nif __name__ == \"__main__\":\n    # Example usage\n    sample = {'a': [1, 2, 3, 1], 'b': [3, 4, 5], 'c': [1, 2]}\n    print(task_func(sample))  # {1: 3, 2: 2, 3: 2, 4: 1, 5: 1}\n\n    # Edge cases\n    print(task_func({}))                      # {}\n    print(task_func({'x': [], 'y': [7, 7]}))  # {7: 2}\n```\n\n**How it works:**\n1. `itertools.chain.from_iterable(d.values())` joins all the lists into one sequence without building an intermediate list.\n2. `Counter` counts how many times each integer appears in that sequence.\n3. The `Counter` is converted to a plain `dict` to match the required return type.\n\nAn empty dictionary, or one whose lists are all empty, returns `{}`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 775,
+  "output_tokens": 482,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 482,
+    "cache_read_input_tokens": 775,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 8.7,
+ "time": "2026-11-19 12:22:54"
+}

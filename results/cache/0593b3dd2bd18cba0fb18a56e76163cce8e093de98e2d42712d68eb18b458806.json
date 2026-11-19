@@ -1,0 +1,47 @@
+{
+ "tag": "B10|combined|claude-opus-5-5|2",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for relevant files. If the backup directory does not exist, it is created and the files are copied into it. The function returns a list of paths to the copied files in the backup directory.\nNote that: The function assumes that the source directory exists and contains the files to be backed up.\nThe function should output with:\n    list: Paths to the copied files in the backup directory.\nYou should write self-contained code starting with:\n```\nimport os\nimport shutil\ndef task_func(directory, backup_directory):\n```",
+ "text": "The problem says \"relevant files\" without defining them. I've assumed it means JSON (`.json`) files. To back up a different type, change `extension`.\n\n```python\nimport os\nimport shutil\n\n\ndef task_func(directory, backup_directory):\n    \"\"\"\n    Scans `directory` for relevant (JSON) files and copies them into\n    `backup_directory`, creating the backup directory if it does not exist.\n\n    Parameters:\n        directory (str): Path to the source directory (assumed to exist).\n        backup_directory (str): Path to the backup directory.\n\n    Returns:\n        list: Paths to the copied files in the backup directory.\n    \"\"\"\n    extension = \".json\"\n    copied_files = []\n\n    # Create the backup directory if it does not exist\n    if not os.path.exists(backup_directory):\n        os.makedirs(backup_directory)\n\n    # Scan the source directory for relevant files and copy them\n    for filename in sorted(os.listdir(directory)):\n        src_path = os.path.join(directory, filename)\n        if os.path.isfile(src_path) and filename.lower().endswith(extension):\n            dest_path = os.path.join(backup_directory, filename)\n            shutil.copy2(src_path, dest_path)\n            copied_files.append(dest_path)\n\n    return copied_files\n\n\nif __name__ == \"__main__\":\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as tmp:\n        src = os.path.join(tmp, \"source\")\n        backup = os.path.join(tmp, \"backup\")\n        os.makedirs(src)\n\n        # Create some sample files\n        for name in [\"a.json\", \"b.json\", \"notes.txt\"]:\n            with open(os.path.join(src, name), \"w\") as f:\n                f.write(\"{}\" if name.endswith(\".json\") else \"text\")\n\n        result = task_func(src, backup)\n        print(\"Copied files:\")\n        for path in result:\n            print(\" \", path)\n```\n\n**How it works:**\n1. If the backup directory doesn't exist, `os.makedirs` creates it.\n2. It goes through the source directory's top level only. Subfolders are not searched.\n3. Each regular file whose name ends in `.json` is copied with `shutil.copy2`, which also keeps the file's timestamps.\n4. It returns a list of the copied files' paths in the backup directory.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 763,
+  "output_tokens": 819,
+  "output_tokens_details": {
+   "thinking_tokens": 68
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 819,
+    "cache_read_input_tokens": 763,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 11.5,
+ "time": "2026-11-19 13:58:57"
+}

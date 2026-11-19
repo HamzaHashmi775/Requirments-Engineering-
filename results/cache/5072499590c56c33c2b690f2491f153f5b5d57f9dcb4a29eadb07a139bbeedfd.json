@@ -1,0 +1,47 @@
+{
+ "tag": "B3|original|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nCount the occurrence of each integer in the values of the input dictionary, where each value is a list of integers, and return a dictionary with these counts. The resulting dictionary's keys are the integers, and the values are their respective counts across all lists in the input dictionary.\nThe function should output with:\n    dict: A dictionary where each key is an integer from any of the input lists, and the value is the count of\n    how often that integer appears in all the lists combined.\nYou should write self-contained code starting with:\n```\nfrom collections import Counter\nimport itertools\ndef task_func(d):\n```",
+ "text": "```python\nfrom collections import Counter\nimport itertools\n\n\ndef task_func(d):\n    \"\"\"\n    Count how often each integer appears across all list values of a dictionary.\n\n    Args:\n        d (dict): A dictionary whose values are lists of integers.\n\n    Returns:\n        dict: Keys are integers found in any of the lists. Values are how many\n              times each integer appears across all lists combined.\n    \"\"\"\n    # Join all the lists into one sequence, then count each integer\n    all_values = itertools.chain.from_iterable(d.values())\n    return dict(Counter(all_values))\n\n\nif __name__ == \"__main__\":\n    # Example usage\n    sample = {\"a\": [1, 2, 3, 1], \"b\": [3, 4, 5], \"c\": [1, 2]}\n    print(task_func(sample))  # {1: 3, 2: 2, 3: 2, 4: 1, 5: 1}\n\n    # Edge cases\n    print(task_func({}))                   # {}\n    print(task_func({\"x\": [], \"y\": [7]}))  # {7: 1}\n```\n\n**How it works:**\n1. `itertools.chain.from_iterable(d.values())` joins all the lists into one sequence. It does this lazily, so no extra combined list is built in memory.\n2. `Counter` counts how many times each integer appears in that sequence.\n3. The result is turned into a plain `dict`, as the task requires.\n\nIf the input dictionary is empty, or all its lists are empty, the function returns `{}`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 786,
+  "output_tokens": 479,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 479,
+    "cache_read_input_tokens": 786,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 7.2,
+ "time": "2026-11-18 00:35:29"
+}

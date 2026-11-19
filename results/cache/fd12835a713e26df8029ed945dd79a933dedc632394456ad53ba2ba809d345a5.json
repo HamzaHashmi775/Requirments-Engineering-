@@ -1,0 +1,47 @@
+{
+ "tag": "R1|recognize-judge|claude-sonnet-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are a strict, careful grader for a research study on ambiguity in software requirements.",
+ "prompt": "A model reviewed the requirement below and reported ambiguities. The requirement contains exactly these injected ambiguities (ground truth):\n\nRequirement:\n```python\nfrom typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Screen the input list for strings that include the characters of the given substring\n    \"\"\"\n```\n\nGround-truth ambiguities:\n1. Lexical: span \"Screen\" — intended: Keep only the strings that contain the given substring; return them in their original order. — alternative: Screen out (remove) the strings that contain the given substring; return only the strings that do not contain it.\n2. Semantic: span \"include the characters of the given substring\" — intended: A string matches if the substring occurs in it as a contiguous sequence (substring in s). — alternative: A string matches if every character of the substring appears somewhere in it, regardless of order or adjacency.\n\nModel's answer:\n```json\n{\n \"ambiguous\": true,\n \"issues\": [\n  {\n   \"segment\": \"strings that include the characters of the given substring\",\n   \"reason\": \"The wording 'include the characters of the given substring' can mean the substring appears contiguously, or merely that every character of the substring appears somewhere in the string (in any order, possibly non-contiguous). These yield different outputs, e.g. substring 'abc' with string 'cab' or 'a-b-c'.\",\n   \"options\": [\n    \"Keep strings that contain the substring as a contiguous sequence (substring in s)\",\n    \"Keep strings that contain every distinct character of the substring in any order/position (set(substring) <= set(s))\",\n    \"Keep strings that contain the substring's characters in order as a subsequence, not necessarily contiguous\",\n    \"Keep strings that contain at least one character from the substring\"\n   ]\n  }\n ]\n}\n```\n\nFor EACH ground-truth ambiguity, grade the model's answer:\n- \"detection\": the model did not pinpoint this ambiguity (no reported segment refers to these words / this issue).\n- \"localization\": a reported segment pinpoints this ambiguity (the same words or the same issue), but its options do not offer both the intended and the alternative reading (or no concrete options).\n- \"tackling\": it pinpoints this ambiguity AND its options include readings equivalent to both the intended and the alternative reading.\nAlso count reported issues that match no ground-truth ambiguity (spurious_issues).\n\nReply with only a JSON object in a ```json fence:\n{\"per_ambiguity\": [{\"type\": \"<type>\", \"level\": \"detection|localization|tackling\", \"matched_segment\": \"<model's segment or empty>\", \"reason\": \"\"}], \"spurious_issues\": 0}",
+ "text": "```json\n{\"per_ambiguity\": [{\"type\": \"Lexical\", \"level\": \"detection\", \"matched_segment\": \"\", \"reason\": \"The model never flags 'Screen' or the keep-vs-remove reading. All of its options assume matching strings are kept, and none offers excluding the strings that contain the substring.\"}, {\"type\": \"Semantic\", \"level\": \"tackling\", \"matched_segment\": \"strings that include the characters of the given substring\", \"reason\": \"The segment pinpoints this ambiguity. Option 1 is the intended reading (contiguous, substring in s). Option 2 is the alternative (every character appears anywhere, regardless of order or adjacency).\"}], \"spurious_issues\": 0}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1476,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 232,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1476,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 232,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1476,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1476
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 10.6,
+ "time": "2026-11-17 18:05:02"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "B2|combined|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nFind the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. It tallies the quantities per product and returns the product with the highest quantity across the rows. If more than one product qualifies, ties are resolved in a suitable order. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the best-selling product.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+ "text": "```python\nimport csv\nimport collections\nimport operator\n\n\ndef task_func(csv_file_path):\n    \"\"\"\n    Find the best-selling product from a CSV file with sales data.\n\n    The CSV file is expected to have a header row that includes at least the\n    columns 'product' and 'quantity'. Quantities are summed per product, and\n    the product with the highest total quantity is returned. Ties are broken\n    by first appearance in the file (the earliest product among those tied\n    for the maximum total wins).\n\n    Args:\n        csv_file_path (str): The file path to the CSV file containing sales data.\n\n    Returns:\n        str: The name of the best-selling product.\n\n    Raises:\n        ValueError: If the CSV lacks the required columns or contains no data rows.\n    \"\"\"\n    sales = collections.OrderedDict()  # preserves first-seen order for tie-breaking\n\n    with open(csv_file_path, 'r', newline='', encoding='utf-8') as f:\n        reader = csv.DictReader(f)\n\n        fieldnames = reader.fieldnames or []\n        if 'product' not in fieldnames or 'quantity' not in fieldnames:\n            raise ValueError(\"CSV file must contain 'product' and 'quantity' columns.\")\n\n        for row in reader:\n            product = row['product']\n            quantity = int(row['quantity'])\n            sales[product] = sales.get(product, 0) + quantity\n\n    if not sales:\n        raise ValueError(\"CSV file contains no sales data.\")\n\n    # max() returns the first maximal item encountered, so ties are resolved\n    # in favour of the product that appeared earliest in the file.\n    top_product = max(sales.items(), key=operator.itemgetter(1))[0]\n    return top_product\n```\n\n**Notes:**\n- `csv.DictReader` reads columns by name, so the file can include extra columns and they can appear in any order.\n- Ties go to the product that appears first in the file. `max` keeps the first maximal element it finds, and `OrderedDict` keeps the order in which products were first seen.\n- A `ValueError` is raised if the required columns are missing or the file has no data rows. A non-integer quantity also raises `ValueError`, because `int()` fails on it.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 857,
+  "output_tokens": 716,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 716,
+    "cache_read_input_tokens": 857,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 9.0,
+ "time": "2026-11-18 01:14:27"
+}

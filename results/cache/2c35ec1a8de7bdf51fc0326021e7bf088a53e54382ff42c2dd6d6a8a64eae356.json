@@ -1,0 +1,47 @@
+{
+ "tag": "R1|inject|it2",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert in requirements engineering who writes realistic ambiguous software requirements for a research benchmark.",
+ "prompt": "Rewrite the function-level requirement below so that it contains EXACTLY two ambiguities: one Lexical ambiguity and one Semantic ambiguity.\n\nAmbiguity types:\n- Lexical: a word in the requirement has multiple distinct meanings, causing different interpretations.\n- Syntactic: the requirement's grammatical structure has multiple distinct meanings (e.g. unclear attachment, scope or pronoun reference), causing different interpretations.\n- Semantic: a phrase or sentence in the requirement has multiple distinct meanings, causing different interpretations.\n- Vagueness: the requirement omits necessary details, so it has multiple distinct meanings, causing different interpretations.\n\nRules:\n1. Inject the Lexical ambiguity and the Semantic ambiguity at two different places in the text.\n2. Inject no other ambiguity; everything else stays as clear as in the original.\n3. The original meaning must remain one plausible reading of the rewritten text.\n4. Each injected ambiguity must allow another plausible reading that leads to a functionally different implementation (some input gives a different output).\n5. Keep imports, the function signature, docstring delimiters and indentation exactly as in the original. Change only the natural-language text. Do not add examples.\n6. It must read naturally, like a real developer wrote it, with a similar length.\n\nSingle-type examples from other tasks:\n\n### Lexical ambiguity example\nOriginal:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    \"\"\"\n```\nRewritten:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given set of numbers, are any two numbers closer to each other than\n    given threshold.\n    \"\"\"\n```\nExplanation: \"set\": Could mean a general mathematical collection of numbers or the specific Python `set` data structure (implying unique, unordered elements). Ambiguous here because the function actually accepts a `List` (ordered, allows duplicates), creating a mismatch between the description and the actual input type and its properties.\n\n### Semantic ambiguity example\nOriginal:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    \"\"\"\n```\nRewritten:\n```python\nfrom typing import List\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, any two numbers are closer to each other than\n    given threshold.\n    \"\"\"\n```\nExplanation: The phrase \"closer to each other than given threshold\" is semantically ambiguous—it can mean (A) the absolute difference between any two numbers in the list is less than the threshold (e.g., abs(x - y) < threshold for any x, y in numbers), or (B) for each number in the list, there exists another number such that their difference is less than the threshold, which implies a pair-wise comparison (e.g., for any x in numbers, exists y in numbers such that abs(x - y) < threshold), each interpretation leading to different code and results.\n\n### Lexical ambiguity example\nOriginal:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return the product of the odd digits.\n    Return 0 if all digits are even.\n    \"\"\"\n```\nRewritten:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return the product of the key digits.\n    Return 0 if all digits are even.\n    \"\"\"\n```\nExplanation: \"key\": Could mean important, significant, or a placeholder for a specific characteristic. Ambiguous here, as it obscures the specific criterion (oddness, based on examples) for selecting digits for the product calculation.\n\n### Semantic ambiguity example\nOriginal:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return the product of the odd digits.\n    Return 0 if all digits are even.\n    \"\"\"\n```\nRewritten:\n```python\ndef digits(n):\n    \"\"\"Given a positive integer n, return either the product of the odd digits or 0.\n    \"\"\"\n```\nExplanation: The phrase \"return either the product of the odd digits or 0\" is semantically ambiguous—it can mean (A) return the product of the odd digits if there are any odd digits, or return 0 if all digits are even (e.g., digits(235) → 15, digits(4) → 0), or (B) return 0 if any digit is even, otherwise return the product of the odd digits (e.g., digits(235) → 0, digits(1) → 1), each interpretation leading to different code and results.\n\nOriginal requirement:\n```python\nfrom typing import List\n\n\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\n    \"\"\" Filter an input list of strings only for ones that contain given substring\n    \"\"\"\n```\n\nA reviewer rejected your previous attempt:\nLexical works. 'Screen' can mean select strings that match, which gives ['abc']. It can also mean screen out matches, which gives ['xyz']. Semantic is weak. 'have given substring as part of them' mainly reads as plain containment. The alternative reading is that the substring must be a proper part, so a string equal to the substring is excluded. That reading is a stretch (plausibility 2). To strengthen it, use a phrase whose alternative is more natural. For example, 'ones that include the given substring's characters' could mean a contiguous substring or just a set of characters, which gives a witness like (['acb'], 'ab'). Another option is 'ones that match the given substring', which could mean contains or equals exactly.\nFix these problems.\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous_prompt\": \"<full rewritten code: imports + signature + docstring>\",\n \"ambiguities\": [{\"type\": \"<Lexical or Semantic>\", \"span\": \"<exact ambiguous words>\", \"readings\": [\"<intended reading>\", \"<alternative reading>\"]}]}",
+ "text": "```json\n{\"ambiguous_prompt\": \"from typing import List\\n\\n\\ndef filter_by_substring(strings: List[str], substring: str) -> List[str]:\\n    \\\"\\\"\\\" Screen an input list of strings for ones that include the given substring's characters\\n    \\\"\\\"\\\"\",\n \"ambiguities\": [\n  {\"type\": \"Lexical\", \"span\": \"Screen\", \"readings\": [\"Select (keep) the strings that meet the condition, e.g. (['abc', 'xyz'], 'a') -> ['abc']\", \"Screen out (remove) the strings that meet the condition and keep the rest, e.g. (['abc', 'xyz'], 'a') -> ['xyz']\"]},\n  {\"type\": \"Semantic\", \"span\": \"include the given substring's characters\", \"readings\": [\"The string contains the substring as a contiguous sequence, e.g. (['acb'], 'ab') -> []\", \"The string contains every character of the substring somewhere, in any order or position, e.g. (['acb'], 'ab') -> ['acb']\"]}\n ]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 2612,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 355,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2612,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 355,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2612,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2612
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 5.7,
+ "time": "2026-11-17 14:38:38"
+}

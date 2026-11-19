@@ -1,0 +1,47 @@
+{
+ "tag": "B1|original|claude-opus-5-5|0",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nReads a CSV file and counts the most common words in the file. This function opens the specified CSV file using the provided delimiter, reads its contents, and counts the frequency of each word. It returns a list of tuples, each containing a word and its frequency, sorted by frequency in descending order.\nNote that: The function assumes that each cell in the CSV contains a single word.\nThe function should output with:\n    list of tuple: A list of tuples where each tuple contains a word and its count,\n    sorted by count in descending order.\nYou should write self-contained code starting with:\n```\nimport csv\nfrom collections import Counter\nimport operator\ndef task_func(csv_file, csv_delimiter):\n```",
+ "text": "```python\nimport csv\nfrom collections import Counter\nimport operator\n\n\ndef task_func(csv_file, csv_delimiter):\n    \"\"\"\n    Reads a CSV file and counts the most common words in the file.\n\n    Parameters:\n        csv_file (str): Path to the CSV file.\n        csv_delimiter (str): Delimiter used in the CSV file.\n\n    Returns:\n        list of tuple: A list of tuples where each tuple contains a word and\n        its count, sorted by count in descending order.\n    \"\"\"\n    words = []\n    with open(csv_file, 'r', newline='') as f:\n        reader = csv.reader(f, delimiter=csv_delimiter)\n        for row in reader:\n            # Each cell is assumed to contain a single word\n            words.extend(row)\n\n    counter = Counter(words)\n    # Sort by count in descending order\n    sorted_counts = sorted(counter.items(), key=operator.itemgetter(1), reverse=True)\n    return sorted_counts\n\n\nif __name__ == \"__main__\":\n    import os\n    import tempfile\n\n    # Simple demonstration\n    sample = \"apple,banana,apple\\nbanana,cherry,apple\\n\"\n    with tempfile.NamedTemporaryFile('w', delete=False, suffix='.csv', newline='') as tmp:\n        tmp.write(sample)\n        path = tmp.name\n\n    try:\n        print(task_func(path, ','))  # [('apple', 3), ('banana', 2), ('cherry', 1)]\n    finally:\n        os.remove(path)\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 823,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 503,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 823,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 503,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 823,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 823
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 6.4,
+ "time": "2026-11-18 00:32:30"
+}

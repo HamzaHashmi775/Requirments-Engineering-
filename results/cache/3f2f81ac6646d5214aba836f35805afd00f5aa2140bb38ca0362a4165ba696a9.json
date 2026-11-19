@@ -1,0 +1,47 @@
+{
+ "tag": "B2|combined|claude-sonnet-5-5|2",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 2,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nFind the best-selling product from a given CSV file with sales data. This function parses a CSV file assumed to have a header followed by rows containing two columns: 'product' and 'quantity'. For each product it accumulates the quantity from every row and determines the product with the highest one; if several products end up tied, the preferred one is returned. The CSV file must include at least these two columns, where 'product' is the name of the product as a string and 'quantity' is the number of units sold as an integer. Args: csv_file_path (str): The file path to the CSV file containing sales data.\nThe function should output with:\n    str: The name of the top-selling product based on the total quantity sold.\nYou should write self-contained code starting with:\n```\nimport csv\nimport collections\nimport operator\ndef task_func(csv_file_path):\n```",
+ "text": "```python\nimport csv\nimport collections\nimport operator\n\n\ndef task_func(csv_file_path):\n    totals = collections.OrderedDict()\n\n    with open(csv_file_path, newline=\"\", encoding=\"utf-8\") as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            product = row[\"product\"]\n            quantity = int(row[\"quantity\"])\n            totals[product] = totals.get(product, 0) + quantity\n\n    if not totals:\n        raise ValueError(\"No sales data found in the CSV file.\")\n\n    # max() returns the first maximal item, so ties go to the product\n    # that appeared first in the file.\n    return max(totals.items(), key=operator.itemgetter(1))[0]\n```\n\nThe function sums the quantity for each product across all rows and returns the name with the highest total.\n\nYou didn't say which product is \"preferred\" in a tie, so I chose the one that appears first in the file. If you meant something else, such as alphabetical order, only the final `max` line needs to change.\n\nIt raises `ValueError` if the file has no data rows.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 863,
+  "output_tokens": 601,
+  "output_tokens_details": {
+   "thinking_tokens": 262
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 601,
+    "cache_read_input_tokens": 863,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 7.1,
+ "time": "2026-11-18 00:35:15"
+}

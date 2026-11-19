@@ -1,0 +1,47 @@
+{
+ "tag": "R3|combined|claude-opus-5-5|0",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"\n```",
+ "text": "This keeps only the elements that appear exactly once in the input, in their original order. It does not keep the first copy of each repeated value, so `[1, 2, 3, 2, 4]` becomes `[1, 3, 4]`.\n\n```python\nfrom typing import List\nfrom collections import Counter\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the same as in the input.\n    >>> remove_duplicates([1, 2, 3, 2, 4])\n    [1, 3, 4]\n    \"\"\"\n    counts = Counter(numbers)\n    return [n for n in numbers if counts[n] == 1]\n\n\nif __name__ == \"__main__\":\n    assert remove_duplicates([]) == []\n    assert remove_duplicates([1, 2, 3, 4]) == [1, 2, 3, 4]\n    assert remove_duplicates([1, 2, 3, 2, 4, 3, 5]) == [1, 4, 5]\n    assert remove_duplicates([1, 2, 3, 2, 4]) == [1, 3, 4]\n    print(\"All tests passed.\")\n```\n\n**How it works:**\n1. `Counter(numbers)` counts how many times each value appears. This takes one pass over the list.\n2. A list comprehension then goes through the original list and keeps only the values whose count is `1`. Going through the original list is what preserves the order.\n\nIt runs in O(n) time and uses O(n) extra space.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 685,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 544,
+  "output_tokens_details": {
+   "thinking_tokens": 47
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 685,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 544,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 685,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 685
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 15.1,
+ "time": "2026-11-17 17:51:55"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "R5|recognize|combined|claude-opus-5-5",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert software engineer who reviews requirements before implementing them.",
+ "prompt": "Below is the requirement for a Python function you are asked to implement.\n\n```python\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    subtracting the smallest number from each number divided by the spread of the list\n    \"\"\"\n```\n\nBefore implementing it, decide whether the requirement is ambiguous: does any wording allow more than one plausible interpretation that would lead to functionally different implementations (different outputs for some input)? Do not flag ordinary details that a competent developer would resolve the same way.\n\nIf it is ambiguous, list every ambiguous segment: quote the exact words, explain why they are ambiguous, and give concrete clarification options (the possible interpretations a stakeholder could choose between).\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"<exact quoted words>\", \"reason\": \"\", \"options\": [\"\", \"\"]}]}\nUse {\"ambiguous\": false, \"issues\": []} if it is not ambiguous.",
+ "text": "```json\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"subtracting the smallest number from each number divided by the spread of the list\", \"reason\": \"The order of operations is unclear. It could mean (x - min) / spread, where the difference is divided. It could also mean x - (min / spread), where only the smallest number is divided. Grammatically it might even mean (x / spread) - min. Each reading gives different outputs.\", \"options\": [\"Compute (x - min) / spread for each x, so the smallest maps to 0 and the largest maps to 1\", \"Compute x - (min / spread) for each x\", \"Compute (x / spread) - min for each x\"]}, {\"segment\": \"the spread of the list\", \"reason\": \"'Spread' has no fixed meaning. It could be the range (max - min), the standard deviation, the variance, or the interquartile range. Each choice gives different scaled values.\", \"options\": [\"Range: max(numbers) - min(numbers)\", \"Population standard deviation\", \"Sample standard deviation\", \"Interquartile range\"]}, {\"segment\": \"Given list of numbers (of at least two elements)\", \"reason\": \"Two elements can still be equal, giving a spread of zero. Dividing by it is then undefined, and nothing says what should happen. Different handling gives different results, such as an exception versus a list of zeros.\", \"options\": [\"Raise an error such as ZeroDivisionError or ValueError when the spread is zero\", \"Return all zeros when the spread is zero\", \"Return all 0.5 (or another constant) when the spread is zero\", \"Assume callers never pass inputs with zero spread (behavior undefined)\"]}]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 956,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 654,
+  "output_tokens_details": {
+   "thinking_tokens": 117
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 956,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 654,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 956,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 956
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 13.8,
+ "time": "2026-11-17 18:09:33"
+}

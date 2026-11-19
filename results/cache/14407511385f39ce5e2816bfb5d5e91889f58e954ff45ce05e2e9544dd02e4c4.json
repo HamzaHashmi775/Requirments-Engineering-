@@ -1,0 +1,47 @@
+{
+ "tag": "B9|combined|claude-sonnet-5-5|4",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 4,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nCombine two lists by zipping their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combination, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+ "text": "```python\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\n\n\ndef task_func(l1, l2, K=10):\n    # Unique sentinel so genuine None values in the inputs are preserved\n    _missing = object()\n\n    # Interleave elements; leftover elements from the longer list stand alone\n    combined = [\n        val\n        for pair in zip_longest(l1, l2, fillvalue=_missing)\n        for val in pair\n        if val is not _missing\n    ]\n\n    # Nothing to sample from\n    if not combined:\n        return collections.Counter()\n\n    # Random sample of size K (with replacement)\n    sample = choices(combined, k=K)\n\n    return collections.Counter(sample)\n\n\nif __name__ == \"__main__\":\n    import random\n    random.seed(42)\n    print(task_func([1, 2, 3], ['a', 'b', 'c', 'd', 'e'], K=10))\n```\n\nThe function interleaves the two lists with `zip_longest`. A private sentinel marks the missing slots, so only the padding is dropped and real `None` values in the inputs are kept. Extra elements of the longer list therefore appear on their own.\n\n`random.choices` then draws K elements with replacement, so K can exceed the combined length. The function returns a `collections.Counter` of the sampled elements, or an empty `Counter` if both lists are empty.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 785,
+  "output_tokens": 668,
+  "output_tokens_details": {
+   "thinking_tokens": 229
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 668,
+    "cache_read_input_tokens": 785,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 19.6,
+ "time": "2026-11-19 14:26:16"
+}

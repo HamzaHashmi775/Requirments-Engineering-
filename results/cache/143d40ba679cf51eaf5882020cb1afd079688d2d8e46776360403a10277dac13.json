@@ -1,0 +1,47 @@
+{
+ "tag": "B9|combined|claude-opus-5-5|3",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 3,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nCombine two lists by zipping their elements, even if they are of different lengths. Elements from the longer list without a counterpart in the shorter one will be included on their own. Then, create a random sample of size K from the combination, and calculate the frequency of each element in the sample.\nThe function should output with:\n    collections.Counter: An object that counts the frequency of each element in the sample.\nYou should write self-contained code starting with:\n```\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\ndef task_func(l1, l2, K=10):\n```",
+ "text": "```python\nimport collections\nfrom itertools import zip_longest\nfrom random import choices\n\n\ndef task_func(l1, l2, K=10):\n    \"\"\"\n    Interleave two lists element by element, even if they differ in length,\n    then draw a random sample (with replacement) of size K from the combined\n    list and count the frequency of each sampled element.\n\n    Parameters\n    ----------\n    l1 : list\n        First list.\n    l2 : list\n        Second list.\n    K : int, optional\n        Size of the random sample (default 10).\n\n    Returns\n    -------\n    collections.Counter\n        Frequency of each element in the sample.\n    \"\"\"\n    combined = [\n        val\n        for pair in zip_longest(l1, l2)\n        for val in pair\n        if val is not None\n    ]\n\n    sample = choices(combined, k=K)\n    return collections.Counter(sample)\n\n\nif __name__ == \"__main__\":\n    import random\n    random.seed(42)\n    a = [1, 2, 3, 4, 5]\n    b = ['a', 'b', 'c']\n    print(task_func(a, b, K=10))\n```\n\n**How it works:**\n\n1. **Combining:** `zip_longest(l1, l2)` pairs the elements from both lists. When one list runs out, it fills the missing positions with `None`. The pairs are then flattened, and those `None` placeholders are dropped. The result is that leftover elements from the longer list appear on their own. For example, `[1, 2, 3, 4, 5]` and `['a', 'b', 'c']` become `[1, 'a', 2, 'b', 3, 'c', 4, 5]`.\n2. **Sampling:** `random.choices` draws `K` elements *with replacement*, so `K` can be larger than the combined list.\n3. **Counting:** `collections.Counter` counts how often each element appears in the sample.\n\n**Two limitations:**\n- Because `None` is used as the fill marker, any genuine `None` values in your input lists are also removed.\n- If both input lists are empty, `choices` raises an `IndexError`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 781,
+  "output_tokens": 658,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 658,
+    "cache_read_input_tokens": 781,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 10.0,
+ "time": "2026-11-19 14:25:01"
+}

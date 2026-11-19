@@ -1,0 +1,47 @@
+{
+ "tag": "R6|recognize|original|claude-sonnet-5-5",
+ "model": "claude-sonnet-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert software engineer who reviews requirements before implementing them.",
+ "prompt": "Below is the requirement for a Python function you are asked to implement.\n\n```python\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for integers\n    \"\"\"\n```\n\nBefore implementing it, decide whether the requirement is ambiguous: does any wording allow more than one plausible interpretation that would lead to functionally different implementations (different outputs for some input)? Do not flag ordinary details that a competent developer would resolve the same way.\n\nIf it is ambiguous, list every ambiguous segment: quote the exact words, explain why they are ambiguous, and give concrete clarification options (the possible interpretations a stakeholder could choose between).\n\nReply with only a JSON object in a ```json fence:\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"<exact quoted words>\", \"reason\": \"\", \"options\": [\"\", \"\"]}]}\nUse {\"ambiguous\": false, \"issues\": []} if it is not ambiguous.",
+ "text": "```json\n{\"ambiguous\": true, \"issues\": [{\"segment\": \"only for integers\", \"reason\": \"In Python, bool is a subclass of int, so True and False satisfy isinstance(x, int). It is unclear whether booleans count as integers, and the two readings give different outputs for inputs such as [True, 1, False].\", \"options\": [\"Include booleans, using isinstance(x, int), so True and False are kept in the result\", \"Exclude booleans, using type(x) is int or an explicit bool check, so only true int values are kept\"]}]}\n```",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 923,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 179,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 923,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 179,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 923,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 923
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 13.3,
+ "time": "2026-11-17 18:10:29"
+}

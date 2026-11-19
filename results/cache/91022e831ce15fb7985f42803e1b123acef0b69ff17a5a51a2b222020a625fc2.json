@@ -1,0 +1,47 @@
+{
+ "tag": "B12|combined|claude-opus-5-5|0",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 0,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\nScans a specified directory for files matching a given pattern with a certain suffix, then determines their file types. The function returns a dictionary with the matched entries as keys and their corresponding MIME types as values.\nThe function should output with:\n    dict: A dictionary mapping matched entries to their MIME types.\nYou should write self-contained code starting with:\n```\nimport re\nimport os\nimport glob\nimport mimetypes\ndef task_func(directory, file_pattern, suffix):\n```",
+ "text": "The script changes into the target directory, globs for the pattern, keeps the matches that contain the suffix, and guesses each one's MIME type.\n\n```python\nimport re\nimport os\nimport glob\nimport mimetypes\n\n\ndef task_func(directory, file_pattern, suffix):\n    \"\"\"\n    Scan a directory for files matching a glob pattern that also contain\n    the given suffix, and determine their MIME types.\n\n    Parameters:\n        directory (str): Path of the directory to scan.\n        file_pattern (str): Glob pattern used to match entries (e.g. '*.txt').\n        suffix (str): Regex/string that matched entries must contain\n                      (e.g. '_suff').\n\n    Returns:\n        dict: A dictionary mapping matched entries to their MIME types\n              (None if the type cannot be guessed).\n    \"\"\"\n    # Change to the target directory so matched entries are relative names\n    os.chdir(directory)\n\n    # Find entries matching the glob pattern\n    files = glob.glob(file_pattern)\n\n    file_types = {}\n    for file in files:\n        # Keep only entries containing the requested suffix\n        if re.search(suffix, file):\n            mime_type, _ = mimetypes.guess_type(file)\n            file_types[file] = mime_type\n\n    return file_types\n\n\nif __name__ == \"__main__\":\n    import tempfile\n\n    with tempfile.TemporaryDirectory() as tmp:\n        for name in [\"report_suff.txt\", \"image_suff.png\", \"notes.txt\", \"data_suff.csv\"]:\n            with open(os.path.join(tmp, name), \"w\") as f:\n                f.write(\"sample\")\n\n        original_cwd = os.getcwd()\n        try:\n            print(task_func(tmp, \"*\", \"_suff\"))\n        finally:\n            os.chdir(original_cwd)  # restore cwd so the temp dir can be removed\n```\n\nNotes:\n- `os.chdir(directory)` changes the working directory for the whole process. Because of that, the keys are entry names relative to `directory`.\n- The suffix is matched with `re.search`, so it can appear anywhere in the name, not only at the end. For example, `file_suff.txt` matches the suffix `_suff`.\n- If `mimetypes` cannot work out a type from the file extension, the value for that entry is `None`.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 758,
+  "cache_read_input_tokens": 0,
+  "output_tokens": 1047,
+  "output_tokens_details": {
+   "thinking_tokens": 299
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 758,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1047,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 758,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 758
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 16.0,
+ "time": "2026-11-19 14:07:41"
+}

@@ -1,0 +1,47 @@
+{
+ "tag": "R3|combined|claude-opus-5-5|1",
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "sample": 1,
+ "system": "You are an expert Python programmer.",
+ "prompt": "Please provide a self-contained Python script that solves the following problem in a markdown code block:\n```python\nfrom typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove the duplicated elements.\n    Keep the remaining elements in order.\n    \"\"\"\n```",
+ "text": "This keeps only the elements that appear exactly once, in their original order. Every copy of a repeated value is removed, not just the extra copies.\n\n```python\nfrom typing import List\nfrom collections import Counter\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the same as in the input.\n    >>> remove_duplicates([1, 2, 3, 2, 4])\n    [1, 3, 4]\n    \"\"\"\n    counts = Counter(numbers)\n    return [n for n in numbers if counts[n] == 1]\n\n\nif __name__ == \"__main__\":\n    assert remove_duplicates([]) == []\n    assert remove_duplicates([1, 2, 3, 4]) == [1, 2, 3, 4]\n    assert remove_duplicates([1, 2, 3, 2, 4, 3, 5]) == [1, 4, 5]\n    assert remove_duplicates([1, 2, 3, 2, 4]) == [1, 3, 4]\n    print(\"All tests passed.\")\n```\n\n**How it works:**\n1. `Counter(numbers)` counts how many times each integer appears. This takes O(n) time.\n2. The list comprehension goes through the original list in order and keeps only the elements whose count is exactly 1. This is also O(n).\n\nThe total time is **O(n)** and the extra space is **O(n)**.\n\nIf you only wanted to drop the extra copies and keep the first one (`[1, 2, 3, 2, 4]` → `[1, 2, 3, 4]`), you could use `list(dict.fromkeys(numbers))` instead.",
+ "is_error": false,
+ "stop_reason": "end_turn",
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 685,
+  "output_tokens": 593,
+  "output_tokens_details": {
+   "thinking_tokens": 48
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 593,
+    "cache_read_input_tokens": 685,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "seconds": 13.8,
+ "time": "2026-11-17 17:52:09"
+}
