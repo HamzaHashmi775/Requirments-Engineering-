@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset='utf-8'><style>
+body { margin: 0; padding: 24px; background: #fff; color: #000; font-family: "Times New Roman", Times, serif; }
+.wrap { display: inline-table; padding: 18px 22px; }
+sup { line-height: 0; }
+.cap { font-size: 15px; text-align: center; margin: 0 0 8px; }
+.cap b { font-weight: bold; }
+table { border-collapse: collapse; font-size: 14px; }
+th, td { padding: 3px 9px; text-align: center; white-space: nowrap; }
+td.l, th.l { text-align: left; }
+thead tr:first-child th { border-top: 1.6px solid #000; }
+thead tr:last-child th { border-bottom: 0.9px solid #000; }
+tbody tr:last-child td { border-bottom: 1.6px solid #000; }
+th.grp { border-bottom: 0.6px solid #000; }
+tr.sec td { font-style: italic; text-align: left; border-top: 0.6px solid #000; border-bottom: 0.6px solid #000; }
+td.neg { color: #b00000; }
+td.pos { color: #006400; }
+.note { display: table-caption; caption-side: bottom; font-size: 12px; padding-top: 6px; }
+</style></head><body><div class='wrap'><p class='cap'><b>Table 7:</b> Localization per injected ambiguity type (combined requirements).</p><table><thead><tr><th class='l' rowspan='2'>Ambiguity type</th><th class='grp' colspan='2'>Orchid-HEval</th><th class='grp' colspan='2'>Orchid-BCB</th></tr><tr><th>Claude-Opus-5.5</th><th>Claude-Sonnet-5.5</th><th>Claude-Opus-5.5</th><th>Claude-Sonnet-5.5</th></tr></thead><tbody><tr><td class='l'>Lexical</td><td>2/3</td><td>1/3</td><td>5/6</td><td>5/6</td></tr><tr><td class='l'>Syntactic</td><td>2/3</td><td>2/3</td><td>4/6</td><td>4/6</td></tr><tr><td class='l'>Semantic</td><td>3/3</td><td>3/3</td><td>3/6</td><td>5/6</td></tr><tr><td class='l'>Vagueness</td><td>2/3</td><td>2/3</td><td>5/6</td><td>5/6</td></tr><tr><td class='l'>Both ambiguities localized</td><td>4/6</td><td>3/6</td><td>7/12</td><td>8/12</td></tr></tbody></table><div class='note'>Extension for combined ambiguity: number of injected ambiguities of each type that the model localized or tackled, out of the requirements containing that type.</div></div></body></html>

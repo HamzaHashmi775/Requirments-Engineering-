@@ -222,6 +222,7 @@ orchid_implementation/
 │   ├── execute.py           # runs code in a child `python -I` process with a timeout
 │   ├── evaluate.py          # Stage 5: pass@k, conflict rate
 │   └── recognize.py         # Stage 6 (RQ3): recognition prompts + LLM judge
+│   └── make_tables.py       # result tables as PNG (paper Tables 4–6 layout + extensions)
 └── results/
     ├── cache/               # every raw `claude -p` response (prompt, model, usage, date)
     ├── generations.jsonl, samples_eval.jsonl, summary.json
@@ -412,3 +413,8 @@ Run order: `download_data.py` → `prepare_tasks.py` → `rewrite.py` (+ human r
   BCB 48/48 agree with the judge (100% agreement; paper reported 96% on 50 samples).
   Recognition (12 tasks): Opus P 0.67 / R 0.83, Sonnet P 0.61 / R 0.92. B1–B6 review grades
   restored into the new review CSV; B7–B12 rows (24) still to review.
+- 2026-11-20: **Result tables as images** (`python src/make_tables.py` → `results/figures/`):
+  Table 4 Pass@K (Orig. + Δ Comb., all and valid tasks), Table 5 conflict rate, Table 6
+  recognition (Pre/Rec/Una/Det/Loc/Tac), extensions Table 7 localization per type and Table 8
+  per requirement. Laid out like the paper's Tables 4–6; rendered with headless Edge, cropped
+  with the standard library (no pip installs). Reads only result files (no Claude calls).

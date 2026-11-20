@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset='utf-8'><style>
+body { margin: 0; padding: 24px; background: #fff; color: #000; font-family: "Times New Roman", Times, serif; }
+.wrap { display: inline-table; padding: 18px 22px; }
+sup { line-height: 0; }
+.cap { font-size: 15px; text-align: center; margin: 0 0 8px; }
+.cap b { font-weight: bold; }
+table { border-collapse: collapse; font-size: 14px; }
+th, td { padding: 3px 9px; text-align: center; white-space: nowrap; }
+td.l, th.l { text-align: left; }
+thead tr:first-child th { border-top: 1.6px solid #000; }
+thead tr:last-child th { border-bottom: 0.9px solid #000; }
+tbody tr:last-child td { border-bottom: 1.6px solid #000; }
+th.grp { border-bottom: 0.6px solid #000; }
+tr.sec td { font-style: italic; text-align: left; border-top: 0.6px solid #000; border-bottom: 0.6px solid #000; }
+td.neg { color: #b00000; }
+td.pos { color: #006400; }
+.note { display: table-caption; caption-side: bottom; font-size: 12px; padding-top: 6px; }
+</style></head><body><div class='wrap'><p class='cap'><b>Table 6:</b> Evaluation of LLM capability of recognizing combined ambiguity in requirements.</p><table><thead><tr><th class='l' rowspan='2'>Models</th><th class='grp' colspan='6'>Orchid-HEval</th><th class='grp' colspan='6'>Orchid-BCB</th></tr><tr><th>Pre(%)</th><th>Rec(%)</th><th>Una(%)</th><th>Det(%)</th><th>Loc(%)</th><th>Tac(%)</th><th>Pre(%)</th><th>Rec(%)</th><th>Una(%)</th><th>Det(%)</th><th>Loc(%)</th><th>Tac(%)</th></tr></thead><tbody><tr><td class='l'>Claude-Opus-5.5</td><td>62.50</td><td>83.33</td><td>16.67</td><td>0.00</td><td>0.00</td><td>83.33</td><td>66.67</td><td>83.33</td><td>16.67</td><td>0.00</td><td>0.00</td><td>83.33</td></tr><tr><td class='l'>Claude-Sonnet-5.5</td><td>75.00</td><td>100.00</td><td>0.00</td><td>16.67</td><td>0.00</td><td>83.33</td><td>61.11</td><td>91.67</td><td>8.33</td><td>0.00</td><td>8.33</td><td>83.33</td></tr></tbody></table><div class='note'>Pre / Rec: precision and recall of flagging a requirement as ambiguous (original vs combined). Una / Det / Loc / Tac: share of combined requirements graded Unaware / Detection / Localization / Tackling (paper's single label = best level over the two injected ambiguities). LLM judge: Claude-Opus-5.5; all 72 judge grades checked by hand (100% agreement).</div></div></body></html>
