@@ -418,3 +418,7 @@ Run order: `download_data.py` → `prepare_tasks.py` → `rewrite.py` (+ human r
   recognition (Pre/Rec/Una/Det/Loc/Tac), extensions Table 7 localization per type and Table 8
   per requirement. Laid out like the paper's Tables 4–6; rendered with headless Edge, cropped
   with the standard library (no pip installs). Reads only result files (no Claude calls).
+- 2026-11-20: Table 4 now shows Original | Combined | Δ side by side (user request; the paper
+  shows only Orig. and Δ). **Δ convention everywhere = combined − original (negative = drop)**,
+  as in the paper and the tables (older log entries above say "original → combined" values,
+  which are unaffected).

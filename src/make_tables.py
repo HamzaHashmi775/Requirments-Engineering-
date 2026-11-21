@@ -1,7 +1,7 @@
 """Result tables as images, laid out like the paper's Tables 4-6 (+ two extension tables).
 
 Reads only the result files (no Claude calls) and writes, to results/figures/:
-  table4_passk.png          Pass@K: original and Δ = combined - original (paper Table 4)
+  table4_passk.png          Pass@K: original, combined and Δ = combined - original (paper Table 4 + Comb. column)
   table5_conflict.png       Conflict rate, original vs combined (paper Table 5)
   table6_recognition.png    Recognition: Pre / Rec / Una / Det / Loc / Tac (paper Table 6)
   table7_localization.png   Extension: localization per injected ambiguity type
@@ -73,23 +73,24 @@ def table4(summ: dict) -> str:
     groups = [("Orchid-HEval", summ["heval"], "overall"), ("Orchid-HEval (valid)", summ["heval"], "valid_only"),
               ("Orchid-BCB", summ["bcb"], "overall"), ("Orchid-BCB (valid)", summ["bcb"], "valid_only")]
     head = ("<thead><tr><th class='l' rowspan='2'>Models</th>"
-            + "".join(f"<th class='grp' colspan='2'>{g}</th>" for g, _, _ in groups) + "</tr><tr>"
-            + "<th>Orig.</th><th>Δ Comb.</th>" * len(groups) + "</tr></thead>")
+            + "".join(f"<th class='grp' colspan='3'>{g}</th>" for g, _, _ in groups) + "</tr><tr>"
+            + "<th>Original</th><th>Combined</th><th>Δ</th>" * len(groups) + "</tr></thead>")
     body = []
     for k in (1, 3, 5):
-        body.append(f"<tr class='sec'><td colspan='{1 + 2 * len(groups)}'>Pass@{k} (%)</td></tr>")
+        body.append(f"<tr class='sec'><td colspan='{1 + 3 * len(groups)}'>Pass@{k} (%)</td></tr>")
         for m, name in MODELS.items():
             cells = []
             for _, s, kind in groups:
                 o, c = ((s["overall"]["original"], s["overall"]["combined"]) if kind == "overall"
                         else (s["valid_only"][m]["original"], s["valid_only"][m]["combined"]))
                 o, c = o.get(f"{m}|pass@{k}"), c.get(f"{m}|pass@{k}")
-                cells.append(f"<td>{pct(o)}</td>{delta(o, c)}")
+                cells.append(f"<td>{pct(o)}</td>{delta_cell(o, c)}{delta(o, c)}")
             body.append(f"<tr><td class='l'>{name}</td>{''.join(cells)}</tr>")
     n_valid = "; ".join(f"{MODELS[m]}: HEval {len(summ['heval']['valid_only'][m]['tasks'])}/6, "
                         f"BCB {len(summ['bcb']['valid_only'][m]['tasks'])}/12" for m in MODELS)
-    note = ("Δ Comb. = pass@k(combined) − pass@k(original) in percentage points (negative = drop), as in the paper. "
-            "Each requirement combines two ambiguity types; n = 5 samples per model and variant. "
+    note = ("Original = clear requirement; Combined = the same requirement with two ambiguity types injected. "
+            "Δ = Combined − Original in percentage points (negative = drop, red), as in the paper. "
+            "n = 5 samples per model and variant. "
             f"<i>Valid</i>: only tasks the model solves from the original prompt in ≥ 4/5 samples ({n_valid}).")
     return page("<b>Table 4:</b> Pass@K of LLMs on original and combined-ambiguity requirements.",
                 f"<table>{head}<tbody>{''.join(body)}</tbody></table>", note)
